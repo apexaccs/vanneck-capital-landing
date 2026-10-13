@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css?v=83266b6">
+<link rel="stylesheet" href="./styles.css?v=9641405-2">
 </head>
 <body>
 
@@ -281,11 +281,53 @@
 <section id="portfolio" class="portfolio-wrap">
   <div class="section-head">
     <p class="eyebrow">Portfolio</p>
-    <h2>38 teams we've backed</h2>
+    <h2>59 teams we've backed</h2>
     <p class="lead">A working sample of the pipeline described in Problem &amp; Solution &mdash; direct checks, same network, same terms.</p>
   </div>
-  <div class="portfolio-grid">
-        <article class="port-card">
+  <div class="port-filters">
+    <label>Blockchain
+      <select id="filterChain">
+        <option value="">All</option>
+          <option value="Arbitrum">Arbitrum</option>
+          <option value="Avalanche">Avalanche</option>
+          <option value="BNB Chain">BNB Chain</option>
+          <option value="Base">Base</option>
+          <option value="Bitcoin">Bitcoin</option>
+          <option value="Dymension">Dymension</option>
+          <option value="Ethereum">Ethereum</option>
+          <option value="Multi-chain">Multi-chain</option>
+          <option value="Solana">Solana</option>
+      </select>
+    </label>
+    <label>Sector
+      <select id="filterSector">
+        <option value="">All</option>
+          <option value="AI">AI</option>
+          <option value="DeFi">DeFi</option>
+          <option value="Gaming">Gaming</option>
+          <option value="Infrastructure">Infrastructure</option>
+          <option value="Meme">Meme</option>
+          <option value="NFT">NFT</option>
+          <option value="Other">Other</option>
+          <option value="RWA">RWA</option>
+          <option value="Security">Security</option>
+      </select>
+    </label>
+    <label>Cohort
+      <select id="filterCohort">
+        <option value="">All</option>
+          <option value="All FI Q2 2025">All FI Q2 2025</option>
+          <option value="Avalanche Campaign">Avalanche Campaign</option>
+          <option value="BTC Marathon">BTC Marathon</option>
+          <option value="Direct Deals">Direct Deals</option>
+          <option value="Meme Run">Meme Run</option>
+          <option value="Out of Programs">Out of Programs</option>
+      </select>
+    </label>
+    <span class="port-count" id="portCount" aria-live="polite"></span>
+  </div>
+  <div class="portfolio-grid" id="portfolioGrid">
+        <article class="port-card" data-cohort="All FI Q2 2025" data-chain="Multi-chain" data-sector="Infrastructure">
           <a class="port-avatar" href="https://okto.tech" target="_blank" rel="noopener"><img src="assets/img/portfolio/okto.png" alt="Okto Wallet" loading="lazy"></a>
           <div class="port-body">
             <span class="port-cat">Wallet Infrastructure</span>
@@ -293,7 +335,7 @@
             <p>Chain-abstraction wallet with an embedded SDK, automatic gas management and MPC security across 16+ chains.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="All FI Q2 2025" data-chain="Dymension" data-sector="AI">
           <a class="port-avatar" href="https://rivalz.ai" target="_blank" rel="noopener"><img src="assets/img/portfolio/rivalz.webp" alt="Rivalz Network" loading="lazy"></a>
           <div class="port-body">
             <span class="port-cat">AI Infrastructure / DePIN</span>
@@ -301,7 +343,7 @@
             <p>Dual-chain DePIN infrastructure connecting AI agents to real-world compute resources.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="All FI Q2 2025" data-chain="Multi-chain" data-sector="Infrastructure">
           <div class="port-avatar no-link"><div class="port-mono"><span>M</span></div></div>
           <div class="port-body">
             <span class="port-cat">Web3 Browser</span>
@@ -309,7 +351,7 @@
             <p>Privacy-focused Web3 browser with a built-in wallet and native dApp support.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="All FI Q2 2025" data-chain="Multi-chain" data-sector="DeFi">
           <div class="port-avatar no-link"><img src="assets/img/portfolio/matrix.png" alt="Matrix" loading="lazy"></div>
           <div class="port-body">
             <span class="port-cat">DeFi Protocol</span>
@@ -317,7 +359,7 @@
             <p>Cross-chain liquidity aggregation protocol routing swaps for optimal execution.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="All FI Q2 2025" data-chain="Ethereum" data-sector="Meme">
           <div class="port-avatar no-link"><img src="assets/img/portfolio/liquidog.jpg" alt="Liquid Dog" loading="lazy"></div>
           <div class="port-body">
             <span class="port-cat">Meme + Utility</span>
@@ -325,7 +367,7 @@
             <p>Community-driven memecoin with liquidity-mining mechanics and LP incentives.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="All FI Q2 2025" data-chain="Multi-chain" data-sector="Infrastructure">
           <div class="port-avatar no-link"><img src="assets/img/portfolio/insightgenesis.png" alt="Insight Genesis" loading="lazy"></div>
           <div class="port-body">
             <span class="port-cat">Analytics</span>
@@ -333,7 +375,7 @@
             <p>On-chain analytics and market-intelligence platform for fund flow and whale activity.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="All FI Q2 2025" data-chain="Arbitrum" data-sector="DeFi">
           <div class="port-avatar no-link"><img src="assets/img/portfolio/camelot.png" alt="Camelot" loading="lazy"></div>
           <div class="port-body">
             <span class="port-cat">DEX / AMM</span>
@@ -341,7 +383,7 @@
             <p>Next-generation AMM with concentrated liquidity, built for the Arbitrum ecosystem.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="All FI Q2 2025" data-chain="Multi-chain" data-sector="Infrastructure">
           <div class="port-avatar no-link"><img src="assets/img/portfolio/b-datagray.svg" alt="B-DataGray" loading="lazy"></div>
           <div class="port-body">
             <span class="port-cat">Data Infrastructure</span>
@@ -349,7 +391,7 @@
             <p>Decentralized data storage and management for Web3 applications.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="All FI Q2 2025" data-chain="Multi-chain" data-sector="Gaming">
           <div class="port-avatar no-link"><img src="assets/img/portfolio/arcas.png" alt="Arcas" loading="lazy"></div>
           <div class="port-body">
             <span class="port-cat">Gaming</span>
@@ -357,7 +399,7 @@
             <p>Web3 gaming infrastructure and marketplace for cross-game NFT assets.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="BTC Marathon" data-chain="Bitcoin" data-sector="Meme">
           <div class="port-avatar no-link"><div class="port-mono"><span>O</span></div></div>
           <div class="port-body">
             <span class="port-cat">Bitcoin L2 / Meme</span>
@@ -365,7 +407,7 @@
             <p>Meme token on the Alkanes protocol, among the first on the new Bitcoin execution layer.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="BTC Marathon" data-chain="Bitcoin" data-sector="Infrastructure">
           <div class="port-avatar no-link"><div class="port-mono"><span>D</span></div></div>
           <div class="port-body">
             <span class="port-cat">Bitcoin Protocol</span>
@@ -373,7 +415,7 @@
             <p>High-performance Bitcoin protocol token aimed at DeFi throughput.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="BTC Marathon" data-chain="Bitcoin" data-sector="Meme">
           <div class="port-avatar no-link"><div class="port-mono"><span>M</span></div></div>
           <div class="port-body">
             <span class="port-cat">BRC-20</span>
@@ -381,7 +423,7 @@
             <p>Early community meme token on the BRC-20 standard within Bitcoin Ordinals.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="BTC Marathon" data-chain="Bitcoin" data-sector="Meme">
           <div class="port-avatar no-link"><div class="port-mono"><span>P</span></div></div>
           <div class="port-body">
             <span class="port-cat">BRC 2.0</span>
@@ -389,7 +431,7 @@
             <p>Enhanced BRC token with utility functions on the BRC 2.0 standard.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="BTC Marathon" data-chain="Bitcoin" data-sector="Infrastructure">
           <div class="port-avatar no-link"><div class="port-mono"><span>D</span></div></div>
           <div class="port-body">
             <span class="port-cat">Runes / Bridge</span>
@@ -397,7 +439,7 @@
             <p>Cross-chain bridge token on the Runes protocol between DigiByte and Bitcoin.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="BTC Marathon" data-chain="Bitcoin" data-sector="NFT">
           <div class="port-avatar no-link"><div class="port-mono"><span>R</span></div></div>
           <div class="port-body">
             <span class="port-cat">Runes / NFT</span>
@@ -405,7 +447,7 @@
             <p>Genesis collection on the Runes protocol, among the first Bitcoin NFTs via Runes.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="BTC Marathon" data-chain="Bitcoin" data-sector="Meme">
           <div class="port-avatar no-link"><div class="port-mono"><span>Z</span></div></div>
           <div class="port-body">
             <span class="port-cat">Runes / Experimental</span>
@@ -413,7 +455,7 @@
             <p>Experimental Runes-protocol token exploring the new Bitcoin standard.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Avalanche Campaign" data-chain="Avalanche" data-sector="Meme">
           <div class="port-avatar no-link"><img src="assets/img/portfolio/avax.png" alt="Lambo on Avax" loading="lazy"></div>
           <div class="port-body">
             <span class="port-cat">Meme / Gaming</span>
@@ -421,7 +463,7 @@
             <p>Premium meme token on Avalanche with gamified staking mechanics.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Avalanche Campaign" data-chain="Avalanche" data-sector="Gaming">
           <div class="port-avatar no-link"><div class="port-mono"><span>F</span></div></div>
           <div class="port-body">
             <span class="port-cat">Gaming</span>
@@ -429,7 +471,7 @@
             <p>Web3 gaming platform on Avalanche focused on player ownership.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Avalanche Campaign" data-chain="Avalanche" data-sector="DeFi">
           <div class="port-avatar no-link"><div class="port-mono"><span>P</span></div></div>
           <div class="port-body">
             <span class="port-cat">Banking / DeFi</span>
@@ -437,7 +479,7 @@
             <p>Crypto banking platform combining cards, payments and DeFi yield.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Avalanche Campaign" data-chain="Avalanche" data-sector="RWA">
           <div class="port-avatar no-link"><div class="port-mono"><span>A</span></div></div>
           <div class="port-body">
             <span class="port-cat">RWA / DeFi</span>
@@ -445,7 +487,7 @@
             <p>Real-world asset tokenization on Avalanche with a compliance-first approach.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Avalanche Campaign" data-chain="Avalanche" data-sector="Gaming">
           <div class="port-avatar no-link"><div class="port-mono"><span>S</span></div></div>
           <div class="port-body">
             <span class="port-cat">Gaming / AAA</span>
@@ -453,7 +495,7 @@
             <p>AAA blockchain FPS with a full player-owned economy via NFTs and tokens.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Avalanche Campaign" data-chain="Avalanche" data-sector="Infrastructure">
           <div class="port-avatar no-link"><div class="port-mono"><span>N</span></div></div>
           <div class="port-body">
             <span class="port-cat">Compliance / Infrastructure</span>
@@ -461,7 +503,7 @@
             <p>Compliance and identity layer providing KYC/AML infrastructure for DeFi.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Avalanche Campaign" data-chain="Avalanche" data-sector="DeFi">
           <div class="port-avatar no-link"><div class="port-mono"><span>F</span></div></div>
           <div class="port-body">
             <span class="port-cat">Lending / Cross-chain</span>
@@ -469,7 +511,7 @@
             <p>Cross-chain lending protocol for borrowing and lending across multiple chains.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Avalanche Campaign" data-chain="Avalanche" data-sector="DeFi">
           <div class="port-avatar no-link"><div class="port-mono"><span>P</span></div></div>
           <div class="port-body">
             <span class="port-cat">DeFi Protocol</span>
@@ -477,7 +519,7 @@
             <p>Multi-function DeFi protocol on Avalanche focused on yield optimization.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Avalanche Campaign" data-chain="Avalanche" data-sector="Meme">
           <div class="port-avatar no-link"><div class="port-mono"><span>A</span></div></div>
           <div class="port-body">
             <span class="port-cat">Meme / Community</span>
@@ -485,7 +527,7 @@
             <p>Community-driven viral meme movement built on Avalanche&#x27;s identity.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Meme Run" data-chain="Multi-chain" data-sector="AI">
           <div class="port-avatar no-link"><div class="port-mono"><span>W</span></div></div>
           <div class="port-body">
             <span class="port-cat">AI Meme</span>
@@ -493,7 +535,7 @@
             <p>AI-generated meme token with art that evolves alongside market events.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Meme Run" data-chain="Multi-chain" data-sector="Gaming">
           <div class="port-avatar no-link"><div class="port-mono"><span>K</span></div></div>
           <div class="port-body">
             <span class="port-cat">Gaming Meme</span>
@@ -501,7 +543,7 @@
             <p>Gaming-focused meme token with play-to-earn mechanics.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Meme Run" data-chain="Multi-chain" data-sector="AI">
           <div class="port-avatar no-link"><div class="port-mono"><span>e</span></div></div>
           <div class="port-body">
             <span class="port-cat">AI Agent</span>
@@ -509,7 +551,7 @@
             <p>Open-source operating system for autonomous AI trading agents.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Meme Run" data-chain="Multi-chain" data-sector="Meme">
           <div class="port-avatar no-link"><div class="port-mono"><span>A</span></div></div>
           <div class="port-body">
             <span class="port-cat">Utility Meme</span>
@@ -517,7 +559,7 @@
             <p>Meme token bridging meme culture with real DeFi utility.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Meme Run" data-chain="Multi-chain" data-sector="AI">
           <div class="port-avatar no-link"><div class="port-mono"><span>S</span></div></div>
           <div class="port-body">
             <span class="port-cat">AI Meme</span>
@@ -525,7 +567,7 @@
             <p>AI-powered meme token with tokenomics that adapt to on-chain sentiment.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Meme Run" data-chain="Multi-chain" data-sector="Meme">
           <div class="port-avatar no-link"><div class="port-mono"><span>M</span></div></div>
           <div class="port-body">
             <span class="port-cat">Social Meme</span>
@@ -533,7 +575,7 @@
             <p>Social meme token built on referral-driven network effects.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Meme Run" data-chain="Multi-chain" data-sector="Meme">
           <div class="port-avatar no-link"><div class="port-mono"><span>M</span></div></div>
           <div class="port-body">
             <span class="port-cat">Cultural Meme</span>
@@ -541,7 +583,7 @@
             <p>Culturally-inspired meme token for MENA and Asian audiences.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Out of Programs" data-chain="BNB Chain" data-sector="Other">
           <div class="port-avatar no-link"><img src="assets/img/portfolio/tutorial.jpg" alt="Tutorial on BNB" loading="lazy"></div>
           <div class="port-body">
             <span class="port-cat">Education / Content</span>
@@ -549,7 +591,7 @@
             <p>Education platform on BNB Chain with incentive mechanics for learners.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Out of Programs" data-chain="Multi-chain" data-sector="DeFi">
           <div class="port-avatar no-link"><img src="assets/img/portfolio/koma.png" alt="Koma" loading="lazy"></div>
           <div class="port-body">
             <span class="port-cat">DeFi Protocol</span>
@@ -557,7 +599,7 @@
             <p>DeFi protocol with a new approach to liquidity mechanics.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Out of Programs" data-chain="Multi-chain" data-sector="DeFi">
           <div class="port-avatar no-link"><div class="port-mono"><span>B</span></div></div>
           <div class="port-body">
             <span class="port-cat">Prediction Market</span>
@@ -565,7 +607,7 @@
             <p>Decentralized prediction markets with on-chain settlement.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Out of Programs" data-chain="Multi-chain" data-sector="NFT">
           <div class="port-avatar no-link"><div class="port-mono"><span>F</span></div></div>
           <div class="port-body">
             <span class="port-cat">NFT / DeFi</span>
@@ -573,7 +615,7 @@
             <p>NFT floor-price protection protocol via DeFi insurance mechanics.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Out of Programs" data-chain="Multi-chain" data-sector="Infrastructure">
           <div class="port-avatar no-link"><div class="port-mono"><span>W</span></div></div>
           <div class="port-body">
             <span class="port-cat">Infrastructure / Dev Tools</span>
@@ -581,7 +623,7 @@
             <p>Web3 development framework simplifying dApp development.</p>
           </div>
         </article>
-        <article class="port-card">
+        <article class="port-card" data-cohort="Out of Programs" data-chain="Multi-chain" data-sector="RWA">
           <div class="port-avatar no-link"><div class="port-mono"><span>A</span></div></div>
           <div class="port-body">
             <span class="port-cat">RWA / Real Estate</span>
@@ -589,6 +631,177 @@
             <p>Real-estate tokenization platform for fractional, compliant ownership.</p>
           </div>
         </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="Infrastructure">
+          <div class="port-avatar no-link"><div class="port-mono"><span>C</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">DePIN / Infrastructure</span>
+            <h3>Chimera</h3>
+            <p>DePIN infrastructure project with confirmed exchange listings and a Swiss entity structure.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="AI">
+          <div class="port-avatar no-link"><div class="port-mono"><span>A</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">AI Infrastructure / DePIN</span>
+            <h3>Agent.Tech</h3>
+            <p>AI-agent rental platform running on dedicated hardware, with 100+ agents live.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Solana" data-sector="AI">
+          <div class="port-avatar no-link"><div class="port-mono"><span>F</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">AI Infrastructure / Marketing</span>
+            <h3>Florus AI</h3>
+            <p>AI-powered marketing infrastructure spanning brand visibility and content positioning.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Solana" data-sector="AI">
+          <div class="port-avatar no-link"><div class="port-mono"><span>K</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">AI Finance / Credit Infrastructure</span>
+            <h3>Krexa</h3>
+            <p>Credit layer for the agent economy — autonomous AI agents get a wallet, credit score and credit line.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="Security">
+          <div class="port-avatar no-link"><div class="port-mono"><span>C</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">Authorization Infrastructure</span>
+            <h3>Certen</h3>
+            <p>Identity-based authorization network and programmable governance layer for digital finance.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="AI">
+          <div class="port-avatar no-link"><div class="port-mono"><span>T</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">AI Banking / Wallet Infrastructure</span>
+            <h3>Tychi Labs</h3>
+            <p>Banking OS giving AI agents controlled, user-permissioned financial access.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="Other">
+          <div class="port-avatar no-link"><div class="port-mono"><span>L</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">Enterprise Loyalty / Web3</span>
+            <h3>Loyyal</h3>
+            <p>Enterprise loyalty platform with blockchain settlement, serving major airline and energy-sector clients.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="DeFi">
+          <div class="port-avatar no-link"><div class="port-mono"><span>E</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">Privacy Cryptocurrency</span>
+            <h3>Epic Cash</h3>
+            <p>Privacy-first cryptocurrency with a fixed, Bitcoin-style supply, live since 2019.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="RWA">
+          <div class="port-avatar no-link"><div class="port-mono"><span>D</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">HealthFi / DeSci / RWA</span>
+            <h3>Digipharm</h3>
+            <p>Blockchain pharmaceutical data platform used by national health systems and major pharma.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Solana" data-sector="AI">
+          <div class="port-avatar no-link"><div class="port-mono"><span>M</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">AI / Mobile Gaming</span>
+            <h3>MyPip</h3>
+            <p>Vibe-coding engine that turns a prompt into a native mobile game in minutes.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="Security">
+          <div class="port-avatar no-link"><div class="port-mono"><span>V</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">Security / MCP Infrastructure</span>
+            <h3>VaultPilot</h3>
+            <p>MCP server for secure transaction signing — agent keys never leave the hardware wallet.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="DeFi">
+          <div class="port-avatar no-link"><div class="port-mono"><span>B</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">DeFi / Trading / Gaming</span>
+            <h3>Bynomo</h3>
+            <p>On-chain binary options trading app with sub-second price feeds across crypto, equities and forex.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="Infrastructure">
+          <div class="port-avatar no-link"><div class="port-mono"><span>P</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">DePIN / L1 Infrastructure</span>
+            <h3>Pozzer</h3>
+            <p>L1 blockchain purpose-built for DePIN — mobility, energy, connectivity and sensor networks.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Base" data-sector="RWA">
+          <div class="port-avatar no-link"><div class="port-mono"><span>N</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">DeFi / Options / RWA</span>
+            <h3>Nondollar</h3>
+            <p>On-chain US stock options access for non-US users, audited and already hedging real volume.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="DeFi">
+          <div class="port-avatar no-link"><div class="port-mono"><span>Y</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">DeFi / Yield</span>
+            <h3>YieldNest</h3>
+            <p>DeFi yield protocol with advanced optimization strategies, backed by notable DeFi advisors.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="Other">
+          <div class="port-avatar no-link"><div class="port-mono"><span>P</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">Payments / x402</span>
+            <h3>Paymento</h3>
+            <p>Non-custodial crypto payment gateway for merchants, with native support for agent payments.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Base" data-sector="RWA">
+          <div class="port-avatar no-link"><div class="port-mono"><span>R</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">RWA / Real Estate Tokenization</span>
+            <h3>RWA Inc</h3>
+            <p>Global real-estate investment platform via tokenization, live on Base with regional partnerships.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="AI">
+          <div class="port-avatar no-link"><div class="port-mono"><span>B</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">AI Trading / DeFi</span>
+            <h3>Boole</h3>
+            <p>Non-custodial AI trading agent — funds and keys never leave the user while the agent trades.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="Gaming">
+          <div class="port-avatar no-link"><div class="port-mono"><span>G</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">Gaming / AAA</span>
+            <h3>GGC</h3>
+            <p>AAA gaming studio building a console-affiliated title with a 32-member team.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="Gaming">
+          <div class="port-avatar no-link"><div class="port-mono"><span>C</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">Gaming / Real-Money MMO</span>
+            <h3>Cambria</h3>
+            <p>Real-money sandbox MMO where players stake crypto in an on-chain PvP/PvE economy.</p>
+          </div>
+        </article>
+        <article class="port-card" data-cohort="Direct Deals" data-chain="Multi-chain" data-sector="AI">
+          <div class="port-avatar no-link"><div class="port-mono"><span>R</span></div></div>
+          <div class="port-body">
+            <span class="port-cat">AI Music / Creative</span>
+            <h3>REBL</h3>
+            <p>AI music platform for real-time collaborative generation, remixing and live performance.</p>
+          </div>
+        </article>
+  </div>
+  <div class="port-more-wrap">
+    <button type="button" id="portMore" class="port-more">Show more</button>
   </div>
 </section>
 
@@ -647,6 +860,22 @@
           <span class="team-role">Growth Advisor</span>
           <p>Web3 security GTM specialist; has launched growth and B2B sales for several blockchain projects.</p>
         </article>
+  </div>
+
+  <div class="verify-box">
+    <p class="verify-eyebrow">Stay safe</p>
+    <h3>Check if a contact is verified by Vanneck</h3>
+    <p class="verify-lead">Impersonation is common in Web3. If someone reaches out claiming to be from Vanneck, confirm their handle here before you trust them.</p>
+    <div class="verify-tabs" role="tablist">
+      <button type="button" class="verify-tab active" data-kind="tg">Telegram</button>
+      <button type="button" class="verify-tab" data-kind="x">X</button>
+      <button type="button" class="verify-tab" data-kind="mail">Email</button>
+    </div>
+    <div class="verify-row">
+      <input type="text" id="verifyInput" placeholder="@handle or email">
+      <button type="button" id="verifyBtn">Verify</button>
+    </div>
+    <div class="verify-result" id="verifyResult" aria-live="polite"></div>
   </div>
 </section>
 
@@ -892,6 +1121,6 @@
 </div>
 
 
-<script src="./script.js?v=83266b6"></script>
+<script src="./script.js?v=9641405-2"></script>
 </body>
 </html>

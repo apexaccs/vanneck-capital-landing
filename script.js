@@ -503,6 +503,106 @@
   });
 })();
 
+// Portfolio: blockchain / sector / cohort filters + "show more" paging
+(function () {
+  const grid = document.getElementById('portfolioGrid');
+  if (!grid) return;
+  const cards = Array.from(grid.querySelectorAll('.port-card'));
+  const chainSel = document.getElementById('filterChain');
+  const sectorSel = document.getElementById('filterSector');
+  const cohortSel = document.getElementById('filterCohort');
+  const moreBtn = document.getElementById('portMore');
+  const countEl = document.getElementById('portCount');
+  const PAGE = 12;
+  let shown = PAGE;
+
+  function matches(card) {
+    const c = chainSel.value, s = sectorSel.value, co = cohortSel.value;
+    if (c && card.dataset.chain !== c) return false;
+    if (s && card.dataset.sector !== s) return false;
+    if (co && card.dataset.cohort !== co) return false;
+    return true;
+  }
+
+  function render() {
+    const matched = cards.filter(matches);
+    cards.forEach((card) => card.classList.add('is-hidden'));
+    matched.slice(0, shown).forEach((card) => card.classList.remove('is-hidden'));
+    const remaining = matched.length - Math.min(shown, matched.length);
+    moreBtn.hidden = remaining <= 0;
+    countEl.textContent = matched.length === cards.length
+      ? `${cards.length} companies`
+      : `${matched.length} of ${cards.length} companies`;
+  }
+
+  [chainSel, sectorSel, cohortSel].forEach((sel) => {
+    sel.addEventListener('change', () => { shown = PAGE; render(); });
+  });
+  moreBtn.addEventListener('click', () => { shown += PAGE; render(); });
+
+  render();
+})();
+
+// Team: verification widget — confirms a handle/email against known team contacts
+(function () {
+  const box = document.querySelector('.verify-box');
+  if (!box) return;
+
+  const team = [
+    { name: 'Trevor Cesur', photo: 'assets/img/team/trevor.jpg', role: 'Co-Founder & Business Development', tg: 't.me/trevhl', x: 'x.com/TrevorCesur', mail: 'trevor@apexfdn.xyz' },
+    { name: 'Yong Liu', photo: 'assets/img/team/yong.jpg', role: 'Head of Grants', tg: 't.me/not_a_dev_eth', x: null, mail: null },
+    { name: 'Dolphin', photo: 'assets/img/team/dolphin.jpg', role: 'Business Development Manager', tg: 't.me/dlphin01', x: 'x.com/dlphin01', mail: 'dolphin@apexfdn.xyz' },
+    { name: 'Chua Joo', photo: 'assets/img/team/chua.jpg', role: 'Investment Relations', tg: 't.me/chuajoo', x: null, mail: 'chua@apexfdn.xyz' },
+    { name: 'Nick Buckler', photo: 'assets/img/team/nick.jpg', role: 'Business Developer', tg: 't.me/nickbuckler', x: 'x.com/flokamon6q', mail: null },
+    { name: 'Darren Lim', photo: 'assets/img/team/darren.jpg', role: 'Investment Committee', tg: 't.me/liquidlab3', x: 'x.com/darrenvcz0n', mail: 'darrenmgmt@proton.me' },
+    { name: 'Edward Lindemann', photo: 'assets/img/team/edwaaard.jpg', role: 'CTO', tg: null, x: 'x.com/edlindex', mail: 'edwardlindemann.ch@gmail.com' },
+    { name: 'Son Jin', photo: 'assets/img/team/sonjin.jpg', role: 'Growth Advisor', tg: null, x: 'x.com/SonJin_yop', mail: null },
+  ];
+
+  function normalize(v) {
+    if (!v) return '';
+    return v.trim().toLowerCase()
+      .replace(/^https?:\/\//, '')
+      .replace(/^t\.me\//, '')
+      .replace(/^x\.com\//, '')
+      .replace(/^mailto:/, '')
+      .replace(/^@/, '');
+  }
+
+  let kind = 'tg';
+  const tabs = box.querySelectorAll('.verify-tab');
+  const input = box.querySelector('#verifyInput');
+  const btn = box.querySelector('#verifyBtn');
+  const result = box.querySelector('#verifyResult');
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+      kind = tab.dataset.kind;
+      input.placeholder = kind === 'mail' ? 'email address' : '@handle';
+      result.innerHTML = '';
+    });
+  });
+
+  function verify() {
+    const q = normalize(input.value);
+    if (!q) return;
+    const found = team.find((m) => normalize(m[kind]) === q);
+    if (found) {
+      result.innerHTML = `<div class="verify-card">
+        <img src="${found.photo}" alt="${found.name}">
+        <div><div class="vc-name">${found.name}</div><div class="vc-handle">${found.role} &mdash; verified Vanneck contact</div></div>
+      </div>`;
+    } else {
+      result.innerHTML = `<div class="verify-not-found">No verified Vanneck team member matches &ldquo;${input.value}&rdquo;. Treat this contact as unverified.</div>`;
+    }
+  }
+
+  btn.addEventListener('click', verify);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') verify(); });
+})();
+
 // Mobile nav
 const navToggle = document.getElementById('navToggle');
 const navSheet = document.getElementById('navSheet');

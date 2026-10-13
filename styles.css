@@ -87,9 +87,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* ── problem: gzhel plate with cycling text ──────────────────────────────── */
 .problem-wrap{position:relative;height:480vh}
 .problem-stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--white);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,3vh,28px)}
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,3vh,28px);
+  padding-top:80px;box-sizing:border-box}
 .problem-heading{position:relative;text-align:center;z-index:2;flex:none;
-  font-family:var(--serif);font-weight:600;font-size:clamp(22px,2.6vw,30px);color:var(--ink)}
+  font-family:var(--serif);font-weight:600;font-style:italic;letter-spacing:.01em;
+  font-size:clamp(28px,4vw,44px);color:var(--ink)}
 .plate-3d{position:relative;flex:none;width:min(86vw,78vh,780px);height:min(86vw,78vh,780px);perspective:1700px}
 .plate{position:relative;width:100%;height:100%;transform-style:preserve-3d;
   display:flex;align-items:center;justify-content:center}
@@ -134,8 +136,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .solution-head{position:relative;z-index:2;max-width:640px;margin:0 auto;padding:88px 24px 0;
   text-align:center;opacity:0;transform:translateY(14px)}
 .solution-head .eyebrow{font:600 11.5px var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--blue-mid)}
-.solution-head h2{font-family:var(--serif);font-weight:600;color:var(--cobalt);
-  font-size:clamp(26px,4vw,46px);line-height:1.18;margin:10px 0 14px}
+.solution-head h2{font-family:var(--serif);font-weight:600;font-style:italic;color:var(--cobalt);
+  font-size:clamp(36px,6.4vw,68px);line-height:1.12;letter-spacing:.005em;margin:12px 0 16px}
 .solution-head .lead{font-size:16px;color:var(--ink-soft);line-height:1.55;margin-bottom:8px}
 .solution-head .why{font-size:14px;color:var(--ink-soft);opacity:.85;max-width:52ch;margin:0 auto}
 .solution-svg{position:absolute;inset:0;width:100%;height:100%;z-index:1}
@@ -159,14 +161,28 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* ── shared section header, used by portfolio/team/services/faq ───────── */
 .section-head{max-width:640px;margin:0 auto;padding:96px var(--pad) 48px;text-align:center}
 .section-head .eyebrow{font:600 11.5px var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--blue-mid)}
-.section-head h2{font-family:var(--serif);font-weight:600;color:var(--cobalt);
-  font-size:clamp(26px,4vw,42px);line-height:1.18;margin:10px 0 14px}
+.section-head h2{font-family:var(--serif);font-weight:600;font-style:italic;color:var(--cobalt);
+  font-size:clamp(36px,6vw,64px);line-height:1.12;letter-spacing:.005em;margin:12px 0 16px}
 .section-head .lead{font-size:15.5px;color:var(--ink-soft);line-height:1.55}
 
 /* ── portfolio ───────────────────────────────────────────────────────── */
-.portfolio-wrap{background:var(--bg-pale)}
-.portfolio-grid{max-width:1240px;margin:0 auto;padding:0 var(--pad) 96px;
+.portfolio-wrap{background:var(--white)}
+.port-filters{max-width:1240px;margin:0 auto;padding:0 var(--pad) 24px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:18px}
+.port-filters label{display:flex;flex-direction:column;gap:5px;font:600 10.5px var(--sans);
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.port-filters select{font:400 13.5px var(--sans);color:var(--ink);padding:8px 10px;border-radius:5px;
+  border:1px solid rgba(29,75,168,.22);background:var(--white);min-width:160px}
+.port-count{margin-left:auto;font-size:12.5px;color:var(--blue-mid);align-self:flex-end;padding-bottom:4px}
+.portfolio-grid{max-width:1240px;margin:0 auto;padding:0 var(--pad) 40px;
   display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px}
+.port-card.is-hidden{display:none}
+.port-more-wrap{text-align:center;padding:0 var(--pad) 96px}
+.port-more{font:600 13.5px var(--sans);color:var(--cobalt);background:var(--bg-pale);
+  border:1px solid rgba(29,75,168,.2);border-radius:999px;padding:11px 26px;cursor:pointer;
+  transition:background .25s var(--ease),color .25s var(--ease)}
+.port-more:hover{background:var(--cobalt);color:var(--white)}
+.port-more[hidden]{display:none}
 .port-card{background:var(--white);border:1px solid rgba(29,75,168,.16);border-radius:4px;
   padding:10px;display:flex;flex-direction:column;position:relative;overflow:hidden;
   transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
@@ -193,15 +209,43 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .team-photo{width:140px;height:140px;border-radius:50%;overflow:hidden;margin-bottom:16px;
   border:3px solid var(--white);box-shadow:0 0 0 2px var(--cobalt),0 16px 32px -18px rgba(20,33,61,.4);
   position:relative}
-.team-photo img{width:100%;height:100%;object-fit:cover;
+.team-photo img{width:100%;height:100%;object-fit:cover;transition:filter .45s var(--ease);
   filter:grayscale(.85) sepia(.25) hue-rotate(175deg) saturate(2.6) brightness(1.03) contrast(1.02)}
+.team-photo:hover img{filter:none}
 .team-card h3{font-family:var(--serif);font-weight:600;font-style:italic;color:var(--ink);font-size:18px}
 .team-role{display:block;font:600 10.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;
   color:var(--blue-mid);margin:4px 0 8px}
 .team-card p{font-size:12.5px;line-height:1.55;color:var(--ink-soft);max-width:28ch}
 
+/* ── team: verification widget ──────────────────────────────────────── */
+.verify-box{max-width:620px;margin:16px auto 100px;padding:34px var(--pad);
+  background:var(--bg-pale);border-radius:10px;text-align:center}
+.verify-eyebrow{font:600 11px var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--blue-mid)}
+.verify-box h3{font-family:var(--serif);font-weight:600;font-style:italic;color:var(--cobalt);
+  font-size:clamp(20px,2.6vw,26px);margin:8px 0 10px}
+.verify-lead{font-size:13px;color:var(--ink-soft);line-height:1.55;max-width:48ch;margin:0 auto 20px}
+.verify-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:14px}
+.verify-tab{font:600 12.5px var(--sans);color:var(--ink-soft);background:var(--white);
+  border:1px solid rgba(29,75,168,.2);border-radius:999px;padding:8px 18px;cursor:pointer;
+  transition:background .25s var(--ease),color .25s var(--ease)}
+.verify-tab.active{background:var(--cobalt);color:var(--white);border-color:var(--cobalt)}
+.verify-row{display:flex;gap:10px;max-width:420px;margin:0 auto}
+.verify-row input{flex:1;font:400 14px var(--sans);color:var(--ink);padding:10px 12px;
+  border:1px solid rgba(29,75,168,.22);border-radius:6px;background:var(--white)}
+.verify-row button{font:600 13.5px var(--sans);color:var(--white);background:var(--cobalt);
+  border:none;border-radius:6px;padding:10px 18px;cursor:pointer;transition:background .25s var(--ease)}
+.verify-row button:hover{background:var(--bg-deep)}
+.verify-result{margin-top:18px;min-height:0}
+.verify-result:empty{margin-top:0}
+.verify-card{display:flex;align-items:center;gap:14px;background:var(--white);border-radius:8px;
+  padding:14px 16px;text-align:left}
+.verify-card img{width:56px;height:56px;border-radius:50%;object-fit:cover;flex:none}
+.verify-card .vc-name{font-family:var(--serif);font-weight:600;font-style:italic;color:var(--ink);font-size:15px}
+.verify-card .vc-handle{font-size:12px;color:var(--blue-mid);margin-top:2px}
+.verify-not-found{font-size:13px;color:#B0472E;background:var(--white);border-radius:8px;padding:14px 16px}
+
 /* ── services / what's included ─────────────────────────────────────── */
-.services-wrap{background:var(--bg-pale)}
+.services-wrap{background:var(--white)}
 .services-grid{max-width:1180px;margin:0 auto;padding:0 var(--pad) 40px;
   display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
 .svc-card{background:var(--white);border-radius:6px;padding:26px 24px;position:relative;
@@ -296,4 +340,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .footer-top{grid-template-columns:1fr;gap:32px}
   .legal-grid{grid-template-columns:1fr;gap:20px}
   .team-photo{width:112px;height:112px}
+  .port-filters{gap:12px}
+  .port-count{margin-left:0;align-self:flex-start}
+  .verify-row{flex-direction:column}
 }
