@@ -95,8 +95,10 @@
       p.el.style.fillOpacity = String(smoothstep(0.75, 1, local));
     });
 
-    // wilt phase: 0.56 -> 0.88, flowers droop (180deg) and darken
-    const wiltT = smoothstep(0.56, 0.88, progress);
+    // wilt phase: 0.56 -> 0.78, flowers droop (180deg) and darken,
+    // then the whole ornament layer fades out (0.80 -> 0.92) so the
+    // fixed fallen-petals overlay can take over without a visible seam
+    const wiltT = smoothstep(0.56, 0.78, progress);
     const color = lerpColor('#1D4BA8', '#1B2A4A', wiltT);
     paths.forEach((p) => {
       p.el.style.fill = color;
@@ -109,6 +111,7 @@
         `translate(0,${sink}) rotate(${wiltT * 180},${m.cx},${m.cy})`
       );
     });
+    svg.style.opacity = String(1 - smoothstep(0.8, 0.92, progress));
 
     if (text) {
       const tIn = smoothstep(0.3, 0.4, progress);
@@ -130,6 +133,124 @@
     onScroll();
   });
   update();
+})();
+
+// Fallen petals: fixed overlay that carries the wilted motifs from the
+// end of the hero across the seam into the top of the Problem section,
+// always above both sections' own backgrounds, continuing to sink.
+(function () {
+  const heroWrap = document.querySelector('.hero-wrap');
+  const problemWrap = document.querySelector('.problem-wrap');
+  const overlay = document.querySelector('.fallen-overlay');
+  const svg = document.querySelector('.fallen-svg');
+  if (!heroWrap || !problemWrap || !overlay || !svg) return;
+
+  const motifs = Array.from(svg.querySelectorAll('.fallen-motif'));
+
+  const SIZE_BY_ROLE = {
+    main: { h: 0.46, w: 0.5 },
+    secondary: { h: 0.24, w: 0.26 },
+    tertiary: { h: 0.17, w: 0.19 },
+  };
+  const CENTER_OFFSET_BY_ROLE = { main: 0, secondary: 0.16, tertiary: 0.3 };
+
+  let bounds = []; // base placement per motif, computed on layout()
+  let fallStart = 0;
+  let fallEnd = 1;
+
+  function layout() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+    bounds = motifs.map((g) => {
+      const corner = g.dataset.corner;
+      const role = g.dataset.role;
+      const naturalH = parseFloat(g.dataset.h);
+      const size = SIZE_BY_ROLE[role];
+      const pxHeight = Math.min(h * size.h, w * size.w);
+      const scale = pxHeight / naturalH;
+      const bottomAnchor = h - 6;
+      const ty = bottomAnchor - pxHeight;
+      const edgeOffset = w * 0.02;
+      const centerOffset = w * CENTER_OFFSET_BY_ROLE[role];
+      let tx, sx;
+      if (corner === 'left') {
+        tx = -edgeOffset + centerOffset;
+        sx = scale;
+      } else {
+        tx = w + edgeOffset - centerOffset;
+        sx = -scale;
+      }
+      return { el: g, tx, ty, sx, scale, h: naturalH * scale };
+    });
+
+    const heroRect = heroWrap.getBoundingClientRect();
+    const heroTop = heroRect.top + window.scrollY;
+    const heroScrollable = heroWrap.offsetHeight - window.innerHeight;
+    fallStart = heroTop + 0.8 * heroScrollable;
+
+    const problemRect = problemWrap.getBoundingClientRect();
+    const problemTop = problemRect.top + window.scrollY;
+    const problemScrollable = problemWrap.offsetHeight - window.innerHeight;
+    fallEnd = problemTop + 0.22 * problemScrollable;
+  }
+
+  function smoothstep(a, b, x) {
+    const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+    return t * t * (3 - 2 * t);
+  }
+
+  layout();
+
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const span = fallEnd - fallStart;
+    const fall = span > 0 ? Math.min(1, Math.max(0, (window.scrollY - fallStart) / span)) : 0;
+
+    const fadeIn = smoothstep(0, 0.1, fall);
+    const fadeOut = smoothstep(0.82, 1, fall);
+    overlay.style.opacity = String(fadeIn * (1 - fadeOut));
+
+    bounds.forEach((m) => {
+      const extraSink = fall * window.innerHeight * 0.65;
+      m.el.setAttribute('transform', `translate(${m.tx},${m.ty + extraSink}) scale(${m.sx},${m.scale})`);
+    });
+  }
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', () => {
+    layout();
+    onScroll();
+  });
+  update();
+})();
+
+// Plate: 3D tilt that follows the cursor
+(function () {
+  const wrap = document.querySelector('.plate-3d');
+  const plate = document.querySelector('.plate');
+  if (!wrap || !plate) return;
+
+  wrap.addEventListener('pointermove', (e) => {
+    const rect = wrap.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5..0.5
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    const rotateY = x * 36;
+    const rotateX = -y * 26;
+    plate.style.transition = 'transform 0.1s linear';
+    plate.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  });
+  wrap.addEventListener('pointerleave', () => {
+    plate.style.transition = 'transform .6s cubic-bezier(.22,1,.36,1)';
+    plate.style.transform = 'rotateX(0deg) rotateY(0deg)';
+  });
 })();
 
 // Problem: gzhel plate with scroll-cycled slides
