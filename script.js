@@ -455,6 +455,54 @@
   update();
 })();
 
+// Apply form + newsletter: no backend yet, so both fall back to opening a
+// pre-filled mailto: draft and confirm with a short inline note.
+(function () {
+  const CONTACT_EMAIL = 'hello@vanneckcapital.com';
+
+  function wireMailtoForm(formId, noteId, subjectPrefix, buildBody) {
+    const form = document.getElementById(formId);
+    const note = document.getElementById(noteId);
+    if (!form) return;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const body = buildBody(data);
+      const subject = encodeURIComponent(`${subjectPrefix}: ${data.get('project') || data.get('email') || ''}`);
+      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${encodeURIComponent(body)}`;
+      if (note) note.textContent = 'Opening your email client to send this — we reply within a few days.';
+      form.reset();
+    });
+  }
+
+  wireMailtoForm('applyForm', 'applyNote', 'Application', (d) =>
+    `Name: ${d.get('name')}\nEmail: ${d.get('email')}\nProject: ${d.get('project')}\nLink: ${d.get('link') || '-'}\n\n${d.get('message') || ''}`
+  );
+
+  wireMailtoForm('newsletterForm', 'newsletterNote', 'Newsletter signup', (d) =>
+    `Please subscribe: ${d.get('email')}`
+  );
+})();
+
+// Cookie consent banner
+(function () {
+  const banner = document.getElementById('cookieBanner');
+  if (!banner) return;
+  const KEY = 'vanneck-cookie-consent';
+  let saved;
+  try { saved = localStorage.getItem(KEY); } catch (e) { saved = null; }
+  if (!saved) banner.removeAttribute('hidden');
+
+  document.getElementById('cookieAccept')?.addEventListener('click', () => {
+    try { localStorage.setItem(KEY, 'accepted'); } catch (e) {}
+    banner.setAttribute('hidden', '');
+  });
+  document.getElementById('cookieDecline')?.addEventListener('click', () => {
+    try { localStorage.setItem(KEY, 'declined'); } catch (e) {}
+    banner.setAttribute('hidden', '');
+  });
+})();
+
 // Mobile nav
 const navToggle = document.getElementById('navToggle');
 const navSheet = document.getElementById('navSheet');
