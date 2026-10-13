@@ -15,238 +15,61 @@
 
 <header class="nav" id="nav">
   <a class="brand" href="#top" aria-label="Vanneck Capital — home">
-    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
-      <path d="M4 3 L15.5 27 L17.6 22.2 L8.3 3 Z" fill="currentColor"/>
-      <path d="M28 3 L17.6 22.2 L16.3 19.4 L22.9 3 Z" fill="currentColor"/>
-      <path d="M8.3 3 c-1.4-1.6-.4-3.4 1.6-2.7" stroke="currentColor" stroke-width="1.1" fill="none" stroke-linecap="round"/>
-      <path d="M22.9 3 c1.1-1.7 3-1.1 2.7.9" stroke="currentColor" stroke-width="1.1" fill="none" stroke-linecap="round"/>
-    </svg>
+    <img class="mark" src="./assets/img/mark-v.png" alt="" width="40" height="28">
     <span class="wordmark">VANNECK<small>CAPITAL</small></span>
   </a>
-  <nav class="nav-links" aria-label="Sections">
-    <a href="#what-we-do">What we do</a>
-    <a href="#track-record">Track record</a>
-    <a href="#process">How it works</a>
-    <a href="#terms">Terms</a>
+
+  <nav class="nav-pill" id="navPill" aria-label="Sections">
+    <a href="#problem">Problem</a>
+    <a href="#solution">Solution</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#team">Team</a>
+    <a href="#services">Services</a>
+    <a href="#faq">FAQ</a>
   </nav>
-  <a class="btn btn-primary nav-cta" href="#apply">Apply</a>
-  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+
+  <div class="socials" aria-label="Social links">
+    <a href="#" aria-label="X (Twitter)" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M3 3l7.5 9.6L3.4 21h2.3l6.2-7.1 5 7.1H21l-7.9-10 7-8h-2.3l-5.7 6.5L7.9 3H3zm3.4 1.7h2.1l9 12.6h-2.1L6.4 4.7z"/></svg>
+    </a>
+    <a href="#" aria-label="Telegram" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M21.5 4.5l-3 15.2c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8L17.6 7c.5-.4-.1-.6-.7-.3L8 12.1l-4.7-1.5c-1-.3-1-1 .2-1.5l18.3-7.1c.9-.3 1.6.2 1.7 1.5z"/></svg>
+    </a>
+    <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M6.9 8.4H3.6V20h3.3V8.4zM5.3 3.5a1.9 1.9 0 100 3.8 1.9 1.9 0 000-3.8zM20.9 20h-3.3v-6c0-1.4 0-3.3-2-3.3s-2.3 1.6-2.3 3.2V20H10V8.4h3.1v1.6h.1c.4-.8 1.5-1.7 3.1-1.7 3.3 0 3.9 2.2 3.9 5V20z"/></svg>
+    </a>
+  </div>
+
+  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </header>
 
 <div class="nav-sheet" id="navSheet" hidden>
-  <a href="#what-we-do">What we do</a>
-  <a href="#track-record">Track record</a>
-  <a href="#process">How it works</a>
-  <a href="#terms">Terms</a>
-  <a class="btn btn-primary" href="#apply">Apply</a>
+  <a href="#problem">Problem</a>
+  <a href="#solution">Solution</a>
+  <a href="#portfolio">Portfolio</a>
+  <a href="#team">Team</a>
+  <a href="#services">Services</a>
+  <a href="#faq">FAQ</a>
+  <div class="nav-sheet-socials">
+    <a href="#" aria-label="X (Twitter)" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M3 3l7.5 9.6L3.4 21h2.3l6.2-7.1 5 7.1H21l-7.9-10 7-8h-2.3l-5.7 6.5L7.9 3H3zm3.4 1.7h2.1l9 12.6h-2.1L6.4 4.7z"/></svg>
+    </a>
+    <a href="#" aria-label="Telegram" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M21.5 4.5l-3 15.2c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8L17.6 7c.5-.4-.1-.6-.7-.3L8 12.1l-4.7-1.5c-1-.3-1-1 .2-1.5l18.3-7.1c.9-.3 1.6.2 1.7 1.5z"/></svg>
+    </a>
+    <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M6.9 8.4H3.6V20h3.3V8.4zM5.3 3.5a1.9 1.9 0 100 3.8 1.9 1.9 0 000-3.8zM20.9 20h-3.3v-6c0-1.4 0-3.3-2-3.3s-2.3 1.6-2.3 3.2V20H10V8.4h3.1v1.6h.1c.4-.8 1.5-1.7 3.1-1.7 3.3 0 3.9 2.2 3.9 5V20z"/></svg>
+    </a>
+  </div>
 </div>
 
 <main>
-
-<section id="top" class="hero">
-  <div class="ornament ornament-hero" aria-hidden="true"></div>
-  <div class="wrap hero-wrap">
-    <p class="eyebrow">Direct investor · Web3, early stage</p>
-    <h1>We write the check.<br>Everything else comes with it.</h1>
-    <p class="lead">Vanneck Capital invests directly in early-stage Web3 teams, from $100K to $2M. Audits,
-      exchange introductions, market making, security review and warm intros are included with the
-      investment. We do not sell services separately.</p>
-    <div class="hero-actions">
-      <a class="btn btn-primary" href="#apply">Apply for funding</a>
-      <a class="btn btn-ghost" href="#process">See how it works</a>
-    </div>
-  </div>
-  <div class="wrap">
-    <dl class="stat-strip">
-      <div><dt>$550K</dt><dd>Average direct check</dd></div>
-      <div><dt>45 / 62</dt><dd>Equity / token investments</dd></div>
-      <div><dt>$285M</dt><dd>Raised across portfolio</dd></div>
-      <div><dt>91%</dt><dd>Success rate</dd></div>
-    </dl>
-  </div>
+<section id="top" class="stub">
+  <p>Hero — gzhel scroll animation, portfolio branches — built next.</p>
 </section>
-
-<section id="what-we-do" class="sec">
-  <div class="wrap">
-    <p class="eyebrow">What we do</p>
-    <h2>One check. Everything a project needs comes with it.</h2>
-    <p class="sec-lead">The investment is the foundation of the relationship. Every additional service below
-      is included at no extra cost and is never sold on its own.</p>
-    <div class="card-grid">
-      <article class="card">
-        <h3>Capital</h3>
-        <p>Direct checks from $100K to $2M. Form to term sheet in 14 days when the fit is clear, 3 to 6
-          weeks for a standard review. SAFE, SAFT, Token Warrant or hybrid instruments.</p>
-      </article>
-      <article class="card">
-        <h3>Listings &amp; exchanges</h3>
-        <p>Warm introductions to Tier 1 and Tier 2 centralized exchanges, plus concentrated-liquidity DEX
-          setup, at negotiated rates through our partner network.</p>
-      </article>
-      <article class="card">
-        <h3>Market making</h3>
-        <p>Introductions to market-making partners at preferred rates, across concentrated liquidity,
-          stable pools, protocol-owned liquidity and active LP management.</p>
-      </article>
-      <article class="card">
-        <h3>Distribution</h3>
-        <p>Go-to-market strategy, launch sequencing, KOL campaigns, PR and community growth, plus
-          introductions to ecosystem partners and integrations.</p>
-      </article>
-      <article class="card">
-        <h3>Advisory &amp; network</h3>
-        <p>Access to an advisory board across DeFi, regulation, exchange strategy and tokenomics, and warm
-          introductions to 40+ investors, family offices and portfolio founders.</p>
-      </article>
-      <article class="card">
-        <h3>Security</h3>
-        <p>Smart contract audits covered from $30K to $100K+, multi-sig setup, and a mandatory security
-          review before closing that protects both sides and stays with the team afterward.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section id="free-stage" class="sec sec-tint">
-  <div class="wrap wrap-narrow">
-    <p class="eyebrow">Before we invest</p>
-    <h2>The Free Stage</h2>
-    <p class="sec-lead">Delivered before any capital moves, at zero cost. Working with a project before
-      investing is how we de-risk the check, not a favour we do once and bill for later.</p>
-    <ul class="check-list">
-      <li>A go-to-market planning session</li>
-      <li>A marketing and distribution assessment</li>
-      <li>Market-making alignment, partner introduction included</li>
-      <li>A CEX listing introduction at letter-of-intent level</li>
-      <li>A tokenomics review</li>
-      <li>An advisory board introduction on domain-specific questions</li>
-      <li>A portfolio introduction, where an integration or partnership fits</li>
-    </ul>
-  </div>
-</section>
-
-<section id="track-record" class="sec sec-dark">
-  <div class="ornament ornament-dark" aria-hidden="true"></div>
-  <div class="wrap">
-    <p class="eyebrow">Track record</p>
-    <h2>One number set, everywhere.</h2>
-    <p class="sec-lead">If a figure here does not match what you hear on a call, tell us.</p>
-    <div class="stat-grid">
-      <div class="stat"><b>45</b><span>Equity investments</span></div>
-      <div class="stat"><b>62</b><span>Token investments</span></div>
-      <div class="stat"><b>$285M</b><span>Raised across portfolio</span></div>
-      <div class="stat"><b>91%</b><span>Success rate</span></div>
-      <div class="stat"><b>8.4x</b><span>Average ROI</span></div>
-      <div class="stat"><b>$127M</b><span>OTC volume facilitated</span></div>
-      <div class="stat"><b>3.7x</b><span>Average entry-to-TGE price</span></div>
-      <div class="stat"><b>19</b><span>Accelerator Fund deals, 100% raised follow-on within 12 months</span></div>
-    </div>
-  </div>
-</section>
-
-<section id="process" class="sec">
-  <div class="wrap">
-    <p class="eyebrow">How it works</p>
-    <h2>Five steps, no committee theatre.</h2>
-    <ol class="timeline">
-      <li><span class="n">01</span><div><h3>Apply</h3><p>One form, one step. No deck template, send what you have.</p></div></li>
-      <li><span class="n">02</span><div><h3>Intro call</h3><p>30 minutes, direct with the team, to see whether the check fits what you are building.</p></div></li>
-      <li><span class="n">03</span><div><h3>Data room</h3><p>Deck, financials, cap table, token model, legal structure, audit reports. Reviewed internally.</p></div></li>
-      <li><span class="n">04</span><div><h3>Term sheet</h3><p>A decision within 5 business days of a complete data room. A security review runs before closing.</p></div></li>
-      <li><span class="n">05</span><div><h3>Close</h3><p>Capital moves, operational support engages from day one.</p></div></li>
-    </ol>
-  </div>
-</section>
-
-<section id="fit" class="sec sec-tint">
-  <div class="wrap">
-    <p class="eyebrow">Who we invest in</p>
-    <h2>Early-stage Web3 teams, equity and token</h2>
-    <div class="chip-row">
-      <span>DeFi</span><span>Infrastructure</span><span>AI agents</span><span>RWA</span>
-      <span>Gaming</span><span>DePIN</span><span>Payments</span><span>Consumer</span>
-    </div>
-    <div class="range-row">
-      <div><b>$100K–$500K</b><span>Working range, direct</span></div>
-      <div><b>$750K</b><span>MENA average check</span></div>
-      <div><b>$500K</b><span>Asia average check</span></div>
-      <div><b>$2M</b><span>Maximum via SPV</span></div>
-    </div>
-  </div>
-</section>
-
-<section id="terms" class="sec">
-  <div class="wrap wrap-narrow">
-    <p class="eyebrow">Standard terms</p>
-    <h2>Precision instead of volume</h2>
-    <table class="terms-table">
-      <tbody>
-        <tr><th>Liquidation preference</th><td>1x non-participating</td></tr>
-        <tr><th>Anti-dilution</th><td>Broad-based weighted average</td></tr>
-        <tr><th>Pro-rata rights</th><td>Included</td></tr>
-        <tr><th>Founder vesting</th><td>4 years, 1-year cliff, full acceleration on change of control</td></tr>
-        <tr><th>Board / observer</th><td>Observer seat at 5% stake, director seat at 7%</td></tr>
-        <tr><th>Information rights</th><td>Quarterly financials, monthly KPI dashboard</td></tr>
-        <tr><th>Exclusivity</th><td>30 days post term sheet</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<section id="apply" class="sec sec-tint">
-  <div class="wrap wrap-narrow">
-    <p class="eyebrow">Apply</p>
-    <h2>Tell us what you are building</h2>
-    <p class="sec-lead">One form, one step. We reply within 2 business days.</p>
-    <form class="apply-form" id="applyForm" novalidate>
-      <div class="field">
-        <label for="project">Project name</label>
-        <input id="project" name="project" type="text" required>
-      </div>
-      <div class="field">
-        <label for="name">Your name</label>
-        <input id="name" name="name" type="text" required>
-      </div>
-      <div class="field">
-        <label for="contact">Email or Telegram</label>
-        <input id="contact" name="contact" type="text" required>
-      </div>
-      <div class="field">
-        <label for="link">Deck, site or repo link</label>
-        <input id="link" name="link" type="url" placeholder="https://" required>
-      </div>
-      <div class="field">
-        <label for="stage">Stage &amp; amount raising</label>
-        <select id="stage" name="stage" required>
-          <option value="">Select one</option>
-          <option>Pre-seed, under $250K</option>
-          <option>Seed, $250K–$1M</option>
-          <option>Seed+, $1M–$2M</option>
-          <option>Strategic round, $2M+</option>
-        </select>
-      </div>
-      <div class="field field-wide">
-        <label for="message">One or two lines on what you are building</label>
-        <textarea id="message" name="message" rows="3"></textarea>
-      </div>
-      <button class="btn btn-primary wide" type="submit">Send application</button>
-      <p class="form-note" id="formNote" role="status"></p>
-    </form>
-  </div>
-</section>
-
 </main>
-
-<footer class="site-footer">
-  <div class="wrap footer-wrap">
-    <div>
-      <span class="wordmark small">VANNECK<small>CAPITAL</small></span>
-      <p>Vanneck Capital Ltd · Company No. 16350228 (England and Wales)<br>
-         167-169 Great Portland Street, 5th Floor, London, W1W 5PF — registered office, not a place of business.</p>
-    </div>
-    <p class="disclaimer">This page does not constitute an offer or solicitation to invest. Figures above are Vanneck Capital's own, verified internally.</p>
-  </div>
-</footer>
 
 <script src="./script.js"></script>
 </body>
