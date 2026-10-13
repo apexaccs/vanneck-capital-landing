@@ -149,13 +149,20 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .sol-label b{display:block;font-family:var(--serif);font-weight:600;font-style:italic;color:var(--ink);
   font-size:15px;margin-bottom:5px}
 .sol-label span{display:block;font-size:11px;line-height:1.4;color:var(--ink-soft)}
+.sol-label-mobile{display:none}
 
 @media (max-width:860px){
   .solution-wrap{height:760vh}
-  .solution-head{padding-top:100px}
-  .sol-label{width:108px;top:38%}
-  .sol-label b{font-size:12.5px}
-  .sol-label span{font-size:9.5px}
+  .solution-head{padding-top:88px}
+  .solution-head h2{font-size:clamp(26px,7vw,36px)}
+  .solution-head .lead{font-size:13.5px;margin-bottom:0}
+  .solution-head .why{display:none}
+  .sol-label{display:none}
+  .sol-label-mobile{display:block;position:absolute;left:50%;bottom:7%;width:84%;
+    transform:translateX(-50%);text-align:center;opacity:0;transition:opacity .35s ease}
+  .sol-label-mobile b{display:block;font-family:var(--serif);font-weight:600;font-style:italic;
+    color:var(--ink);font-size:16px;margin-bottom:5px}
+  .sol-label-mobile span{display:block;font-size:12px;line-height:1.45;color:var(--ink-soft)}
 }
 
 /* ── shared section header, used by portfolio/team/services/faq ───────── */
@@ -248,8 +255,17 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .services-wrap{background:var(--white)}
 .services-grid{max-width:1180px;margin:0 auto;padding:0 var(--pad) 40px;
   display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
-.svc-card{background:var(--white);border-radius:6px;padding:26px 24px;position:relative;
-  box-shadow:0 1px 0 rgba(29,75,168,.08)}
+.svc-card{background:var(--white);border-radius:4px;padding:30px 26px 26px;position:relative;
+  overflow:hidden;border:1px solid rgba(29,75,168,.16);
+  box-shadow:inset 0 0 0 1px rgba(29,75,168,.05)}
+.svc-sprig{position:absolute;width:52px;height:auto;color:var(--cobalt);opacity:.15;
+  pointer-events:none;z-index:0}
+.svc-sprig use{fill:currentColor}
+.svc-sprig.tl{top:-10px;left:-16px}
+.svc-sprig.br{bottom:-10px;right:-16px;transform:scale(-1,-1)}
+.svc-card>*{position:relative;z-index:1}
+.svc-flourish{width:26px;height:10px;margin-bottom:10px;color:var(--blue-light)}
+.svc-flourish svg{width:100%;height:100%;display:block}
 .svc-num{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--blue-light)}
 .svc-card h3{font-family:var(--serif);font-weight:600;color:var(--cobalt);font-size:19px;margin:6px 0 12px}
 .svc-card ul{display:grid;gap:8px;font-size:13.5px;line-height:1.5;color:var(--ink-soft)}
@@ -290,7 +306,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .form-note{font-size:12px;color:var(--blue-mid);min-height:14px}
 
 /* ── footer ──────────────────────────────────────────────────────────── */
-.site-footer{background:var(--bg-deep);color:var(--white);padding:72px var(--pad) 0}
+.site-footer{position:relative;overflow:hidden;background:var(--bg-deep);color:var(--white);padding:72px var(--pad) 0}
 .footer-top{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;
   padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.14)}
 .site-footer .wordmark{color:var(--white)}
@@ -344,3 +360,66 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .port-count{margin-left:0;align-self:flex-start}
   .verify-row{flex-direction:column}
 }
+
+/* ── custom form controls, used everywhere a <select>/<input>/button appears ─ */
+.port-filters select,
+.apply-form input,
+.apply-form textarea,
+.newsletter-form input,
+.verify-row input{
+  appearance:none;-webkit-appearance:none;background:var(--white);
+  border:none;border-bottom:1.5px solid rgba(29,75,168,.3);border-radius:0;
+  padding:9px 4px 8px;font:400 14px var(--sans);color:var(--ink);
+  transition:border-color .25s var(--ease),box-shadow .25s var(--ease)}
+.port-filters select{
+  padding-right:22px;cursor:pointer;min-width:160px;
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2210%22%20height%3D%226%22%20viewBox%3D%220%200%2010%206%22%3E%3Cpath%20d%3D%22M1%201l4%204%204-4%22%20fill%3D%22none%22%20stroke%3D%22%231D4BA8%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat:no-repeat;background-position:right 2px center}
+.port-filters select:focus,
+.apply-form input:focus,
+.apply-form textarea:focus,
+.newsletter-form input:focus,
+.verify-row input:focus{
+  outline:none;border-bottom-color:var(--cobalt);box-shadow:0 1.5px 0 0 var(--cobalt)}
+.apply-form textarea{border:1.5px solid rgba(29,75,168,.3);border-radius:6px;padding:10px 12px}
+.apply-form textarea:focus{border-color:var(--cobalt);box-shadow:none}
+.newsletter-form input{border:1px solid rgba(255,255,255,.3);border-bottom:1px solid rgba(255,255,255,.3);
+  border-radius:5px;padding:9px 11px;background:rgba(255,255,255,.06);color:var(--white)}
+.newsletter-form input:focus{border-color:var(--blue-light);box-shadow:none}
+
+.apply-form button,
+.newsletter-form button,
+.verify-row button,
+.port-more,
+.cookie-btn{
+  position:relative;letter-spacing:.03em;transition:transform .25s var(--ease),background .25s var(--ease),
+    box-shadow .25s var(--ease)}
+.apply-form button:hover,
+.verify-row button:hover{transform:translateY(-1px);box-shadow:0 10px 20px -10px rgba(29,75,168,.5)}
+.port-more:hover{transform:translateY(-1px)}
+
+/* ── gzhel branch decor, scattered sitewide so flat sections don't read as
+   generic cards-on-a-page — low-opacity corner flourishes behind the
+   content, reusing the same traced motifs as the hero/problem/solution ── */
+.portfolio-wrap,.team-wrap,.faq-wrap{position:relative;overflow:hidden}
+.section-decor{position:absolute;width:150px;height:auto;opacity:.1;color:var(--cobalt);
+  pointer-events:none;z-index:0}
+.section-decor svg{width:100%;height:100%;display:block}
+.section-decor use{fill:currentColor}
+.section-decor.tl{top:10px;left:-20px}
+.section-decor.tr{top:10px;right:-20px;transform:scaleX(-1)}
+.section-decor.bl{bottom:10px;left:-20px;transform:scaleY(-1)}
+.section-decor.br{bottom:10px;right:-20px;transform:scale(-1,-1)}
+.section-head,.port-filters,.portfolio-grid,.port-more-wrap,
+.team-grid,.verify-box,.faq-layout{position:relative;z-index:1}
+.footer-decor{position:absolute;width:220px;height:auto;opacity:.14;color:var(--blue-light);
+  pointer-events:none;z-index:0;bottom:-20px;right:0}
+.footer-decor svg{width:100%;height:100%;display:block}
+.footer-decor use{fill:currentColor}
+.footer-top,.legal-block,.footer-bottom{position:relative;z-index:1}
+
+@media (max-width:860px){
+  .section-decor{width:86px}
+  .footer-decor{width:130px}
+}
+

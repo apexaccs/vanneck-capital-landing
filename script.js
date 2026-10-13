@@ -19,6 +19,9 @@
     const w = stage.clientWidth;
     const h = stage.clientHeight;
     svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    // on narrow viewports the motifs scale down a lot (width-limited), so
+    // anchoring flush to the bottom edge reads as "too low" — lift them
+    const mobileLift = w <= 860 ? h * 0.13 : 0;
 
     motifs.forEach((g) => {
       const corner = g.dataset.corner; // left | right
@@ -27,7 +30,7 @@
       const size = SIZE_BY_ROLE[role];
       const pxHeight = Math.min(h * size.h, w * size.w);
       const scale = pxHeight / naturalH;
-      const bottomAnchor = h - 6;
+      const bottomAnchor = h - 6 - mobileLift;
       const ty = bottomAnchor - pxHeight;
       const edgeOffset = w * 0.02;
       const centerOffset = w * CENTER_OFFSET_BY_ROLE[role];
@@ -65,12 +68,28 @@
     p.el.style.stroke = '#1D4BA8';
   });
 
-  // wilt groups: rotate 180deg around the motif's own center, sink down, darken
+  // wilt groups: the stem (.motif-wilt) shrinks toward its own base and
+  // flips 180deg, darkening, while a handful of petals (.motif-petals)
+  // detach from the bud near the top and fall away on their own path —
+  // a real tracing of individual petals breaking off isn't feasible from
+  // the traced motifs (each is one compound outline), so the falling
+  // petals reuse the small bud/petal shape already used for bullet markers
+  const PETAL_FALL = [
+    { fx: 0.38, fy: 0.04, scale: 6.0, rot: -12, dx: -46, dy: 230, spin: -150, delay: 0.0 },
+    { fx: 0.5, fy: 0.0, scale: 7.0, rot: 6, dx: 8, dy: 260, spin: 170, delay: 0.08 },
+    { fx: 0.62, fy: 0.045, scale: 6.0, rot: 18, dx: 52, dy: 235, spin: -130, delay: 0.14 },
+    { fx: 0.46, fy: 0.09, scale: 5.0, rot: -28, dx: -18, dy: 205, spin: 190, delay: 0.2 },
+  ];
   const wiltGroups = motifs.map((g) => {
     const wilt = g.querySelector('.motif-wilt');
+    const petals = Array.from(g.querySelectorAll('.motif-petals use'));
     const w = parseFloat(g.dataset.w);
     const h = parseFloat(g.dataset.h);
-    return { el: wilt, cx: w / 2, cy: h / 2, h };
+    petals.forEach((p) => {
+      p.style.fill = '#1B2A4A';
+      p.style.opacity = '0';
+    });
+    return { el: wilt, petals, cx: w / 2, cy: h / 2, bx: w / 2, by: h, w, h };
   });
 
   layout();
@@ -99,9 +118,11 @@
       p.el.style.fillOpacity = String(smoothstep(0.75, 1, local));
     });
 
-    // wilt phase: 0.56 -> 0.78, flowers droop (180deg) and darken,
-    // then the whole ornament layer fades out (0.80 -> 0.92) so the
-    // fixed fallen-petals overlay can take over without a visible seam
+    // wilt phase: 0.56 -> 0.78, the stem shrinks and flips 180deg around
+    // its own base (hinging at the root, not spinning in place) while
+    // darkening; its petals shed on their own staggered timing within the
+    // same window. Then the whole ornament layer fades out (0.80 -> 0.92)
+    // so the fixed fallen-petals overlay can take over without a seam.
     const wiltT = smoothstep(0.56, 0.78, progress);
     const color = lerpColor('#1D4BA8', '#1B2A4A', wiltT);
     paths.forEach((p) => {
@@ -109,11 +130,30 @@
       p.el.style.stroke = color;
     });
     wiltGroups.forEach((m) => {
-      const sink = wiltT * m.h * 0.3;
+      // flip the full shape 180deg around its own center first (stays fully
+      // visible, reads as the stem inverting) then shrink the already-
+      // flipped result toward its base/ground point (reads as collapsing) —
+      // kept modest so it still roughly matches the fallen-petals overlay's
+      // full-size motifs when that overlay fades in right after this (see
+      // the next module) and takes over the hand-off into the Problem section
+      const s = 1 - wiltT * 0.18;
+      const anchorX = m.bx * (1 - s);
+      const anchorY = m.by * (1 - s);
       m.el.setAttribute(
         'transform',
-        `translate(0,${sink}) rotate(${wiltT * 180},${m.cx},${m.cy})`
+        `translate(${anchorX},${anchorY}) scale(${s}) rotate(${wiltT * 180},${m.cx},${m.cy})`
       );
+
+      m.petals.forEach((p, i) => {
+        const cfg = PETAL_FALL[i];
+        const pLocal = Math.max(0, Math.min(1, (wiltT - cfg.delay) / (1 - cfg.delay)));
+        const px = cfg.fx * m.w + cfg.dx * pLocal;
+        const py = cfg.fy * m.h + cfg.dy * pLocal;
+        const prot = cfg.rot + cfg.spin * pLocal;
+        p.setAttribute('transform', `translate(${px},${py}) rotate(${prot}) scale(${cfg.scale})`);
+        const pOpacity = smoothstep(0, 0.15, pLocal) * (1 - smoothstep(0.7, 1, pLocal));
+        p.style.opacity = String(pOpacity);
+      });
     });
     svg.style.opacity = String(1 - smoothstep(0.8, 0.92, progress));
 
@@ -175,7 +215,8 @@
       const pxHeight = Math.min(h * size.h, w * size.w);
       const scale = pxHeight / naturalH;
       const bottomAnchor = h - 6;
-      const ty = bottomAnchor - pxHeight;
+      const ty = bottomAnchor - pxHeight; // hand-off position, matches the hero's own anchor
+      const tyMiddle = (h - pxHeight) / 2; // where it settles on screen 2: vertical middle, not the bottom
       const edgeOffset = w * 0.02;
       const centerOffset = w * CENTER_OFFSET_BY_ROLE[role];
       let tx, sx;
@@ -186,7 +227,7 @@
         tx = w + edgeOffset - centerOffset;
         sx = -scale;
       }
-      return { el: g, tx, ty, sx, scale, h: naturalH * scale };
+      return { el: g, tx, ty, tyMiddle, sx, scale, h: naturalH * scale };
     });
 
     const heroRect = heroWrap.getBoundingClientRect();
@@ -217,11 +258,12 @@
     const fadeOut = smoothstep(0.6, 1, fall);
     overlay.style.opacity = String(fadeIn * (1 - fadeOut));
 
-    // settle near the plate's level, then hold still while fading
-    // (does not keep sinking past the plate)
-    const settle = smoothstep(0, 0.4, fall) * window.innerHeight * 0.12;
+    // rise from the hand-off (bottom) position to the vertical middle of
+    // screen 2, then hold there while fading — not sinking further down
+    const settleT = smoothstep(0, 0.45, fall);
     bounds.forEach((m) => {
-      m.el.setAttribute('transform', `translate(${m.tx},${m.ty + settle}) scale(${m.sx},${m.scale})`);
+      const ty = m.ty + (m.tyMiddle - m.ty) * settleT;
+      m.el.setAttribute('transform', `translate(${m.tx},${ty}) scale(${m.sx},${m.scale})`);
     });
   }
   function onScroll() {
@@ -319,6 +361,18 @@
   const svg = document.querySelector('.solution-svg');
   const head = document.querySelector('.solution-head');
   const labels = Array.from(document.querySelectorAll('.sol-label'));
+  const mobileLabel = document.querySelector('.sol-label-mobile');
+  const mobileLabelParts = mobileLabel
+    ? { b: mobileLabel.querySelector('b'), span: mobileLabel.querySelector('span') }
+    : null;
+  // mobile has no room for 8 side-by-side labels (they overlap at any
+  // viewport under ~500px), so a single bottom slot swaps its text as the
+  // active stem changes instead
+  const labelText = labels.map((l) => ({
+    title: l.querySelector('b').textContent,
+    body: l.querySelector('span').textContent,
+  }));
+  let lastMobileIndex = -1;
   if (!wrap || !svg) return;
 
   const stemEls = Array.from(svg.querySelectorAll('.sol-stem'));
@@ -390,14 +444,38 @@
     const scrolled = -wrap.getBoundingClientRect().top;
     const progress = scrollable > 0 ? Math.min(1, Math.max(0, scrolled / scrollable)) : 0;
 
+    const isMobile = window.innerWidth <= 860;
+
     if (head) {
-      const t = smoothstep(0, 0.07, progress);
+      const tIn = smoothstep(0, 0.07, progress);
+      const tOut = isMobile ? smoothstep(0.09, 0.16, progress) : 0;
+      const t = tIn * (1 - tOut);
       head.style.opacity = String(t);
-      head.style.transform = `translateY(${(1 - t) * 14}px)`;
+      head.style.transform = `translateY(${(1 - tIn) * 14 - tOut * 10}px)`;
     }
 
     const bodyStart = 0.1;
     const segment = (1 - bodyStart) / n;
+
+    if (mobileLabel) {
+      const activeIndex = Math.min(n - 1, Math.max(0, Math.floor((progress - bodyStart) / segment)));
+      if (progress >= bodyStart) {
+        if (activeIndex !== lastMobileIndex && labelText[activeIndex]) {
+          mobileLabelParts.b.textContent = labelText[activeIndex].title;
+          mobileLabelParts.span.textContent = labelText[activeIndex].body;
+          lastMobileIndex = activeIndex;
+        }
+        const segLocal = smoothstep(
+          bodyStart + activeIndex * segment,
+          bodyStart + activeIndex * segment + segment,
+          progress
+        );
+        mobileLabel.style.opacity = String(smoothstep(0.15, 0.4, segLocal));
+      } else {
+        mobileLabel.style.opacity = '0';
+        lastMobileIndex = -1;
+      }
+    }
 
     stems.forEach((s, i) => {
       const start = bodyStart + i * segment;
