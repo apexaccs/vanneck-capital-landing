@@ -45,7 +45,11 @@
   }
 
   const paths = Array.from(svg.querySelectorAll('.draw-path')).map((el) => {
-    const len = el.getTotalLength();
+    // el is a <use>; it has no geometry of its own, so measure the
+    // referenced <defs> path instead (same length for every instance)
+    const refId = el.getAttribute('href').slice(1);
+    const refPath = document.querySelector(`#${refId} path`);
+    const len = refPath.getTotalLength();
     return {
       el,
       len,
@@ -210,12 +214,14 @@
     const fall = span > 0 ? Math.min(1, Math.max(0, (window.scrollY - fallStart) / span)) : 0;
 
     const fadeIn = smoothstep(0, 0.1, fall);
-    const fadeOut = smoothstep(0.82, 1, fall);
+    const fadeOut = smoothstep(0.6, 1, fall);
     overlay.style.opacity = String(fadeIn * (1 - fadeOut));
 
+    // settle near the plate's level, then hold still while fading
+    // (does not keep sinking past the plate)
+    const settle = smoothstep(0, 0.4, fall) * window.innerHeight * 0.12;
     bounds.forEach((m) => {
-      const extraSink = fall * window.innerHeight * 0.65;
-      m.el.setAttribute('transform', `translate(${m.tx},${m.ty + extraSink}) scale(${m.sx},${m.scale})`);
+      m.el.setAttribute('transform', `translate(${m.tx},${m.ty + settle}) scale(${m.sx},${m.scale})`);
     });
   }
   function onScroll() {
@@ -232,24 +238,32 @@
   update();
 })();
 
-// Plate: 3D tilt that follows the cursor
+// Plate: a real dish sits tilted back on a stand; it tilts further
+// toward the cursor like a coin being turned over
 (function () {
   const wrap = document.querySelector('.plate-3d');
   const plate = document.querySelector('.plate');
   if (!wrap || !plate) return;
 
+  const REST_X = 14;
+
+  function setTilt(rotateX, rotateY) {
+    plate.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  }
+  setTilt(REST_X, 0);
+
   wrap.addEventListener('pointermove', (e) => {
     const rect = wrap.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5..0.5
     const y = (e.clientY - rect.top) / rect.height - 0.5;
-    const rotateY = x * 36;
-    const rotateX = -y * 26;
+    const rotateY = x * 34;
+    const rotateX = REST_X - y * 22;
     plate.style.transition = 'transform 0.1s linear';
-    plate.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    setTilt(rotateX, rotateY);
   });
   wrap.addEventListener('pointerleave', () => {
-    plate.style.transition = 'transform .6s cubic-bezier(.22,1,.36,1)';
-    plate.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    plate.style.transition = 'transform .7s cubic-bezier(.22,1,.36,1)';
+    setTilt(REST_X, 0);
   });
 })();
 
@@ -259,15 +273,18 @@
   const slides = Array.from(document.querySelectorAll('.problem-slide'));
   if (!wrap || !slides.length) return;
 
-  function smoothstep(a, b, x) {
-    const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
-    return t * t * (3 - 2 * t);
-  }
-
   const n = slides.length;
-  const margin = 0.035;
-  const bounds = Array.from({ length: n + 1 }, (_, i) => i / n);
+  // The swap is driven by a CSS transition (wall-clock time), not by
+  // interpolating opacity against scroll position. A scroll-interpolated
+  // crossfade can be caught, by a static screenshot or a scroll that
+  // stops mid-transition, showing two slides visibly overlapping — a
+  // CSS transition always finishes to exactly one slide at opacity 1,
+  // however the scroll stops.
+  slides.forEach((el) => {
+    el.style.transition = 'opacity .35s ease, transform .35s ease';
+  });
 
+  let activeIdx = -1;
   let ticking = false;
   function update() {
     ticking = false;
@@ -275,16 +292,13 @@
     const scrolled = -wrap.getBoundingClientRect().top;
     const progress = scrollable > 0 ? Math.min(1, Math.max(0, scrolled / scrollable)) : 0;
 
+    const idx = Math.min(n - 1, Math.floor(progress * n));
+    if (idx === activeIdx) return;
+    activeIdx = idx;
     slides.forEach((el, i) => {
-      const inStart = i === 0 ? -1 : bounds[i] - margin;
-      const inEnd = bounds[i] + margin;
-      const outStart = bounds[i + 1] - margin;
-      const outEnd = i === n - 1 ? 2 : bounds[i + 1] + margin;
-      const fadeIn = smoothstep(inStart, inEnd, progress);
-      const fadeOut = smoothstep(outStart, outEnd, progress);
-      const opacity = fadeIn * (1 - fadeOut);
-      el.style.opacity = String(opacity);
-      el.style.transform = `translateY(${(1 - fadeIn) * 16}px)`;
+      const active = i === activeIdx;
+      el.style.opacity = active ? '1' : '0';
+      el.style.transform = active ? 'translateY(0)' : 'translateY(10px)';
     });
   }
   function onScroll() {
