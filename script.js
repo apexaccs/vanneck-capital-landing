@@ -8,6 +8,13 @@
   const motifs = Array.from(svg.querySelectorAll('.motif'));
   const stage = document.querySelector('.hero-stage');
 
+  const SIZE_BY_ROLE = {
+    main: { h: 0.46, w: 0.5 },
+    secondary: { h: 0.24, w: 0.26 },
+    tertiary: { h: 0.17, w: 0.19 },
+  };
+  const CENTER_OFFSET_BY_ROLE = { main: 0, secondary: 0.16, tertiary: 0.3 };
+
   function layout() {
     const w = stage.clientWidth;
     const h = stage.clientHeight;
@@ -15,17 +22,15 @@
 
     motifs.forEach((g) => {
       const corner = g.dataset.corner; // left | right
-      const role = g.dataset.role; // main | secondary
+      const role = g.dataset.role; // main | secondary | tertiary
       const naturalH = parseFloat(g.dataset.h);
-      const pxHeight =
-        role === 'main'
-          ? Math.min(h * 0.46, w * 0.5)
-          : Math.min(h * 0.24, w * 0.26);
+      const size = SIZE_BY_ROLE[role];
+      const pxHeight = Math.min(h * size.h, w * size.w);
       const scale = pxHeight / naturalH;
       const bottomAnchor = h - 6;
       const ty = bottomAnchor - pxHeight;
       const edgeOffset = w * 0.02;
-      const centerOffset = role === 'main' ? 0 : w * 0.16;
+      const centerOffset = w * CENTER_OFFSET_BY_ROLE[role];
 
       let tx, sx;
       if (corner === 'left') {
@@ -52,6 +57,16 @@
     p.el.style.strokeDasharray = String(p.len);
     p.el.style.strokeDashoffset = String(p.len);
     p.el.style.fillOpacity = '0';
+    p.el.style.fill = '#1D4BA8';
+    p.el.style.stroke = '#1D4BA8';
+  });
+
+  // wilt groups: rotate 180deg around the motif's own center, sink down, darken
+  const wiltGroups = motifs.map((g) => {
+    const wilt = g.querySelector('.motif-wilt');
+    const w = parseFloat(g.dataset.w);
+    const h = parseFloat(g.dataset.h);
+    return { el: wilt, cx: w / 2, cy: h / 2, h };
   });
 
   layout();
@@ -59,6 +74,12 @@
   function smoothstep(a, b, x) {
     const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
     return t * t * (3 - 2 * t);
+  }
+  function lerpColor(hexA, hexB, t) {
+    const a = [1, 3, 5].map((i) => parseInt(hexA.slice(i, i + 2), 16));
+    const b = [1, 3, 5].map((i) => parseInt(hexB.slice(i, i + 2), 16));
+    const c = a.map((v, i) => Math.round(v + (b[i] - v) * t));
+    return `rgb(${c[0]},${c[1]},${c[2]})`;
   }
 
   let ticking = false;
@@ -74,10 +95,27 @@
       p.el.style.fillOpacity = String(smoothstep(0.75, 1, local));
     });
 
+    // wilt phase: 0.56 -> 0.88, flowers droop (180deg) and darken
+    const wiltT = smoothstep(0.56, 0.88, progress);
+    const color = lerpColor('#1D4BA8', '#1B2A4A', wiltT);
+    paths.forEach((p) => {
+      p.el.style.fill = color;
+      p.el.style.stroke = color;
+    });
+    wiltGroups.forEach((m) => {
+      const sink = wiltT * m.h * 0.3;
+      m.el.setAttribute(
+        'transform',
+        `translate(0,${sink}) rotate(${wiltT * 180},${m.cx},${m.cy})`
+      );
+    });
+
     if (text) {
-      const t = smoothstep(0.74, 1, progress);
+      const tIn = smoothstep(0.3, 0.4, progress);
+      const tOut = smoothstep(0.56, 0.64, progress);
+      const t = tIn * (1 - tOut);
       text.style.opacity = String(t);
-      text.style.transform = `translateY(${(1 - t) * 18}px)`;
+      text.style.transform = `translateY(${(1 - tIn) * 18 - tOut * 14}px)`;
     }
   }
   function onScroll() {
@@ -91,6 +129,51 @@
     layout();
     onScroll();
   });
+  update();
+})();
+
+// Problem: gzhel plate with scroll-cycled slides
+(function () {
+  const wrap = document.querySelector('.problem-wrap');
+  const slides = Array.from(document.querySelectorAll('.problem-slide'));
+  if (!wrap || !slides.length) return;
+
+  function smoothstep(a, b, x) {
+    const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+    return t * t * (3 - 2 * t);
+  }
+
+  const n = slides.length;
+  const margin = 0.035;
+  const bounds = Array.from({ length: n + 1 }, (_, i) => i / n);
+
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const scrollable = wrap.offsetHeight - window.innerHeight;
+    const scrolled = -wrap.getBoundingClientRect().top;
+    const progress = scrollable > 0 ? Math.min(1, Math.max(0, scrolled / scrollable)) : 0;
+
+    slides.forEach((el, i) => {
+      const inStart = i === 0 ? -1 : bounds[i] - margin;
+      const inEnd = bounds[i] + margin;
+      const outStart = bounds[i + 1] - margin;
+      const outEnd = i === n - 1 ? 2 : bounds[i + 1] + margin;
+      const fadeIn = smoothstep(inStart, inEnd, progress);
+      const fadeOut = smoothstep(outStart, outEnd, progress);
+      const opacity = fadeIn * (1 - fadeOut);
+      el.style.opacity = String(opacity);
+      el.style.transform = `translateY(${(1 - fadeIn) * 16}px)`;
+    });
+  }
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
   update();
 })();
 
