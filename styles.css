@@ -127,3 +127,31 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .problem-slide li{padding-left:16px}
   .problem-slide li::before{width:11px;height:15px}
 }
+
+/* ── solution: petals fire back up, bigger, one stem per scroll tick ────── */
+.solution-wrap{position:relative;height:620vh;background:var(--white)}
+.solution-stage{position:sticky;top:0;height:100vh;overflow:hidden}
+.solution-head{position:relative;z-index:2;max-width:640px;margin:0 auto;padding:88px 24px 0;
+  text-align:center;opacity:0;transform:translateY(14px)}
+.solution-head .eyebrow{font:600 11.5px var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--blue-mid)}
+.solution-head h2{font-family:var(--serif);font-weight:600;color:var(--cobalt);
+  font-size:clamp(26px,4vw,46px);line-height:1.18;margin:10px 0 14px}
+.solution-head .lead{font-size:16px;color:var(--ink-soft);line-height:1.55;margin-bottom:8px}
+.solution-head .why{font-size:14px;color:var(--ink-soft);opacity:.85;max-width:52ch;margin:0 auto}
+.solution-svg{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+.sol-draw{stroke-width:2.4;fill-opacity:0;stroke-linejoin:round;stroke-linecap:round;
+  vector-effect:non-scaling-stroke;fill:#1B2A4A;stroke:#1B2A4A}
+.solution-labels{position:absolute;inset:0;z-index:2;pointer-events:none}
+.sol-label{position:absolute;top:42%;width:150px;transform:translate(-50%,10px);text-align:center;
+  opacity:0;transition:opacity .4s ease,transform .4s ease}
+.sol-label b{display:block;font-family:var(--serif);font-weight:600;font-style:italic;color:var(--ink);
+  font-size:15px;margin-bottom:5px}
+.sol-label span{display:block;font-size:11px;line-height:1.4;color:var(--ink-soft)}
+
+@media (max-width:860px){
+  .solution-wrap{height:760vh}
+  .solution-head{padding-top:100px}
+  .sol-label{width:108px;top:38%}
+  .sol-label b{font-size:12.5px}
+  .sol-label span{font-size:9.5px}
+}

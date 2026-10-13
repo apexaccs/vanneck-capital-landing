@@ -312,6 +312,149 @@
   update();
 })();
 
+// Solution: petals catch fire, bloom bigger than the hero, one stem per
+// scroll segment, each carrying a value-prop label
+(function () {
+  const wrap = document.querySelector('.solution-wrap');
+  const svg = document.querySelector('.solution-svg');
+  const head = document.querySelector('.solution-head');
+  const labels = Array.from(document.querySelectorAll('.sol-label'));
+  if (!wrap || !svg) return;
+
+  const stemEls = Array.from(svg.querySelectorAll('.sol-stem'));
+  const n = stemEls.length;
+
+  function smoothstep(a, b, x) {
+    const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+    return t * t * (3 - 2 * t);
+  }
+  function lerpColor(hexA, hexB, t) {
+    const a = [1, 3, 5].map((i) => parseInt(hexA.slice(i, i + 2), 16));
+    const b = [1, 3, 5].map((i) => parseInt(hexB.slice(i, i + 2), 16));
+    const c = a.map((v, i) => Math.round(v + (b[i] - v) * t));
+    return `rgb(${c[0]},${c[1]},${c[2]})`;
+  }
+
+  // getBBox() on a <defs> path that is never rendered ignores its
+  // ancestor transform and returns raw pre-scale potrace coordinates, not
+  // the viewBox-matched size — so the natural size is given explicitly
+  // here (same numbers used when the motifs were traced and generated).
+  const NATURAL_SIZE = {
+    tulip: { w: 402, h: 642 },
+    leaf: { w: 366, h: 660 },
+    swirl: { w: 384, h: 642 },
+  };
+
+  const stems = stemEls.map((g) => {
+    const bloom = g.querySelector('.sol-bloom');
+    const use = g.querySelector('.sol-draw');
+    const refId = use.getAttribute('href').slice(1);
+    const refPath = document.querySelector(`#${refId} path`);
+    const len = refPath.getTotalLength();
+    const size = NATURAL_SIZE[g.dataset.shape];
+    return {
+      g,
+      bloom,
+      use,
+      len,
+      x: parseFloat(g.dataset.x),
+      mirror: g.dataset.mirror === '1',
+      naturalW: size.w,
+      naturalH: size.h,
+    };
+  });
+
+  function layout() {
+    const w = wrap.querySelector('.solution-stage').clientWidth;
+    const h = wrap.querySelector('.solution-stage').clientHeight;
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+    stems.forEach((s) => {
+      const pxHeight = Math.min(h * 0.46, w * 0.22);
+      const scale = pxHeight / s.naturalH;
+      const cx = (s.x / 100) * w;
+      const bottomAnchor = h - 4;
+      const ty = bottomAnchor - pxHeight;
+      const tx = cx - (s.naturalW * scale) / 2;
+      const sx = s.mirror ? -scale : scale;
+      const txAdj = s.mirror ? cx + (s.naturalW * scale) / 2 : tx;
+      s.g.setAttribute('transform', `translate(${txAdj},${ty}) scale(${sx},${scale})`);
+    });
+  }
+  layout();
+
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const scrollable = wrap.offsetHeight - window.innerHeight;
+    const scrolled = -wrap.getBoundingClientRect().top;
+    const progress = scrollable > 0 ? Math.min(1, Math.max(0, scrolled / scrollable)) : 0;
+
+    if (head) {
+      const t = smoothstep(0, 0.07, progress);
+      head.style.opacity = String(t);
+      head.style.transform = `translateY(${(1 - t) * 14}px)`;
+    }
+
+    const bodyStart = 0.1;
+    const segment = (1 - bodyStart) / n;
+
+    stems.forEach((s, i) => {
+      const start = bodyStart + i * segment;
+      const end = start + segment;
+      const local = smoothstep(start, end, progress);
+
+      // draw the outline (unfired, dark)
+      const drawT = smoothstep(0, 0.4, local);
+      s.use.style.strokeDasharray = String(s.len);
+      s.use.style.strokeDashoffset = String(s.len * (1 - drawT));
+
+      // fire: dark -> amber glow -> vivid cobalt, with a small bloom overshoot
+      const fireT = smoothstep(0.35, 0.65, local);
+      const settleT = smoothstep(0.55, 0.9, local);
+      let color;
+      if (fireT < 1) {
+        color = lerpColor('#1B2A4A', '#D8A657', fireT);
+      } else {
+        color = lerpColor('#D8A657', '#1D4BA8', settleT);
+      }
+      s.use.style.fill = color;
+      s.use.style.stroke = color;
+      s.use.style.fillOpacity = String(smoothstep(0.3, 0.6, local));
+
+      // scale from the stem's own base (bottom-center), so it grows
+      // upward/outward rather than jumping away from its planted spot
+      const bloomT =
+        0.92 + smoothstep(0.6, 0.85, local) * 0.1 - smoothstep(0.85, 1, local) * 0.02;
+      const cx = s.naturalW / 2;
+      const cy = s.naturalH;
+      s.bloom.setAttribute(
+        'transform',
+        `translate(${cx * (1 - bloomT)},${cy * (1 - bloomT)}) scale(${bloomT})`
+      );
+
+      const label = labels[i];
+      if (label) {
+        const lt = smoothstep(0.78, 1, local);
+        label.style.opacity = String(lt);
+        label.style.transform = `translate(-50%, ${(1 - lt) * 10}px)`;
+      }
+    });
+  }
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', () => {
+    layout();
+    onScroll();
+  });
+  update();
+})();
+
 // Mobile nav
 const navToggle = document.getElementById('navToggle');
 const navSheet = document.getElementById('navSheet');
