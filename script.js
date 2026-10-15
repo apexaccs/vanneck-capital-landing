@@ -3,6 +3,7 @@
   const wrap = document.querySelector('.hero-wrap');
   const svg = document.querySelector('.gzhel-svg');
   const text = document.querySelector('.hero-text');
+  const scrollHint = document.querySelector('.scroll-hint');
   if (!wrap || !svg) return;
 
   const motifs = Array.from(svg.querySelectorAll('.motif'));
@@ -163,6 +164,9 @@
       const t = tIn * (1 - tOut);
       text.style.opacity = String(t);
       text.style.transform = `translateY(${(1 - tIn) * 18 - tOut * 14}px)`;
+    }
+    if (scrollHint) {
+      scrollHint.style.opacity = String(1 - smoothstep(0.01, 0.05, progress));
     }
   }
   function onScroll() {
