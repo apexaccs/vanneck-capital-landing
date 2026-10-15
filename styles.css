@@ -66,10 +66,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hero-wrap{position:relative;height:340vh}
 .hero-stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--white);
   display:flex;align-items:center;justify-content:center}
-.gzhel-svg{position:absolute;inset:0;width:100%;height:100%}
-.draw-path{stroke-width:2.4;fill-opacity:0;
-  stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
-.motif-wilt{transform-box:fill-box}
 .hero-text{position:relative;z-index:1;text-align:center;padding:0 24px;opacity:0}
 .hero-text h1{font-family:var(--serif);font-weight:600;color:var(--cobalt);
   font-size:clamp(32px,5.6vw,72px);line-height:1.2;max-width:28ch;margin:0 auto}
@@ -84,6 +80,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   50%{transform:translateY(7px)}
 }
 
+/* ── hero flowers: painted gzhel frames, crossfaded by scroll ───────────── */
+.flower-field{position:absolute;inset:0;z-index:0}
+.flower-slot{position:absolute;top:0;left:0;width:200px}
+.f-frame{position:absolute;top:0;left:0;width:100%;height:auto;display:block;opacity:0}
+.f-petal{position:absolute;top:0;left:0;width:60px;height:auto;opacity:0;pointer-events:none}
+
 @media (max-width:860px){
   .hero-wrap{height:300vh}
   .scroll-hint{bottom:24px}
@@ -91,9 +93,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* ── falling petals: fixed overlay, bridges hero → problem, above everything ── */
 .fallen-overlay{position:fixed;inset:0;z-index:40;pointer-events:none;opacity:0}
-.fallen-svg{position:absolute;inset:0;width:100%;height:100%}
-.fallen-svg use{stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke;
-  fill:#1B2A4A;stroke:#1B2A4A}
+.fallen-motif{position:absolute;top:0;left:0;width:200px;height:auto;display:block}
 
 /* ── problem: gzhel plate with cycling text ──────────────────────────────── */
 .problem-wrap{position:relative;height:480vh}

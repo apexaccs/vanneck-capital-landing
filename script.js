@@ -1,13 +1,15 @@
-// Hero: scroll-driven gzhel ornament draw
+// Hero: scroll-driven, painted-gzhel flowers (real frames the user supplied
+// — a 9-step growth→wilt flipbook per flower, crossfaded by scroll — plus
+// real cut petal images that detach and fall during the wilt window).
 (function () {
   const wrap = document.querySelector('.hero-wrap');
-  const svg = document.querySelector('.gzhel-svg');
+  const field = document.querySelector('.flower-field');
   const text = document.querySelector('.hero-text');
   const scrollHint = document.querySelector('.scroll-hint');
-  if (!wrap || !svg) return;
+  if (!wrap || !field) return;
 
-  const motifs = Array.from(svg.querySelectorAll('.motif'));
   const stage = document.querySelector('.hero-stage');
+  const slotEls = Array.from(field.querySelectorAll('.flower-slot'));
 
   const SIZE_BY_ROLE = {
     main: { h: 0.46, w: 0.5 },
@@ -16,94 +18,79 @@
   };
   const CENTER_OFFSET_BY_ROLE = { main: 0, secondary: 0.16, tertiary: 0.3 };
 
+  // every frame shares the same 2700x2048 canvas, with the stem base
+  // pinned to the identical pixel in every frame (confirmed on the source
+  // art) — so each slot can be positioned/scaled once and the 9 frames
+  // simply crossfade on top of each other, no per-frame repositioning
+  const NATURAL_W = 2700;
+  const NATURAL_H = 2048;
+  const STEM_FX = { left: 1987 / NATURAL_W, right: 1 - 1987 / NATURAL_W };
+
+  // growth (1-5) → wilt (6-7) → bends over (8-9), as scroll progress
+  // breakpoints; frame 5 (full bloom) holds until wilt begins at 0.56,
+  // frame 9 (drooping) holds from 0.77 until the whole layer fades 0.8-0.92
+  const FRAME_POINTS = [0, 0.05, 0.11, 0.18, 0.26, 0.56, 0.63, 0.7, 0.77];
+  const STAGGER = [0, 0.015, 0.03, 0.045, 0.06, 0.075];
+
+  // falling petals: position/travel as fractions of the slot's own box, so
+  // they scale with it; dx mirrors for right-side slots below
+  const PETAL_FALL = [
+    { fx: 0.4, fy: 0.08, wf: 0.24, rot: -12, dx: -0.22, dy: 0.5, spin: -150, delay: 0.0 },
+    { fx: 0.52, fy: 0.03, wf: 0.26, rot: 6, dx: 0.04, dy: 0.56, spin: 170, delay: 0.08 },
+    { fx: 0.64, fy: 0.1, wf: 0.23, rot: 18, dx: 0.26, dy: 0.5, spin: -130, delay: 0.14 },
+    { fx: 0.48, fy: 0.16, wf: 0.2, rot: -28, dx: -0.08, dy: 0.44, spin: 190, delay: 0.2 },
+  ];
+
+  const slots = slotEls.map((el, i) => ({
+    el,
+    corner: el.dataset.corner,
+    role: el.dataset.role,
+    frames: Array.from(el.querySelectorAll('.f-frame')),
+    petals: Array.from(el.querySelectorAll('.f-petal')),
+    stagger: STAGGER[i] || 0,
+  }));
+
   function layout() {
     const w = stage.clientWidth;
     const h = stage.clientHeight;
-    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-    // on narrow viewports the motifs scale down a lot (width-limited), so
+    // on narrow viewports the flowers scale down a lot (width-limited), so
     // anchoring flush to the bottom edge reads as "too low" — lift them
     const mobileLift = w <= 860 ? h * 0.13 : 0;
+    const bottomAnchor = h - 6 - mobileLift;
 
-    motifs.forEach((g) => {
-      const corner = g.dataset.corner; // left | right
-      const role = g.dataset.role; // main | secondary | tertiary
-      const naturalH = parseFloat(g.dataset.h);
-      const size = SIZE_BY_ROLE[role];
+    slots.forEach((s) => {
+      const size = SIZE_BY_ROLE[s.role];
       const pxHeight = Math.min(h * size.h, w * size.w);
-      const scale = pxHeight / naturalH;
-      const bottomAnchor = h - 6 - mobileLift;
-      const ty = bottomAnchor - pxHeight;
+      const pxWidth = (pxHeight / NATURAL_H) * NATURAL_W;
       const edgeOffset = w * 0.02;
-      const centerOffset = w * CENTER_OFFSET_BY_ROLE[role];
+      const centerOffset = w * CENTER_OFFSET_BY_ROLE[s.role];
+      const stemFx = STEM_FX[s.corner];
+      const targetX =
+        s.corner === 'left' ? edgeOffset + centerOffset : w - edgeOffset - centerOffset;
+      const left = targetX - stemFx * pxWidth;
+      const top = bottomAnchor - pxHeight;
 
-      let tx, sx;
-      if (corner === 'left') {
-        tx = -edgeOffset + centerOffset;
-        sx = scale;
-      } else {
-        tx = w + edgeOffset - centerOffset;
-        sx = -scale;
-      }
-      g.setAttribute('transform', `translate(${tx},${ty}) scale(${sx},${scale})`);
+      s.el.style.width = `${pxWidth}px`;
+      s.el.style.left = `${left}px`;
+      s.el.style.top = `${top}px`;
+      s.petalWidth = pxWidth * 0.22;
+      s.petals.forEach((p) => {
+        p.style.width = `${s.petalWidth}px`;
+      });
     });
   }
-
-  const paths = Array.from(svg.querySelectorAll('.draw-path')).map((el) => {
-    // el is a <use>; it has no geometry of its own, so measure the
-    // referenced <defs> path instead (same length for every instance)
-    const refId = el.getAttribute('href').slice(1);
-    const refPath = document.querySelector(`#${refId} path`);
-    const len = refPath.getTotalLength();
-    return {
-      el,
-      len,
-      start: parseFloat(el.dataset.start),
-      end: parseFloat(el.dataset.end),
-    };
-  });
-  paths.forEach((p) => {
-    p.el.style.strokeDasharray = String(p.len);
-    p.el.style.strokeDashoffset = String(p.len);
-    p.el.style.fillOpacity = '0';
-    p.el.style.fill = '#1D4BA8';
-    p.el.style.stroke = '#1D4BA8';
-  });
-
-  // wilt groups: the stem (.motif-wilt) shrinks toward its own base and
-  // flips 180deg, darkening, while a handful of petals (.motif-petals)
-  // detach from the bud near the top and fall away on their own path —
-  // a real tracing of individual petals breaking off isn't feasible from
-  // the traced motifs (each is one compound outline), so the falling
-  // petals reuse the small bud/petal shape already used for bullet markers
-  const PETAL_FALL = [
-    { fx: 0.38, fy: 0.04, scale: 6.0, rot: -12, dx: -46, dy: 230, spin: -150, delay: 0.0 },
-    { fx: 0.5, fy: 0.0, scale: 7.0, rot: 6, dx: 8, dy: 260, spin: 170, delay: 0.08 },
-    { fx: 0.62, fy: 0.045, scale: 6.0, rot: 18, dx: 52, dy: 235, spin: -130, delay: 0.14 },
-    { fx: 0.46, fy: 0.09, scale: 5.0, rot: -28, dx: -18, dy: 205, spin: 190, delay: 0.2 },
-  ];
-  const wiltGroups = motifs.map((g) => {
-    const wilt = g.querySelector('.motif-wilt');
-    const petals = Array.from(g.querySelectorAll('.motif-petals use'));
-    const w = parseFloat(g.dataset.w);
-    const h = parseFloat(g.dataset.h);
-    petals.forEach((p) => {
-      p.style.fill = '#1B2A4A';
-      p.style.opacity = '0';
-    });
-    return { el: wilt, petals, cx: w / 2, cy: h / 2, bx: w / 2, by: h, w, h };
-  });
-
   layout();
 
   function smoothstep(a, b, x) {
     const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
     return t * t * (3 - 2 * t);
   }
-  function lerpColor(hexA, hexB, t) {
-    const a = [1, 3, 5].map((i) => parseInt(hexA.slice(i, i + 2), 16));
-    const b = [1, 3, 5].map((i) => parseInt(hexB.slice(i, i + 2), 16));
-    const c = a.map((v, i) => Math.round(v + (b[i] - v) * t));
-    return `rgb(${c[0]},${c[1]},${c[2]})`;
+  function frameOpacity(idx, progress, points) {
+    const cur = points[idx];
+    const fadeIn = idx > 0 ? smoothstep(points[idx - 1], cur, progress) : 1;
+    const fadeOut =
+      idx < points.length - 1 ? 1 - smoothstep(cur, points[idx + 1], progress) : 1;
+    return Math.min(fadeIn, fadeOut);
   }
 
   let ticking = false;
@@ -113,50 +100,30 @@
     const scrolled = -wrap.getBoundingClientRect().top;
     const progress = scrollable > 0 ? Math.min(1, Math.max(0, scrolled / scrollable)) : 1;
 
-    paths.forEach((p) => {
-      const local = smoothstep(p.start, p.end, progress);
-      p.el.style.strokeDashoffset = String(p.len * (1 - local));
-      p.el.style.fillOpacity = String(smoothstep(0.75, 1, local));
-    });
+    slots.forEach((s) => {
+      const points = FRAME_POINTS.map((p) => Math.min(0.97, p + s.stagger));
+      s.frames.forEach((frame, i) => {
+        frame.style.opacity = String(frameOpacity(i, progress, points));
+      });
 
-    // wilt phase: 0.56 -> 0.78, the stem shrinks and flips 180deg around
-    // its own base (hinging at the root, not spinning in place) while
-    // darkening; its petals shed on their own staggered timing within the
-    // same window. Then the whole ornament layer fades out (0.80 -> 0.92)
-    // so the fixed fallen-petals overlay can take over without a seam.
-    const wiltT = smoothstep(0.56, 0.78, progress);
-    const color = lerpColor('#1D4BA8', '#1B2A4A', wiltT);
-    paths.forEach((p) => {
-      p.el.style.fill = color;
-      p.el.style.stroke = color;
-    });
-    wiltGroups.forEach((m) => {
-      // flip the full shape 180deg around its own center first (stays fully
-      // visible, reads as the stem inverting) then shrink the already-
-      // flipped result toward its base/ground point (reads as collapsing) —
-      // kept modest so it still roughly matches the fallen-petals overlay's
-      // full-size motifs when that overlay fades in right after this (see
-      // the next module) and takes over the hand-off into the Problem section
-      const s = 1 - wiltT * 0.18;
-      const anchorX = m.bx * (1 - s);
-      const anchorY = m.by * (1 - s);
-      m.el.setAttribute(
-        'transform',
-        `translate(${anchorX},${anchorY}) scale(${s}) rotate(${wiltT * 180},${m.cx},${m.cy})`
-      );
-
-      m.petals.forEach((p, i) => {
+      // petals shed during the same wilt window as frames 6-9
+      const wiltT = smoothstep(points[4], points[8], progress);
+      const mirror = s.corner === 'right' ? -1 : 1;
+      s.petals.forEach((p, i) => {
         const cfg = PETAL_FALL[i];
         const pLocal = Math.max(0, Math.min(1, (wiltT - cfg.delay) / (1 - cfg.delay)));
-        const px = cfg.fx * m.w + cfg.dx * pLocal;
-        const py = cfg.fy * m.h + cfg.dy * pLocal;
-        const prot = cfg.rot + cfg.spin * pLocal;
-        p.setAttribute('transform', `translate(${px},${py}) rotate(${prot}) scale(${cfg.scale})`);
+        const baseX = cfg.fx * parseFloat(s.el.style.width) - s.petalWidth / 2;
+        const baseY = cfg.fy * (parseFloat(s.el.style.width) * (NATURAL_H / NATURAL_W));
+        const dxPx = cfg.dx * mirror * parseFloat(s.el.style.width) * pLocal;
+        const dyPx = cfg.dy * parseFloat(s.el.style.width) * pLocal;
+        const rot = (cfg.rot * mirror) + cfg.spin * pLocal;
+        p.style.transform = `translate(${baseX + dxPx}px,${baseY + dyPx}px) rotate(${rot}deg)`;
         const pOpacity = smoothstep(0, 0.15, pLocal) * (1 - smoothstep(0.7, 1, pLocal));
         p.style.opacity = String(pOpacity);
       });
     });
-    svg.style.opacity = String(1 - smoothstep(0.8, 0.92, progress));
+
+    field.style.opacity = String(1 - smoothstep(0.8, 0.92, progress));
 
     if (text) {
       const tIn = smoothstep(0.3, 0.4, progress);
@@ -183,17 +150,16 @@
   update();
 })();
 
-// Fallen petals: fixed overlay that carries the wilted motifs from the
+// Fallen petals: fixed overlay that carries the drooping flowers from the
 // end of the hero across the seam into the top of the Problem section,
 // always above both sections' own backgrounds, continuing to sink.
 (function () {
   const heroWrap = document.querySelector('.hero-wrap');
   const problemWrap = document.querySelector('.problem-wrap');
   const overlay = document.querySelector('.fallen-overlay');
-  const svg = document.querySelector('.fallen-svg');
-  if (!heroWrap || !problemWrap || !overlay || !svg) return;
+  if (!heroWrap || !problemWrap || !overlay) return;
 
-  const motifs = Array.from(svg.querySelectorAll('.fallen-motif'));
+  const motifs = Array.from(overlay.querySelectorAll('.fallen-motif'));
 
   const SIZE_BY_ROLE = {
     main: { h: 0.46, w: 0.5 },
@@ -201,6 +167,9 @@
     tertiary: { h: 0.17, w: 0.19 },
   };
   const CENTER_OFFSET_BY_ROLE = { main: 0, secondary: 0.16, tertiary: 0.3 };
+  const NATURAL_W = 2700;
+  const NATURAL_H = 2048;
+  const STEM_FX = { left: 1987 / NATURAL_W, right: 1 - 1987 / NATURAL_W };
 
   let bounds = []; // base placement per motif, computed on layout()
   let fallStart = 0;
@@ -209,29 +178,22 @@
   function layout() {
     const w = window.innerWidth;
     const h = window.innerHeight;
-    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
 
-    bounds = motifs.map((g) => {
-      const corner = g.dataset.corner;
-      const role = g.dataset.role;
-      const naturalH = parseFloat(g.dataset.h);
+    bounds = motifs.map((el) => {
+      const corner = el.dataset.corner;
+      const role = el.dataset.role;
       const size = SIZE_BY_ROLE[role];
       const pxHeight = Math.min(h * size.h, w * size.w);
-      const scale = pxHeight / naturalH;
-      const bottomAnchor = h - 6;
-      const ty = bottomAnchor - pxHeight; // hand-off position, matches the hero's own anchor
-      const tyMiddle = (h - pxHeight) / 2; // where it settles on screen 2: vertical middle, not the bottom
+      const pxWidth = (pxHeight / NATURAL_H) * NATURAL_W;
       const edgeOffset = w * 0.02;
       const centerOffset = w * CENTER_OFFSET_BY_ROLE[role];
-      let tx, sx;
-      if (corner === 'left') {
-        tx = -edgeOffset + centerOffset;
-        sx = scale;
-      } else {
-        tx = w + edgeOffset - centerOffset;
-        sx = -scale;
-      }
-      return { el: g, tx, ty, tyMiddle, sx, scale, h: naturalH * scale };
+      const stemFx = STEM_FX[corner];
+      const targetX = corner === 'left' ? edgeOffset + centerOffset : w - edgeOffset - centerOffset;
+      const left = targetX - stemFx * pxWidth;
+      const bottomAnchor = h - 6;
+      const top = bottomAnchor - pxHeight; // hand-off position, matches the hero's own anchor
+      const topMiddle = (h - pxHeight) / 2; // where it settles on screen 2: vertical middle, not the bottom
+      return { el, left, width: pxWidth, top, topMiddle };
     });
 
     const heroRect = heroWrap.getBoundingClientRect();
@@ -266,8 +228,10 @@
     // screen 2, then hold there while fading — not sinking further down
     const settleT = smoothstep(0, 0.45, fall);
     bounds.forEach((m) => {
-      const ty = m.ty + (m.tyMiddle - m.ty) * settleT;
-      m.el.setAttribute('transform', `translate(${m.tx},${ty}) scale(${m.sx},${m.scale})`);
+      const top = m.top + (m.topMiddle - m.top) * settleT;
+      m.el.style.left = `${m.left}px`;
+      m.el.style.top = `${top}px`;
+      m.el.style.width = `${m.width}px`;
     });
   }
   function onScroll() {
