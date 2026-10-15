@@ -98,12 +98,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* ── problem: gzhel plate with cycling text ──────────────────────────────── */
 .problem-wrap{position:relative;height:480vh}
 .problem-stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--white);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,3vh,28px);
-  padding-top:80px;box-sizing:border-box}
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:clamp(14px,3vh,28px);
+  padding-top:112px;box-sizing:border-box}
 .problem-heading{position:relative;text-align:center;z-index:2;flex:none;
   font-family:var(--serif);font-weight:600;font-style:italic;letter-spacing:.01em;
   font-size:clamp(28px,4vw,44px);color:var(--ink)}
-.plate-3d{position:relative;flex:none;width:min(86vw,78vh,780px);height:min(86vw,78vh,780px);perspective:1700px}
+.plate-3d{position:relative;flex:none;width:min(94vw,calc(86vh - 100px),960px);height:min(94vw,calc(86vh - 100px),960px);perspective:1700px}
 .plate{position:relative;width:100%;height:100%;transform-style:preserve-3d;
   display:flex;align-items:center;justify-content:center}
 .plate-photo{position:absolute;inset:3%;width:94%;height:94%;border-radius:50%;
@@ -114,27 +114,25 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .problem-slide{position:absolute;inset:0;display:flex;flex-direction:column;
   align-items:center;justify-content:center;text-align:center;opacity:0;padding:0 6px}
 .p-eyebrow{position:relative;display:inline-flex;align-items:center;gap:8px;
-  font:600 11.5px var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--blue-mid)}
-.p-eyebrow::before,.p-eyebrow::after{content:"";width:14px;height:1px;background:var(--blue-light)}
-.p-flourish{width:26px;height:10px;margin:8px auto;color:var(--blue-light)}
-.p-flourish svg{width:100%;height:100%;display:block}
+  font:600 10.5px var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--blue-mid)}
 .problem-slide h3{font-family:var(--serif);font-weight:600;font-style:italic;color:var(--ink);
-  font-size:clamp(19px,2.6vw,28px);line-height:1.26;margin:2px 0 14px}
-.problem-slide ul{display:grid;gap:9px;text-align:left;font-size:14px;line-height:1.5;color:var(--ink-soft)}
-.problem-slide li{position:relative;padding-left:20px}
-.problem-slide li::before{content:"";position:absolute;left:0;top:1px;width:14px;height:19px;
+  font-size:clamp(16px,2.1vw,22px);line-height:1.26;margin:4px 0 12px}
+.problem-slide ul{display:grid;gap:8px;text-align:left;font-size:12px;line-height:1.45;
+  color:var(--ink-soft);list-style:none}
+.problem-slide li{position:relative;padding-left:18px}
+.problem-slide li::before{content:"";position:absolute;left:0;top:1px;width:12px;height:16px;
   background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2219%22%20viewBox%3D%220%200%2014%2019%22%3E%0A%3Cpath%20d%3D%22M7%201c4.2%200%206.3%207.3%204.1%2012.4-1.1%202.3-4.4%202.3-5.5%200C3.4%2010.3%203.3%201%207%201z%22%20fill%3D%22%231D4BA8%22%2F%3E%0A%3C%2Fsvg%3E") center/contain no-repeat}
 
 @media (max-width:860px){
   .problem-wrap{height:460vh}
-  .plate-3d{width:min(92vw,74vh,520px);height:min(92vw,74vh,520px)}
+  .problem-stage{justify-content:center;padding-top:96px}
+  .plate-3d{width:min(94vw,calc(80vh - 70px),620px);height:min(94vw,calc(80vh - 70px),620px)}
   .plate-inner{width:56%}
-  .p-eyebrow{font-size:9.5px}
-  .p-flourish{width:20px;height:8px;margin:6px auto}
-  .problem-slide h3{font-size:clamp(14.5px,4vw,19px);margin:2px 0 9px}
-  .problem-slide ul{font-size:11px;line-height:1.42;gap:6px}
-  .problem-slide li{padding-left:16px}
-  .problem-slide li::before{width:11px;height:15px}
+  .p-eyebrow{font-size:9px}
+  .problem-slide h3{font-size:clamp(13px,3.4vw,16px);margin:3px 0 8px}
+  .problem-slide ul{font-size:10px;line-height:1.4;gap:5px}
+  .problem-slide li{padding-left:15px}
+  .problem-slide li::before{width:10px;height:14px}
 }
 
 /* ── solution: petals fire back up, bigger, one stem per scroll tick ────── */
