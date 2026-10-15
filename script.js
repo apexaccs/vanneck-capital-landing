@@ -12,9 +12,9 @@
   const slotEls = Array.from(field.querySelectorAll('.flower-slot'));
 
   const SIZE_BY_ROLE = {
-    main: { h: 0.46, w: 0.5 },
-    secondary: { h: 0.24, w: 0.26 },
-    tertiary: { h: 0.17, w: 0.19 },
+    main: { h: 0.58, w: 0.62 },
+    secondary: { h: 0.3, w: 0.33 },
+    tertiary: { h: 0.22, w: 0.24 },
   };
   const CENTER_OFFSET_BY_ROLE = { main: 0, secondary: 0.16, tertiary: 0.3 };
 
@@ -85,11 +85,20 @@
     const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
     return t * t * (3 - 2 * t);
   }
+  // each frame holds fully opaque for most of its window and only
+  // crossfades into the next during a short slice near the breakpoint —
+  // reads as a sequence of held poses snapping forward, not one long blur
+  const SWAP_FRAC = 0.4;
   function frameOpacity(idx, progress, points) {
     const cur = points[idx];
-    const fadeIn = idx > 0 ? smoothstep(points[idx - 1], cur, progress) : 1;
+    const fadeIn =
+      idx > 0
+        ? smoothstep(cur - (cur - points[idx - 1]) * SWAP_FRAC, cur, progress)
+        : 1;
     const fadeOut =
-      idx < points.length - 1 ? 1 - smoothstep(cur, points[idx + 1], progress) : 1;
+      idx < points.length - 1
+        ? 1 - smoothstep(cur, cur + (points[idx + 1] - cur) * SWAP_FRAC, progress)
+        : 1;
     return Math.min(fadeIn, fadeOut);
   }
 
@@ -162,9 +171,9 @@
   const motifs = Array.from(overlay.querySelectorAll('.fallen-motif'));
 
   const SIZE_BY_ROLE = {
-    main: { h: 0.46, w: 0.5 },
-    secondary: { h: 0.24, w: 0.26 },
-    tertiary: { h: 0.17, w: 0.19 },
+    main: { h: 0.58, w: 0.62 },
+    secondary: { h: 0.3, w: 0.33 },
+    tertiary: { h: 0.22, w: 0.24 },
   };
   const CENTER_OFFSET_BY_ROLE = { main: 0, secondary: 0.16, tertiary: 0.3 };
   const NATURAL_W = 2700;
