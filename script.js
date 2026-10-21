@@ -1,5 +1,5 @@
 // Hero: scroll-driven, painted-gzhel flowers (real frames the user supplied
-// — a 9-step growth→wilt flipbook per flower, crossfaded by scroll — plus
+// - a 9-step growth→wilt flipbook per flower, crossfaded by scroll - plus
 // real cut petal images that detach and fall during the wilt window).
 (function () {
   const wrap = document.querySelector('.hero-wrap');
@@ -20,16 +20,18 @@
 
   // every frame shares the same 2700x2048 canvas, with the stem base
   // pinned to the identical pixel in every frame (confirmed on the source
-  // art) — so each slot can be positioned/scaled once and the 9 frames
+  // art) - so each slot can be positioned/scaled once and the 9 frames
   // simply crossfade on top of each other, no per-frame repositioning
   const NATURAL_W = 2700;
   const NATURAL_H = 2048;
   const STEM_FX = { left: 1987 / NATURAL_W, right: 1 - 1987 / NATURAL_W };
 
   // growth (1-5) → wilt (6-7) → bends over (8-9), as scroll progress
-  // breakpoints; frame 5 (full bloom) holds until wilt begins at 0.56,
-  // frame 9 (drooping) holds from 0.77 until the whole layer fades 0.8-0.92
-  const FRAME_POINTS = [0, 0.05, 0.11, 0.18, 0.26, 0.56, 0.63, 0.7, 0.77];
+  // breakpoints; growth is spread wider than before so each crossfade has
+  // more scroll distance to blend across and reads as continuous motion
+  // rather than a quick snap; frame 5 (full bloom) holds until wilt begins
+  // at 0.6, frame 9 (drooping) holds from 0.8 until the layer fades 0.8-0.92
+  const FRAME_POINTS = [0, 0.07, 0.16, 0.26, 0.38, 0.6, 0.67, 0.74, 0.8];
   const STAGGER = [0, 0.015, 0.03, 0.045, 0.06, 0.075];
 
   // falling petals: position/travel as fractions of the slot's own box, so
@@ -54,7 +56,7 @@
     const w = stage.clientWidth;
     const h = stage.clientHeight;
     // on narrow viewports the flowers scale down a lot (width-limited), so
-    // anchoring flush to the bottom edge reads as "too low" — lift them
+    // anchoring flush to the bottom edge reads as "too low" - lift them
     const mobileLift = w <= 860 ? h * 0.13 : 0;
     const bottomAnchor = h - 6 - mobileLift;
 
@@ -62,7 +64,10 @@
       const size = SIZE_BY_ROLE[s.role];
       const pxHeight = Math.min(h * size.h, w * size.w);
       const pxWidth = (pxHeight / NATURAL_H) * NATURAL_W;
-      const edgeOffset = w * 0.02;
+      // scales with the flower's own rendered width, so bigger flowers
+      // (bumped up this round) keep their head clear of the viewport edge
+      // instead of being sliced in half by it
+      const edgeOffset = Math.max(w * 0.015, pxWidth * 0.17);
       const centerOffset = w * CENTER_OFFSET_BY_ROLE[s.role];
       const stemFx = STEM_FX[s.corner];
       const targetX =
@@ -85,20 +90,11 @@
     const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
     return t * t * (3 - 2 * t);
   }
-  // each frame holds fully opaque for most of its window and only
-  // crossfades into the next during a short slice near the breakpoint —
-  // reads as a sequence of held poses snapping forward, not one long blur
-  const SWAP_FRAC = 0.4;
   function frameOpacity(idx, progress, points) {
     const cur = points[idx];
-    const fadeIn =
-      idx > 0
-        ? smoothstep(cur - (cur - points[idx - 1]) * SWAP_FRAC, cur, progress)
-        : 1;
+    const fadeIn = idx > 0 ? smoothstep(points[idx - 1], cur, progress) : 1;
     const fadeOut =
-      idx < points.length - 1
-        ? 1 - smoothstep(cur, cur + (points[idx + 1] - cur) * SWAP_FRAC, progress)
-        : 1;
+      idx < points.length - 1 ? 1 - smoothstep(cur, points[idx + 1], progress) : 1;
     return Math.min(fadeIn, fadeOut);
   }
 
@@ -194,7 +190,7 @@
       const size = SIZE_BY_ROLE[role];
       const pxHeight = Math.min(h * size.h, w * size.w);
       const pxWidth = (pxHeight / NATURAL_H) * NATURAL_W;
-      const edgeOffset = w * 0.02;
+      const edgeOffset = Math.max(w * 0.015, pxWidth * 0.17);
       const centerOffset = w * CENTER_OFFSET_BY_ROLE[role];
       const stemFx = STEM_FX[corner];
       const targetX = corner === 'left' ? edgeOffset + centerOffset : w - edgeOffset - centerOffset;
@@ -234,7 +230,7 @@
     overlay.style.opacity = String(fadeIn * (1 - fadeOut));
 
     // rise from the hand-off (bottom) position to the vertical middle of
-    // screen 2, then hold there while fading — not sinking further down
+    // screen 2, then hold there while fading - not sinking further down
     const settleT = smoothstep(0, 0.45, fall);
     bounds.forEach((m) => {
       const top = m.top + (m.topMiddle - m.top) * settleT;
@@ -296,7 +292,7 @@
   // The swap is driven by a CSS transition (wall-clock time), not by
   // interpolating opacity against scroll position. A scroll-interpolated
   // crossfade can be caught, by a static screenshot or a scroll that
-  // stops mid-transition, showing two slides visibly overlapping — a
+  // stops mid-transition, showing two slides visibly overlapping - a
   // CSS transition always finishes to exactly one slide at opacity 1,
   // however the scroll stops.
   slides.forEach((el) => {
@@ -331,170 +327,58 @@
   update();
 })();
 
-// Solution: petals catch fire, bloom bigger than the hero, one stem per
-// scroll segment, each carrying a value-prop label
+// Solution: a gzhel vine winds down the section in normal document flow
+// (no sticky pin, so it works the same on phone, tablet and desktop) - the
+// stem draws itself in as it scrolls through the viewport, while each
+// value-prop block fades in on its own via the shared reveal observer below.
 (function () {
-  const wrap = document.querySelector('.solution-wrap');
-  const svg = document.querySelector('.solution-svg');
-  const head = document.querySelector('.solution-head');
-  const labels = Array.from(document.querySelectorAll('.sol-label'));
-  const mobileLabel = document.querySelector('.sol-label-mobile');
-  const mobileLabelParts = mobileLabel
-    ? { b: mobileLabel.querySelector('b'), span: mobileLabel.querySelector('span') }
-    : null;
-  // mobile has no room for 8 side-by-side labels (they overlap at any
-  // viewport under ~500px), so a single bottom slot swaps its text as the
-  // active stem changes instead
-  const labelText = labels.map((l) => ({
-    title: l.querySelector('b').textContent,
-    body: l.querySelector('span').textContent,
-  }));
-  let lastMobileIndex = -1;
-  if (!wrap || !svg) return;
-
-  const stemEls = Array.from(svg.querySelectorAll('.sol-stem'));
-  const n = stemEls.length;
+  const vineWrap = document.getElementById('vineWrap');
+  const svg = vineWrap ? vineWrap.querySelector('.vine-svg') : null;
+  const path = svg ? svg.querySelector('.vine-path') : null;
+  if (!vineWrap || !svg || !path) return;
 
   function smoothstep(a, b, x) {
     const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
     return t * t * (3 - 2 * t);
   }
-  function lerpColor(hexA, hexB, t) {
-    const a = [1, 3, 5].map((i) => parseInt(hexA.slice(i, i + 2), 16));
-    const b = [1, 3, 5].map((i) => parseInt(hexB.slice(i, i + 2), 16));
-    const c = a.map((v, i) => Math.round(v + (b[i] - v) * t));
-    return `rgb(${c[0]},${c[1]},${c[2]})`;
-  }
 
-  // getBBox() on a <defs> path that is never rendered ignores its
-  // ancestor transform and returns raw pre-scale potrace coordinates, not
-  // the viewBox-matched size — so the natural size is given explicitly
-  // here (same numbers used when the motifs were traced and generated).
-  const NATURAL_SIZE = {
-    tulip: { w: 402, h: 642 },
-    leaf: { w: 366, h: 660 },
-    swirl: { w: 384, h: 642 },
-  };
-
-  const stems = stemEls.map((g) => {
-    const bloom = g.querySelector('.sol-bloom');
-    const use = g.querySelector('.sol-draw');
-    const refId = use.getAttribute('href').slice(1);
-    const refPath = document.querySelector(`#${refId} path`);
-    const len = refPath.getTotalLength();
-    const size = NATURAL_SIZE[g.dataset.shape];
-    return {
-      g,
-      bloom,
-      use,
-      len,
-      x: parseFloat(g.dataset.x),
-      mirror: g.dataset.mirror === '1',
-      naturalW: size.w,
-      naturalH: size.h,
-    };
-  });
+  let pathLen = 0;
 
   function layout() {
-    const w = wrap.querySelector('.solution-stage').clientWidth;
-    const h = wrap.querySelector('.solution-stage').clientHeight;
+    const w = vineWrap.clientWidth;
+    const h = vineWrap.scrollHeight;
     svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    svg.setAttribute('width', w);
+    svg.setAttribute('height', h);
 
-    stems.forEach((s) => {
-      const pxHeight = Math.min(h * 0.46, w * 0.22);
-      const scale = pxHeight / s.naturalH;
-      const cx = (s.x / 100) * w;
-      const bottomAnchor = h - 4;
-      const ty = bottomAnchor - pxHeight;
-      const tx = cx - (s.naturalW * scale) / 2;
-      const sx = s.mirror ? -scale : scale;
-      const txAdj = s.mirror ? cx + (s.naturalW * scale) / 2 : tx;
-      s.g.setAttribute('transform', `translate(${txAdj},${ty}) scale(${sx},${scale})`);
-    });
+    // a gentle serpentine weaving behind the alternating left/right blocks -
+    // purely decorative, so an approximated sine path is enough
+    const steps = 160;
+    const amp = w * 0.24;
+    const cx = w / 2;
+    let d = '';
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const y = t * h;
+      const x = cx + Math.sin(t * Math.PI * 3.4) * amp;
+      d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+    }
+    path.setAttribute('d', d);
+    pathLen = path.getTotalLength();
+    path.style.strokeDasharray = String(pathLen);
   }
   layout();
 
   let ticking = false;
   function update() {
     ticking = false;
-    const scrollable = wrap.offsetHeight - window.innerHeight;
-    const scrolled = -wrap.getBoundingClientRect().top;
-    const progress = scrollable > 0 ? Math.min(1, Math.max(0, scrolled / scrollable)) : 0;
-
-    const isMobile = window.innerWidth <= 860;
-
-    if (head) {
-      const tIn = smoothstep(0, 0.07, progress);
-      const tOut = isMobile ? smoothstep(0.09, 0.16, progress) : 0;
-      const t = tIn * (1 - tOut);
-      head.style.opacity = String(t);
-      head.style.transform = `translateY(${(1 - tIn) * 14 - tOut * 10}px)`;
-    }
-
-    const bodyStart = 0.1;
-    const segment = (1 - bodyStart) / n;
-
-    if (mobileLabel) {
-      const activeIndex = Math.min(n - 1, Math.max(0, Math.floor((progress - bodyStart) / segment)));
-      if (progress >= bodyStart) {
-        if (activeIndex !== lastMobileIndex && labelText[activeIndex]) {
-          mobileLabelParts.b.textContent = labelText[activeIndex].title;
-          mobileLabelParts.span.textContent = labelText[activeIndex].body;
-          lastMobileIndex = activeIndex;
-        }
-        const segLocal = smoothstep(
-          bodyStart + activeIndex * segment,
-          bodyStart + activeIndex * segment + segment,
-          progress
-        );
-        mobileLabel.style.opacity = String(smoothstep(0.15, 0.4, segLocal));
-      } else {
-        mobileLabel.style.opacity = '0';
-        lastMobileIndex = -1;
-      }
-    }
-
-    stems.forEach((s, i) => {
-      const start = bodyStart + i * segment;
-      const end = start + segment;
-      const local = smoothstep(start, end, progress);
-
-      // draw the outline (unfired, dark)
-      const drawT = smoothstep(0, 0.4, local);
-      s.use.style.strokeDasharray = String(s.len);
-      s.use.style.strokeDashoffset = String(s.len * (1 - drawT));
-
-      // fire: dark -> amber glow -> vivid cobalt, with a small bloom overshoot
-      const fireT = smoothstep(0.35, 0.65, local);
-      const settleT = smoothstep(0.55, 0.9, local);
-      let color;
-      if (fireT < 1) {
-        color = lerpColor('#1B2A4A', '#D8A657', fireT);
-      } else {
-        color = lerpColor('#D8A657', '#1D4BA8', settleT);
-      }
-      s.use.style.fill = color;
-      s.use.style.stroke = color;
-      s.use.style.fillOpacity = String(smoothstep(0.3, 0.6, local));
-
-      // scale from the stem's own base (bottom-center), so it grows
-      // upward/outward rather than jumping away from its planted spot
-      const bloomT =
-        0.92 + smoothstep(0.6, 0.85, local) * 0.1 - smoothstep(0.85, 1, local) * 0.02;
-      const cx = s.naturalW / 2;
-      const cy = s.naturalH;
-      s.bloom.setAttribute(
-        'transform',
-        `translate(${cx * (1 - bloomT)},${cy * (1 - bloomT)}) scale(${bloomT})`
-      );
-
-      const label = labels[i];
-      if (label) {
-        const lt = smoothstep(0.78, 1, local);
-        label.style.opacity = String(lt);
-        label.style.transform = `translate(-50%, ${(1 - lt) * 10}px)`;
-      }
-    });
+    const rect = vineWrap.getBoundingClientRect();
+    const vh = window.innerHeight;
+    // 0 as the vine's top enters the bottom of the viewport, 1 once its
+    // bottom has scrolled up past the top - a plain "reveal while in view"
+    // mapping, no sticky pin required
+    const progress = smoothstep(vh * 0.85, -rect.height * 0.15, rect.top);
+    path.style.strokeDashoffset = String(pathLen * (1 - progress));
   }
   function onScroll() {
     if (!ticking) {
@@ -508,6 +392,49 @@
     onScroll();
   });
   update();
+})();
+
+// Reveal-on-scroll: shared IntersectionObserver utility. Cards/blocks that
+// used to just pop into existence (portfolio, team, services, FAQ, verify,
+// the free-diligence block, solution vine text) now fade/rise in once they
+// actually enter the viewport, staggered a little within their own grid.
+(function () {
+  const autoFade = document.querySelectorAll('.port-card, .svc-card');
+  const autoRise = document.querySelectorAll('.team-card, .faq-item, .verify-box, .free-stage');
+  autoFade.forEach((el) => el.classList.add('reveal-fade'));
+  autoRise.forEach((el) => el.classList.add('reveal'));
+
+  const targets = Array.from(document.querySelectorAll('.reveal, .reveal-fade'));
+  if (!targets.length) return;
+
+  if (!('IntersectionObserver' in window)) {
+    targets.forEach((el) => el.classList.add('is-visible'));
+    return;
+  }
+
+  // small stagger per sibling index so a row of cards cascades in rather
+  // than all snapping to visible on the same frame
+  const groups = new Map();
+  targets.forEach((el) => {
+    const parent = el.parentElement;
+    const siblingIndex = parent ? Array.from(parent.children).indexOf(el) : 0;
+    groups.set(el, Math.min(siblingIndex, 6));
+  });
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const delay = (groups.get(el) || 0) * 70;
+        el.style.transitionDelay = `${delay}ms`;
+        el.classList.add('is-visible');
+        io.unobserve(el);
+      });
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -8% 0px' }
+  );
+  targets.forEach((el) => io.observe(el));
 })();
 
 // Apply form + newsletter: no backend yet, so both fall back to opening a
@@ -525,7 +452,7 @@
       const body = buildBody(data);
       const subject = encodeURIComponent(`${subjectPrefix}: ${data.get('project') || data.get('email') || ''}`);
       window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${encodeURIComponent(body)}`;
-      if (note) note.textContent = 'Opening your email client to send this — we reply within a few days.';
+      if (note) note.textContent = 'Opening your email client to send this - we reply within a few days.';
       form.reset();
     });
   }
@@ -598,7 +525,7 @@
   render();
 })();
 
-// Team: verification widget — confirms a handle/email against known team contacts
+// Team: verification widget - confirms a handle/email against known team contacts
 (function () {
   const box = document.querySelector('.verify-box');
   if (!box) return;
@@ -647,7 +574,7 @@
     if (found) {
       result.innerHTML = `<div class="verify-card">
         <img src="${found.photo}" alt="${found.name}">
-        <div><div class="vc-name">${found.name}</div><div class="vc-handle">${found.role} &mdash; verified Vanneck contact</div></div>
+        <div><div class="vc-name">${found.name}</div><div class="vc-handle">${found.role} - verified Vanneck contact</div></div>
       </div>`;
     } else {
       result.innerHTML = `<div class="verify-not-found">No verified Vanneck team member matches &ldquo;${input.value}&rdquo;. Treat this contact as unverified.</div>`;
