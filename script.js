@@ -114,6 +114,9 @@
       // petals shed during the same wilt window as frames 6-9
       const wiltT = smoothstep(points[4], points[8], progress);
       const mirror = s.corner === 'right' ? -1 : 1;
+      const slotLeft = parseFloat(s.el.style.left);
+      const stageW = stage.clientWidth;
+      const edgeMargin = 10;
       s.petals.forEach((p, i) => {
         const cfg = PETAL_FALL[i];
         const pLocal = Math.max(0, Math.min(1, (wiltT - cfg.delay) / (1 - cfg.delay)));
@@ -121,14 +124,27 @@
         const baseY = cfg.fy * (parseFloat(s.el.style.width) * (NATURAL_H / NATURAL_W));
         const dxPx = cfg.dx * mirror * parseFloat(s.el.style.width) * pLocal;
         const dyPx = cfg.dy * parseFloat(s.el.style.width) * pLocal;
+        // clamp the petal's final ABSOLUTE position (not just local offset) to
+        // the viewport, so a petal flying outward during wilt never crosses
+        // the screen edge regardless of how far dx/dy would otherwise push it
+        const absX = slotLeft + baseX + dxPx;
+        const clampedAbsX = Math.min(
+          Math.max(absX, edgeMargin),
+          stageW - edgeMargin - s.petalWidth
+        );
+        const clampedX = clampedAbsX - slotLeft;
         const rot = (cfg.rot * mirror) + cfg.spin * pLocal;
-        p.style.transform = `translate(${baseX + dxPx}px,${baseY + dyPx}px) rotate(${rot}deg)`;
+        p.style.transform = `translate(${clampedX}px,${baseY + dyPx}px) rotate(${rot}deg)`;
         const pOpacity = smoothstep(0, 0.15, pLocal) * (1 - smoothstep(0.7, 1, pLocal));
         p.style.opacity = String(pOpacity);
       });
     });
 
-    field.style.opacity = String(1 - smoothstep(0.8, 0.92, progress));
+    // nothing shows on first paint (just the scroll hint) - the stems fade
+    // in over the first sliver of scroll instead of being visible at rest
+    field.style.opacity = String(
+      smoothstep(0, 0.025, progress) * (1 - smoothstep(0.8, 0.92, progress))
+    );
 
     if (text) {
       const tIn = smoothstep(0.3, 0.4, progress);
@@ -153,6 +169,122 @@
     onScroll();
   });
   update();
+})();
+
+// Hero bud: a big centered flower the visitor can grab and tilt in 3D
+// (drag = rotateX/rotateY on the image). Rotate or shake it hard enough and
+// petals fly off, reusing the same painted petal cutouts as the wilt effect.
+(function () {
+  const bud = document.getElementById('heroBud');
+  const img = bud ? bud.querySelector('.hero-bud-img') : null;
+  const petalLayer = document.getElementById('heroBudPetals');
+  if (!bud || !img || !petalLayer) return;
+
+  const PETAL_SRCS = [
+    'assets/img/flowers/rose_petal1.webp',
+    'assets/img/flowers/rose_petal2.webp',
+    'assets/img/flowers/rose_petal3.webp',
+    'assets/img/flowers/rose_petal4.webp',
+  ];
+
+  let rotX = 0;
+  let rotY = 0;
+  let dragging = false;
+  let lastX = 0;
+  let lastY = 0;
+  let lastT = 0;
+  let speed = 0; // smoothed drag speed, drives the shake-to-shed trigger
+  let shedCooldown = 0;
+
+  function applyRotation() {
+    const cx = Math.max(-28, Math.min(28, rotX));
+    const cy = Math.max(-40, Math.min(40, rotY));
+    img.style.transform = `rotateX(${cx}deg) rotateY(${cy}deg)`;
+  }
+  applyRotation();
+
+  function shedPetal() {
+    const src = PETAL_SRCS[Math.floor(Math.random() * PETAL_SRCS.length)];
+    const el = document.createElement('img');
+    el.className = 'hero-bud-petal';
+    el.src = src;
+    el.alt = '';
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 140 + Math.random() * 160;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist * 0.6 - 40; // mostly outward, slight lift
+    const spin = (Math.random() - 0.5) * 540;
+    const startX = (Math.random() - 0.5) * 60;
+    petalLayer.appendChild(el);
+
+    let start = null;
+    const DURATION = 950;
+    function frame(t) {
+      if (start === null) start = t;
+      const p = Math.min(1, (t - start) / DURATION);
+      const ease = 1 - Math.pow(1 - p, 2);
+      const fall = p * p * 90;
+      el.style.transform = `translate(${startX + dx * ease}px,${dy * ease + fall}px) rotate(${spin * p}deg)`;
+      el.style.opacity = String(p < 0.12 ? p / 0.12 : 1 - Math.pow((p - 0.12) / 0.88, 1.4));
+      if (p < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        el.remove();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function pointerDown(e) {
+    dragging = true;
+    bud.setPointerCapture(e.pointerId);
+    lastX = e.clientX;
+    lastY = e.clientY;
+    lastT = performance.now();
+    speed = 0;
+  }
+  function pointerMove(e) {
+    if (!dragging) return;
+    const now = performance.now();
+    const dt = Math.max(16, now - lastT);
+    const dx = e.clientX - lastX;
+    const dy = e.clientY - lastY;
+    rotY += dx * 0.45;
+    rotX -= dy * 0.45;
+    applyRotation();
+
+    const instSpeed = Math.sqrt(dx * dx + dy * dy) / dt; // px/ms
+    speed = speed * 0.7 + instSpeed * 0.3;
+
+    if (speed > 1.6 && shedCooldown <= 0) {
+      shedPetal();
+      shedCooldown = 4; // throttle so a sustained shake sheds a steady trickle
+    }
+
+    lastX = e.clientX;
+    lastY = e.clientY;
+    lastT = now;
+  }
+  function pointerUp(e) {
+    dragging = false;
+    try { bud.releasePointerCapture(e.pointerId); } catch (err) {}
+  }
+  function decay() {
+    if (shedCooldown > 0) shedCooldown -= 1;
+    if (!dragging) {
+      // ease back toward a gentle resting tilt instead of a hard snap
+      rotX += (0 - rotX) * 0.06;
+      rotY += (0 - rotY) * 0.06;
+      applyRotation();
+    }
+    requestAnimationFrame(decay);
+  }
+  requestAnimationFrame(decay);
+
+  bud.addEventListener('pointerdown', pointerDown);
+  bud.addEventListener('pointermove', pointerMove);
+  bud.addEventListener('pointerup', pointerUp);
+  bud.addEventListener('pointercancel', pointerUp);
 })();
 
 // Fallen petals: fixed overlay that carries the drooping flowers from the
@@ -482,6 +614,90 @@
   document.getElementById('cookieDecline')?.addEventListener('click', () => {
     try { localStorage.setItem(KEY, 'declined'); } catch (e) {}
     banner.setAttribute('hidden', '');
+  });
+})();
+
+// Custom dropdown: progressively enhances any <select> inside a <label> with
+// a branded button + option list, so the open menu isn't the stock OS
+// dropdown. The native <select> stays in the DOM (visually hidden) as the
+// source of truth - picking an option just sets its value and fires a
+// change event, so filter logic elsewhere needs no changes at all.
+(function () {
+  const selects = Array.from(document.querySelectorAll('.port-filters select'));
+  if (!selects.length) return;
+
+  selects.forEach((select) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'cs-wrap';
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'cs-trigger';
+    trigger.setAttribute('aria-haspopup', 'listbox');
+    trigger.setAttribute('aria-expanded', 'false');
+    const triggerLabel = document.createElement('span');
+    trigger.appendChild(triggerLabel);
+    trigger.insertAdjacentHTML(
+      'beforeend',
+      '<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    );
+
+    const list = document.createElement('ul');
+    list.className = 'cs-options';
+    list.setAttribute('role', 'listbox');
+    list.hidden = true;
+
+    const options = Array.from(select.options);
+    const optionEls = options.map((opt) => {
+      const li = document.createElement('li');
+      li.className = 'cs-option';
+      li.setAttribute('role', 'option');
+      li.textContent = opt.textContent;
+      li.dataset.value = opt.value;
+      if (opt.selected) li.classList.add('is-active');
+      list.appendChild(li);
+      return li;
+    });
+
+    function sync() {
+      const current = options.find((o) => o.value === select.value) || options[0];
+      triggerLabel.textContent = current ? current.textContent : '';
+      optionEls.forEach((li) => li.classList.toggle('is-active', li.dataset.value === select.value));
+    }
+    sync();
+
+    function close() {
+      list.hidden = true;
+      trigger.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+    function open() {
+      document.querySelectorAll('.cs-trigger.is-open').forEach((t) => t !== trigger && t.click());
+      list.hidden = false;
+      trigger.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+    }
+
+    trigger.addEventListener('click', () => (list.hidden ? open() : close()));
+    optionEls.forEach((li) => {
+      li.addEventListener('click', () => {
+        select.value = li.dataset.value;
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        sync();
+        close();
+      });
+    });
+    document.addEventListener('click', (e) => {
+      if (!wrap.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+
+    select.parentNode.insertBefore(wrap, select);
+    wrap.appendChild(select);
+    wrap.appendChild(trigger);
+    wrap.appendChild(list);
   });
 })();
 
