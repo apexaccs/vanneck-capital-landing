@@ -61,9 +61,15 @@
     const mobileLift = w <= 860 ? h * 0.13 : 0;
     const bottomAnchor = h - 6 - mobileLift;
 
+    // on a narrow phone screen the desktop sizing makes a single "main"
+    // flower wider than half the viewport - no amount of edge-clamping can
+    // then stop the left and right ones from overlapping each other, so
+    // they need to actually be smaller, not just repositioned
+    const mobileScale = w <= 860 ? 0.46 : 1;
+
     slots.forEach((s) => {
       const size = SIZE_BY_ROLE[s.role];
-      const pxHeight = Math.min(h * size.h, w * size.w);
+      const pxHeight = Math.min(h * size.h, w * size.w) * mobileScale;
       const pxWidth = (pxHeight / NATURAL_H) * NATURAL_W;
       // scales with the flower's own rendered width, so bigger flowers
       // (bumped up this round) keep their head clear of the viewport edge
@@ -73,7 +79,15 @@
       const stemFx = STEM_FX[s.corner];
       const targetX =
         s.corner === 'left' ? edgeOffset + centerOffset : w - edgeOffset - centerOffset;
-      const left = targetX - stemFx * pxWidth;
+      // the stem-base anchor sits well off-center within the painted
+      // canvas, so the formula above alone can still push the flower
+      // head's own bounding box past the viewport edge - clamp the
+      // actual rendered box (not just the anchor point) to stay on-screen
+      const margin = Math.max(6, w * 0.01);
+      const left = Math.min(
+        Math.max(targetX - stemFx * pxWidth, margin),
+        w - margin - pxWidth
+      );
       const top = bottomAnchor - pxHeight;
 
       s.el.style.width = `${pxWidth}px`;
