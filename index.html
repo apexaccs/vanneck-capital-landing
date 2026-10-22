@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css?v=9641405-12">
+<link rel="stylesheet" href="./styles.css?v=9641405-13">
 </head>
 <body>
 
@@ -179,8 +179,15 @@
       </div>
     </div>
     <div class="hero-bud" id="heroBud" aria-hidden="true">
-      <img class="hero-bud-img" src="assets/img/flowers/rose_left_5.webp" alt="" draggable="false">
+      <div class="hero-bud-ring"></div>
+      <div class="hero-bud-shadow"></div>
+      <div class="hero-bud-3d" id="heroBud3d">
+        <img class="hero-bud-img hero-bud-layer-back" src="assets/img/flowers/rose_bud_head.webp" alt="" draggable="false">
+        <img class="hero-bud-img hero-bud-layer-mid" src="assets/img/flowers/rose_bud_head.webp" alt="" draggable="false">
+        <img class="hero-bud-img hero-bud-layer-front" src="assets/img/flowers/rose_bud_head.webp" alt="" draggable="false">
+      </div>
       <div class="hero-bud-petals" id="heroBudPetals"></div>
+      <div class="hero-bud-hint" id="heroBudHint">Drag me</div>
     </div>
     <div class="hero-text">
       <h1>You don&rsquo;t need just capital.<br>You need a strategic partner.</h1>
@@ -1150,6 +1157,6 @@
 </div>
 
 
-<script src="./script.js?v=9641405-12"></script>
+<script src="./script.js?v=9641405-13"></script>
 </body>
 </html>

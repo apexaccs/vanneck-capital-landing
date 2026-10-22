@@ -91,11 +91,31 @@
     const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
     return t * t * (3 - 2 * t);
   }
+  // each frame holds fully opaque for most of its window and only
+  // cross-dissolves over a short eased swap centered on the midpoint of
+  // each gap - blending across the *entire* gap (the previous approach)
+  // reads as a continuous muddy double-exposure since the two painted
+  // poses differ a lot; a short swap keeps the dissolve brief enough to
+  // read as a quick breath between poses instead. A neighboring pair's
+  // fade-out/fade-in share the exact same (center, width) window, so
+  // they're perfect complements - no dead gap where both sit half-faded.
+  function swapWindow(a, b) {
+    const gap = b - a;
+    const width = Math.min(0.05, gap * 0.5);
+    const center = (a + b) / 2;
+    return [center - width / 2, center + width / 2];
+  }
   function frameOpacity(idx, progress, points) {
-    const cur = points[idx];
-    const fadeIn = idx > 0 ? smoothstep(points[idx - 1], cur, progress) : 1;
-    const fadeOut =
-      idx < points.length - 1 ? 1 - smoothstep(cur, points[idx + 1], progress) : 1;
+    let fadeIn = 1;
+    if (idx > 0) {
+      const [a, b] = swapWindow(points[idx - 1], points[idx]);
+      fadeIn = smoothstep(a, b, progress);
+    }
+    let fadeOut = 1;
+    if (idx < points.length - 1) {
+      const [a, b] = swapWindow(points[idx], points[idx + 1]);
+      fadeOut = 1 - smoothstep(a, b, progress);
+    }
     return Math.min(fadeIn, fadeOut);
   }
 
@@ -179,14 +199,21 @@
   update();
 })();
 
-// Hero bud: a big centered flower the visitor can grab and tilt in 3D
-// (drag = rotateX/rotateY on the image). Rotate or shake it hard enough and
-// petals fly off, reusing the same painted petal cutouts as the wilt effect.
+// Hero bud: a big centered flower head the visitor can grab and tilt - three
+// copies of the same painting stacked at different Z depths/treatments, so
+// rotating it under perspective shifts them against each other like a real
+// object instead of one flat photo tilting. Rotate or shake it hard enough
+// and petals fly off, reusing the same painted petal cutouts as the wilt
+// effect; a gentle idle sway and a "drag me" hint signal it's interactive
+// before anyone touches it.
 (function () {
   const bud = document.getElementById('heroBud');
-  const img = bud ? bud.querySelector('.hero-bud-img') : null;
+  const stage3d = document.getElementById('heroBud3d');
   const petalLayer = document.getElementById('heroBudPetals');
-  if (!bud || !img || !petalLayer) return;
+  const shadowEl = bud ? bud.querySelector('.hero-bud-shadow') : null;
+  const frontLayer = bud ? bud.querySelector('.hero-bud-layer-front') : null;
+  const hint = document.getElementById('heroBudHint');
+  if (!bud || !stage3d || !petalLayer) return;
 
   const PETAL_SRCS = [
     'assets/img/flowers/rose_petal1.webp',
@@ -203,13 +230,30 @@
   let lastT = 0;
   let speed = 0; // smoothed drag speed, drives the shake-to-shed trigger
   let shedCooldown = 0;
+  const idleStart = performance.now();
 
-  function applyRotation() {
-    const cx = Math.max(-28, Math.min(28, rotX));
-    const cy = Math.max(-40, Math.min(40, rotY));
-    img.style.transform = `rotateX(${cx}deg) rotateY(${cy}deg)`;
+  function smoothstep(a, b, x) {
+    const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+    return t * t * (3 - 2 * t);
   }
-  applyRotation();
+
+  function applyRotation(idleX, idleY) {
+    const cx = Math.max(-28, Math.min(28, rotX)) + idleX;
+    const cy = Math.max(-40, Math.min(40, rotY)) + idleY;
+    stage3d.style.transform = `rotateX(${cx}deg) rotateY(${cy}deg)`;
+    if (shadowEl) {
+      shadowEl.style.transform =
+        `translateX(calc(-50% + ${(-cy * 0.9).toFixed(1)}px)) ` +
+        `scaleX(${(1 - Math.abs(cy) / 180).toFixed(2)})`;
+    }
+    if (frontLayer) {
+      const hlX = Math.max(8, Math.min(70, 32 + cy * 0.7));
+      const hlY = Math.max(8, Math.min(55, 24 + cx * 0.6));
+      frontLayer.style.setProperty('--hl-x', `${hlX}%`);
+      frontLayer.style.setProperty('--hl-y', `${hlY}%`);
+    }
+  }
+  applyRotation(0, 0);
 
   function shedPetal() {
     const src = PETAL_SRCS[Math.floor(Math.random() * PETAL_SRCS.length)];
@@ -250,6 +294,7 @@
     lastY = e.clientY;
     lastT = performance.now();
     speed = 0;
+    if (hint) hint.classList.add('is-hidden');
   }
   function pointerMove(e) {
     if (!dragging) return;
@@ -259,7 +304,6 @@
     const dy = e.clientY - lastY;
     rotY += dx * 0.45;
     rotX -= dy * 0.45;
-    applyRotation();
 
     const instSpeed = Math.sqrt(dx * dx + dy * dy) / dt; // px/ms
     speed = speed * 0.7 + instSpeed * 0.3;
@@ -277,14 +321,21 @@
     dragging = false;
     try { bud.releasePointerCapture(e.pointerId); } catch (err) {}
   }
-  function decay() {
+  function decay(t) {
     if (shedCooldown > 0) shedCooldown -= 1;
     if (!dragging) {
       // ease back toward a gentle resting tilt instead of a hard snap
       rotX += (0 - rotX) * 0.06;
       rotY += (0 - rotY) * 0.06;
-      applyRotation();
     }
+    // idle sway: a slow breathing rotation that signals "this moves" before
+    // anyone touches it - fades out the further the user has rotated it,
+    // so it never fights an active drag or a resting tilt
+    const rest = 1 - smoothstep(0, 22, Math.abs(rotX) + Math.abs(rotY));
+    const elapsed = (t - idleStart) / 1000;
+    const idleX = Math.sin(elapsed * 0.55) * 2.2 * rest;
+    const idleY = Math.sin(elapsed * 0.35 + 1.1) * 4.5 * rest;
+    applyRotation(idleX, idleY);
     requestAnimationFrame(decay);
   }
   requestAnimationFrame(decay);
@@ -306,15 +357,18 @@
 
   const motifs = Array.from(overlay.querySelectorAll('.fallen-motif'));
 
+  // sized much smaller than the hero's own flowers - this overlay has to
+  // cluster tightly around the plate rather than spread to the viewport
+  // edges, so it needs its own (denser) scale, not the hero's
   const SIZE_BY_ROLE = {
-    main: { h: 0.58, w: 0.62 },
-    secondary: { h: 0.3, w: 0.33 },
-    tertiary: { h: 0.22, w: 0.24 },
+    main: { h: 0.22, w: 0.24 },
+    secondary: { h: 0.17, w: 0.19 },
+    tertiary: { h: 0.13, w: 0.15 },
   };
-  const CENTER_OFFSET_BY_ROLE = { main: 0, secondary: 0.16, tertiary: 0.3 };
+  // packing order, innermost (nearest the plate) to outermost
+  const PACK_ORDER = ['tertiary', 'secondary', 'main'];
   const NATURAL_W = 2700;
   const NATURAL_H = 2048;
-  const STEM_FX = { left: 1987 / NATURAL_W, right: 1 - 1987 / NATURAL_W };
 
   let bounds = []; // base placement per motif, computed on layout()
   let fallStart = 0;
@@ -323,22 +377,38 @@
   function layout() {
     const w = window.innerWidth;
     const h = window.innerHeight;
+    const viewportMargin = Math.max(10, w * 0.01);
+    const plateEl = document.querySelector('.plate-3d');
+    const plateHalfWidth = plateEl ? plateEl.getBoundingClientRect().width / 2 : w * 0.3;
+    const gapFromPlate = Math.max(14, w * 0.012);
+    const gapBetween = Math.max(8, w * 0.008);
 
-    bounds = motifs.map((el) => {
-      const corner = el.dataset.corner;
-      const role = el.dataset.role;
-      const size = SIZE_BY_ROLE[role];
-      const pxHeight = Math.min(h * size.h, w * size.w);
-      const pxWidth = (pxHeight / NATURAL_H) * NATURAL_W;
-      const edgeOffset = Math.max(w * 0.015, pxWidth * 0.17);
-      const centerOffset = w * CENTER_OFFSET_BY_ROLE[role];
-      const stemFx = STEM_FX[corner];
-      const targetX = corner === 'left' ? edgeOffset + centerOffset : w - edgeOffset - centerOffset;
-      const left = targetX - stemFx * pxWidth;
-      const bottomAnchor = h - 6;
-      const top = bottomAnchor - pxHeight; // hand-off position, matches the hero's own anchor
-      const topMiddle = (h - pxHeight) / 2; // where it settles on screen 2: vertical middle, not the bottom
-      return { el, left, width: pxWidth, top, topMiddle };
+    bounds = [];
+    ['left', 'right'].forEach((corner) => {
+      // cursor tracks the distance from screen-center to the edge of the
+      // packed cluster closest to center - each flower is placed just
+      // outside it, so the whole row hugs the plate with no gaps left over
+      let cursor = plateHalfWidth + gapFromPlate;
+      PACK_ORDER.forEach((role) => {
+        const el = motifs.find((m) => m.dataset.corner === corner && m.dataset.role === role);
+        if (!el) return;
+        const size = SIZE_BY_ROLE[role];
+        const pxHeight = Math.min(h * size.h, w * size.w);
+        const pxWidth = (pxHeight / NATURAL_H) * NATURAL_W;
+
+        // box edge nearest the plate, i.e. `left` for a right-side flower
+        const nearLeft = corner === 'right' ? w / 2 + cursor : w / 2 - cursor - pxWidth;
+        cursor += pxWidth + gapBetween;
+
+        // keep the whole flower on-screen regardless of how wide the packed
+        // cluster ends up, instead of letting the outermost ones clip
+        const left = Math.min(Math.max(nearLeft, viewportMargin), w - viewportMargin - pxWidth);
+
+        const bottomAnchor = h - 6;
+        const top = bottomAnchor - pxHeight; // hand-off position, matches the hero's own anchor
+        const topMiddle = (h - pxHeight) / 2; // where it settles on screen 2: vertical middle, not the bottom
+        bounds.push({ el, left, width: pxWidth, top, topMiddle });
+      });
     });
 
     const heroRect = heroWrap.getBoundingClientRect();

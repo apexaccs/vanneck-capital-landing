@@ -87,23 +87,55 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .f-frame{position:absolute;top:0;left:0;width:100%;height:auto;display:block;opacity:0}
 .f-petal{position:absolute;top:0;left:0;width:60px;height:auto;opacity:0;pointer-events:none}
 
-/* ── hero-bud: a big interactive gzhel rose, centered, drag/rotate; shake it
-   and petals fly off ───────────────────────────────────────────────────── */
+/* ── hero-bud: a big interactive gzhel rose head, centered, real layered
+   depth (not one flat tilting photo) - drag/rotate it, shake it and
+   petals fly off ───────────────────────────────────────────────────── */
 .hero-bud{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:min(26vw,280px);z-index:2;perspective:1100px;cursor:grab;
+  width:min(34vw,380px);z-index:2;perspective:1400px;cursor:grab;
   touch-action:none;-webkit-user-select:none;user-select:none}
 .hero-bud:active{cursor:grabbing}
-.hero-bud-img{width:100%;height:auto;display:block;pointer-events:none;
-  filter:drop-shadow(0 26px 34px rgba(20,33,61,.28));
+.hero-bud-3d{position:relative;width:100%;aspect-ratio:375/344;
   transform-style:preserve-3d;will-change:transform}
+.hero-bud-img{position:absolute;inset:0;width:100%;height:100%;display:block;
+  pointer-events:none;object-fit:contain;backface-visibility:hidden}
+/* three copies of the same painting at different depths/treatments - under
+   perspective, rotating the group shifts them against each other, reading
+   as a solid object with volume instead of a card being tilted */
+.hero-bud-layer-back{transform:translateZ(-42px) scale(1.09);
+  filter:brightness(.62) saturate(1.1) blur(2.5px)}
+.hero-bud-layer-mid{transform:translateZ(-16px) scale(1.035);
+  filter:brightness(.82) blur(.5px)}
+.hero-bud-layer-front{transform:translateZ(0);
+  filter:drop-shadow(0 4px 10px rgba(20,33,61,.25))}
+.hero-bud-layer-front::after{content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at var(--hl-x,32%) var(--hl-y,24%),
+    rgba(255,255,255,.55),rgba(255,255,255,0) 42%);
+  mix-blend-mode:overlay;pointer-events:none}
 .hero-bud-petals{position:absolute;inset:0;pointer-events:none;overflow:visible}
 .hero-bud-petal{position:absolute;top:40%;left:50%;width:54px;height:auto;
   opacity:0;will-change:transform,opacity}
 
+/* ground cues: a soft contact shadow that shifts opposite the tilt (like a
+   real object under light) and a dashed turntable ring, so the whole thing
+   reads as "an object sitting here, nudge it" before anyone touches it */
+.hero-bud-shadow{position:absolute;left:50%;bottom:-6%;width:72%;height:16%;
+  transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(ellipse at center,rgba(20,33,61,.32),rgba(20,33,61,0) 72%);
+  filter:blur(2px);will-change:transform;transition:transform .12s linear}
+.hero-bud-ring{position:absolute;left:50%;bottom:-8%;width:88%;height:20%;
+  transform:translateX(-50%) rotateX(72deg);border-radius:50%;
+  border:1.5px dashed rgba(29,75,168,.28);pointer-events:none}
+.hero-bud-hint{position:absolute;left:50%;bottom:-17%;transform:translateX(-50%);
+  font:600 11.5px var(--serif);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--cobalt);opacity:.6;white-space:nowrap;pointer-events:none;
+  transition:opacity .5s ease}
+.hero-bud-hint.is-hidden{opacity:0}
+
 @media (max-width:860px){
   .hero-wrap{height:300vh}
   .scroll-hint{bottom:24px}
-  .hero-bud{width:min(44vw,220px)}
+  .hero-bud{width:min(52vw,280px)}
+  .hero-bud-hint{font-size:10.5px}
 }
 
 /* ── falling petals: fixed overlay, bridges hero → problem, above everything ── */
