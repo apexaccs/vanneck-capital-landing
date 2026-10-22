@@ -177,10 +177,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   /* the plate takes up almost the full width here, leaving no room to pack
      these beside it without overlapping - simplest to drop them on mobile */
   .fallen-overlay{display:none}
-  .plate-inner{width:56%}
+  /* the clean (border-free) disc inside the plate art measures ~61% of
+     this box's width at its vertical middle, and less the further a line
+     sits above/below that - the heading is the line furthest from center,
+     so it needs the most conservative width of anything in here */
+  .plate-inner{width:48%}
   .p-eyebrow{font-size:11px}
-  .problem-slide h3{font-size:clamp(14px,3.8vw,18px);margin:4px 0 10px}
-  .problem-slide ul{font-size:13px;line-height:1.38;gap:7px}
+  .problem-slide h3{font-size:clamp(13px,3.4vw,16px);margin:4px 0 10px;max-width:94%;margin-left:auto;margin-right:auto}
+  .problem-slide ul{font-size:12px;line-height:1.36;gap:6px}
   .problem-slide li{padding-left:18px}
   .problem-slide li::before{width:12px;height:16px}
 }
