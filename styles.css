@@ -89,7 +89,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* ── hero-bud: a big interactive gzhel rose, centered, drag/rotate; shake it
    and petals fly off ───────────────────────────────────────────────────── */
-.hero-bud{position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+.hero-bud{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   width:min(26vw,280px);z-index:2;perspective:1100px;cursor:grab;
   touch-action:none;-webkit-user-select:none;user-select:none}
 .hero-bud:active{cursor:grabbing}
