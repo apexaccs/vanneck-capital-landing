@@ -6,6 +6,7 @@
   const field = document.querySelector('.flower-field');
   const text = document.querySelector('.hero-text');
   const scrollHint = document.querySelector('.scroll-hint');
+  const bud = document.querySelector('.hero-bud');
   if (!wrap || !field) return;
 
   const stage = document.querySelector('.hero-stage');
@@ -155,6 +156,13 @@
     }
     if (scrollHint) {
       scrollHint.style.opacity = String(1 - smoothstep(0.01, 0.05, progress));
+    }
+    if (bud) {
+      // the bud sits dead-center, same spot the headline fades into - clear
+      // the way for the headline well before it starts appearing at 0.3
+      const budOut = smoothstep(0.16, 0.27, progress);
+      bud.style.opacity = String(1 - budOut);
+      bud.style.pointerEvents = budOut > 0.5 ? 'none' : 'auto';
     }
   }
   function onScroll() {
