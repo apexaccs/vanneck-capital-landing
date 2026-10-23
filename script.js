@@ -888,6 +888,7 @@
     { name: 'Edward Lindemann', photo: 'assets/img/team/edwaaard.jpg', role: 'CTO', tg: null, x: 'x.com/edlindex', mail: 'edwardlindemann.ch@gmail.com' },
     { name: 'Son Jin', photo: 'assets/img/team/sonjin.jpg', role: 'Growth Advisor', tg: null, x: 'x.com/SonJin_yop', mail: null },
     { name: 'Eddie Carter', photo: 'assets/img/team/eddie.jpg', role: 'Business Development', tg: 't.me/ed_vs', x: 'x.com/waaaw_eth', mail: null },
+    { name: 'Rui Angery', photo: 'assets/img/team/rui.jpg', role: 'Business Development', tg: null, x: 'x.com/_angery_', mail: null },
   ];
 
   function normalize(v) {
