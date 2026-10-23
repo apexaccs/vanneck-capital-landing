@@ -64,8 +64,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 }
 
 /* ── hero: scroll-drawn gzhel ornament ───────────────────────────────────── */
-.hero-wrap{position:relative;height:340vh}
-.hero-stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--white);
+.hero-wrap{position:relative;height:340svh}
+.hero-stage{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--white);
   display:flex;align-items:center;justify-content:center}
 .hero-text{position:relative;z-index:1;text-align:center;padding:0 24px;opacity:0}
 .hero-text h1{font-family:var(--serif);font-weight:600;color:var(--cobalt);
@@ -132,7 +132,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hero-bud-hint.is-hidden{opacity:0}
 
 @media (max-width:860px){
-  .hero-wrap{height:300vh}
+  .hero-wrap{height:300svh}
   .scroll-hint{bottom:24px}
   .hero-bud{width:min(52vw,280px)}
   .hero-bud-hint{font-size:10.5px}
@@ -143,14 +143,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .fallen-motif{position:absolute;top:0;left:0;width:200px;height:auto;display:block}
 
 /* ── problem: gzhel plate with cycling text ──────────────────────────────── */
-.problem-wrap{position:relative;height:480vh}
-.problem-stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--white);
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:clamp(14px,3vh,28px);
+.problem-wrap{position:relative;height:480svh}
+.problem-stage{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--white);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:clamp(14px,3svh,28px);
   padding-top:112px;box-sizing:border-box}
 .problem-heading{position:relative;text-align:center;z-index:2;flex:none;
   font-family:var(--serif);font-weight:600;font-style:italic;letter-spacing:.01em;
   font-size:clamp(28px,4vw,44px);color:var(--ink)}
-.plate-3d{position:relative;flex:none;width:min(94vw,calc(86vh - 100px),960px);height:min(94vw,calc(86vh - 100px),960px);perspective:1700px}
+.plate-3d{position:relative;flex:none;width:min(94vw,calc(86svh - 100px),960px);height:min(94vw,calc(86svh - 100px),960px);perspective:1700px}
 .plate{position:relative;width:100%;height:100%;transform-style:preserve-3d;
   display:flex;align-items:center;justify-content:center}
 .plate-photo{position:absolute;inset:3%;width:94%;height:94%;border-radius:50%;
@@ -171,9 +171,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2219%22%20viewBox%3D%220%200%2014%2019%22%3E%0A%3Cpath%20d%3D%22M7%201c4.2%200%206.3%207.3%204.1%2012.4-1.1%202.3-4.4%202.3-5.5%200C3.4%2010.3%203.3%201%207%201z%22%20fill%3D%22%231D4BA8%22%2F%3E%0A%3C%2Fsvg%3E") center/contain no-repeat}
 
 @media (max-width:860px){
-  .problem-wrap{height:460vh}
+  .problem-wrap{height:460svh}
   .problem-stage{justify-content:center;padding-top:96px}
-  .plate-3d{width:min(94vw,calc(80vh - 70px),620px);height:min(94vw,calc(80vh - 70px),620px)}
+  .plate-3d{width:min(94vw,calc(80svh - 70px),620px);height:min(94vw,calc(80svh - 70px),620px)}
   /* the plate takes up almost the full width here, leaving no room to pack
      these beside it without overlapping - simplest to drop them on mobile */
   .fallen-overlay{display:none}
