@@ -887,6 +887,7 @@
     { name: 'Darren Lim', photo: 'assets/img/team/darren.jpg', role: 'Investment Committee', tg: 't.me/liquidlab3', x: 'x.com/darrenvcz0n', mail: 'darrenmgmt@proton.me' },
     { name: 'Edward Lindemann', photo: 'assets/img/team/edwaaard.jpg', role: 'CTO', tg: null, x: 'x.com/edlindex', mail: 'edwardlindemann.ch@gmail.com' },
     { name: 'Son Jin', photo: 'assets/img/team/sonjin.jpg', role: 'Growth Advisor', tg: null, x: 'x.com/SonJin_yop', mail: null },
+    { name: 'Eddie Carter', photo: 'assets/img/team/eddie.jpg', role: 'Business Development', tg: 't.me/ed_vs', x: 'x.com/waaaw_eth', mail: null },
   ];
 
   function normalize(v) {
