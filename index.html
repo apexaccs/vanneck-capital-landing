@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css?v=9641405-16">
+<link rel="stylesheet" href="./styles.css?v=9641405-17">
 </head>
 <body>
 
@@ -1069,6 +1069,7 @@
       <h3>Apply for a check</h3>
       <p>Tell us what you're building. We read every application.</p>
       <form id="applyForm" class="apply-form" novalidate>
+        <label class="hp-field" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
         <label>Name<input type="text" name="name" required></label>
         <label>Email<input type="email" name="email" required></label>
         <label>Project<input type="text" name="project" required></label>
@@ -1117,6 +1118,7 @@
       <h4>Newsletter</h4>
       <p class="footer-tag">Occasional notes on deals and the market. No spam.</p>
       <form id="newsletterForm" class="newsletter-form">
+        <label class="hp-field" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
         <input type="email" name="email" placeholder="you@company.com" required>
         <button type="submit" aria-label="Subscribe">&rarr;</button>
       </form>
@@ -1157,6 +1159,6 @@
 </div>
 
 
-<script src="./script.js?v=9641405-16"></script>
+<script src="./script.js?v=9641405-17"></script>
 </body>
 </html>

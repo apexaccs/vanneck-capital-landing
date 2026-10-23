@@ -661,32 +661,72 @@
   targets.forEach((el) => io.observe(el));
 })();
 
-// Apply form + newsletter: no backend yet, so both fall back to opening a
-// pre-filled mailto: draft and confirm with a short inline note.
+// Apply form posts to the backend (lands in the Telegram channel);
+// newsletter form posts to the backend (adds the contact via Resend).
+// Falls back to a mailto: draft if the request itself fails.
 (function () {
   const CONTACT_EMAIL = 'hello@vanneckcapital.com';
 
-  function wireMailtoForm(formId, noteId, subjectPrefix, buildBody) {
+  function wireApiForm(formId, noteId, endpoint, buildPayload, buildMailtoBody, subjectPrefix, successMsg) {
     const form = document.getElementById(formId);
     const note = document.getElementById(noteId);
     if (!form) return;
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = new FormData(form);
-      const body = buildBody(data);
-      const subject = encodeURIComponent(`${subjectPrefix}: ${data.get('project') || data.get('email') || ''}`);
-      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${encodeURIComponent(body)}`;
-      if (note) note.textContent = 'Opening your email client to send this - we reply within a few days.';
-      form.reset();
+      // honeypot: real visitors never fill a field hidden off-screen
+      if (data.get('website')) {
+        form.reset();
+        return;
+      }
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+      if (note) note.textContent = 'Sending...';
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(buildPayload(data)),
+        });
+        if (!res.ok) throw new Error('request failed');
+        if (note) note.textContent = successMsg;
+        form.reset();
+      } catch (err) {
+        const subject = encodeURIComponent(`${subjectPrefix}: ${data.get('project') || data.get('email') || ''}`);
+        window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${encodeURIComponent(buildMailtoBody(data))}`;
+        if (note) note.textContent = "Couldn't send automatically - opening your email client instead.";
+        form.reset();
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
     });
   }
 
-  wireMailtoForm('applyForm', 'applyNote', 'Application', (d) =>
-    `Name: ${d.get('name')}\nEmail: ${d.get('email')}\nProject: ${d.get('project')}\nLink: ${d.get('link') || '-'}\n\n${d.get('message') || ''}`
+  wireApiForm(
+    'applyForm',
+    'applyNote',
+    '/api/apply',
+    (d) => ({
+      name: d.get('name'),
+      email: d.get('email'),
+      project: d.get('project'),
+      link: d.get('link') || '',
+      message: d.get('message') || '',
+    }),
+    (d) =>
+      `Name: ${d.get('name')}\nEmail: ${d.get('email')}\nProject: ${d.get('project')}\nLink: ${d.get('link') || '-'}\n\n${d.get('message') || ''}`,
+    'Application',
+    'Thanks - we reply within a few days.'
   );
 
-  wireMailtoForm('newsletterForm', 'newsletterNote', 'Newsletter signup', (d) =>
-    `Please subscribe: ${d.get('email')}`
+  wireApiForm(
+    'newsletterForm',
+    'newsletterNote',
+    '/api/newsletter',
+    (d) => ({ email: d.get('email') }),
+    (d) => `Please subscribe: ${d.get('email')}`,
+    'Newsletter signup',
+    'Subscribed - thank you.'
   );
 })();
 

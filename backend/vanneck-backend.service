@@ -1,0 +1,17 @@
+[Unit]
+Description=Vanneck Capital backend (apply form -> Telegram, newsletter -> Resend)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/vanneck-capital-landing/backend
+EnvironmentFile=/var/www/vanneck-capital-landing/backend/.env
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=3
+User=www-data
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
