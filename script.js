@@ -880,15 +880,14 @@
 
   const team = [
     { name: 'Trevor Cesur', photo: 'assets/img/team/trevor.jpg', role: 'Co-Founder & Business Development', tg: 't.me/trevhl', x: 'x.com/TrevorCesur', mail: 'trevor@apexfdn.xyz' },
-    { name: 'Yong Liu', photo: 'assets/img/team/yong.jpg', role: 'Head of Grants', tg: 't.me/not_a_dev_eth', x: null, mail: null },
-    { name: 'Dolphin', photo: 'assets/img/team/dolphin.jpg', role: 'Business Development Manager', tg: 't.me/dlphin01', x: 'x.com/dlphin01', mail: 'dolphin@apexfdn.xyz' },
-    { name: 'Chua Joo', photo: 'assets/img/team/chua.jpg', role: 'Investment Relations', tg: 't.me/chuajoo', x: null, mail: 'chua@apexfdn.xyz' },
-    { name: 'Nick Buckler', photo: 'assets/img/team/nick-buckler.jpg', role: 'Business Developer', tg: 't.me/nickapephoto', x: 'x.com/flokamon6q', mail: null },
-    { name: 'Darren Lim', photo: 'assets/img/team/darren.jpg', role: 'Investment Committee', tg: 't.me/liquidlab3', x: 'x.com/darrenvcz0n', mail: 'darrenmgmt@proton.me' },
+    { name: 'Liam Clark', photo: 'assets/img/team/liam-clark.jpg', role: 'General Partner', tg: null, x: 'x.com/Sonchqm', mail: null },
     { name: 'Edward Lindemann', photo: 'assets/img/team/edwaaard.jpg', role: 'CTO', tg: null, x: 'x.com/edlindex', mail: 'edwardlindemann.ch@gmail.com' },
-    { name: 'Son Jin', photo: 'assets/img/team/sonjin.jpg', role: 'Growth Advisor', tg: null, x: 'x.com/SonJin_yop', mail: null },
+    { name: 'Darren Lim', photo: 'assets/img/team/darren.jpg', role: 'Investment Committee', tg: 't.me/liquidlab3', x: 'x.com/darrenvcz0n', mail: 'darrenmgmt@proton.me' },
+    { name: 'Dolphin', photo: 'assets/img/team/dolphin.jpg', role: 'Business Development Manager', tg: 't.me/dlphin01', x: 'x.com/dlphin01', mail: 'dolphin@apexfdn.xyz' },
+    { name: 'Nick Buckler', photo: 'assets/img/team/nick-buckler.jpg', role: 'Business Developer', tg: 't.me/nickapephoto', x: 'x.com/flokamon6q', mail: null },
     { name: 'Eddie Carter', photo: 'assets/img/team/eddie.jpg', role: 'Business Development', tg: 't.me/ed_vs', x: 'x.com/waaaw_eth', mail: null },
     { name: 'Rui Law', photo: 'assets/img/team/rui-law.jpg', role: 'Business Development', tg: null, x: 'x.com/_angery_', mail: null },
+    { name: 'Son Jin', photo: 'assets/img/team/sonjin.jpg', role: 'Growth Advisor', tg: null, x: 'x.com/SonJin_yop', mail: null },
   ];
 
   function normalize(v) {
