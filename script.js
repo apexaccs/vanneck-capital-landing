@@ -880,7 +880,7 @@
 
   const team = [
     { name: 'Trevor Cesur', photo: 'assets/img/team/trevor.jpg', role: 'Co-Founder & Business Development', tg: 't.me/trevhl', x: 'x.com/TrevorCesur', mail: 'trevor@apexfdn.xyz' },
-    { name: 'Liam Clark', photo: 'assets/img/team/liam-clark.jpg', role: 'General Partner', tg: null, x: 'x.com/Sonchqm', mail: null },
+    { name: 'Liam Clark', photo: 'assets/img/team/liam-clark-2.jpg', role: 'General Partner', tg: null, x: 'x.com/Sonchqm', mail: null },
     { name: 'Edward Lindemann', photo: 'assets/img/team/edwaaard.jpg', role: 'CTO', tg: null, x: 'x.com/edlindex', mail: 'edwardlindemann.ch@gmail.com' },
     { name: 'Darren Lim', photo: 'assets/img/team/darren.jpg', role: 'Investment Committee', tg: 't.me/liquidlab3', x: 'x.com/darrenvcz0n', mail: 'darrenmgmt@proton.me' },
     { name: 'Dolphin', photo: 'assets/img/team/dolphin.jpg', role: 'Business Development Manager', tg: 't.me/dlphin01', x: 'x.com/dlphin01', mail: 'dolphin@apexfdn.xyz' },
