@@ -59,7 +59,7 @@
     document.body.style.overflow = '';
     setTimeout(() => { overlay.hidden = true; }, 250);
     document.title = 'Blog - Vanneck Capital';
-    if (push) history.pushState({}, '', 'index.html');
+    if (push) history.pushState({}, '', './');
   }
 
   grid.addEventListener('click', (e) => {
