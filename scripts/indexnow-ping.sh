@@ -10,7 +10,7 @@ KEY_LOCATION="https://vanneck.xyz/${KEY}.txt"
 
 URLS=$(cat <<'EOF'
 https://vanneck.xyz/
-https://vanneck.xyz/about.html
+https://vanneck.xyz/about/
 https://vanneck.xyz/blog/
 https://vanneck.xyz/blog/introducing-vanneck-capital.html
 https://vanneck.xyz/blog/how-the-accelerator-fund-works.html
