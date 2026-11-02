@@ -1,6 +1,6 @@
 // Blog listing: intercepts card clicks to show the article in a modal
 // (fetched from its real standalone page), while leaving the underlying
-// <a href="slug.html"> links fully functional without JS / for crawlers.
+// <a href="slug/"> links fully functional without JS / for crawlers.
 (function () {
   const grid = document.getElementById('blogGrid');
   const overlay = document.getElementById('blogModalOverlay');
@@ -17,7 +17,7 @@
 
   async function loadPost(slug) {
     if (cache[slug]) return cache[slug];
-    const res = await fetch(slug + '.html');
+    const res = await fetch(slug + '/');
     if (!res.ok) throw new Error('fetch failed');
     const html = await res.text();
     const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -40,17 +40,17 @@
       dateEl.setAttribute('datetime', data.date);
       titleEl.textContent = data.title;
       textEl.innerHTML = data.bodyHtml;
-      permalinkEl.href = slug + '.html';
+      permalinkEl.href = slug + '/';
       document.title = data.title + ' - Vanneck Capital Blog';
 
       overlay.hidden = false;
       requestAnimationFrame(() => overlay.classList.add('is-open'));
       document.body.style.overflow = 'hidden';
 
-      if (push) history.pushState({ blogSlug: slug }, '', slug + '.html');
+      if (push) history.pushState({ blogSlug: slug }, '', slug + '/');
     }).catch(() => {
       // fall back to a real navigation if fetch/parsing fails for any reason
-      window.location.href = slug + '.html';
+      window.location.href = slug + '/';
     });
   }
 

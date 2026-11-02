@@ -12,14 +12,14 @@ URLS=$(cat <<'EOF'
 https://vanneck.xyz/
 https://vanneck.xyz/about/
 https://vanneck.xyz/blog/
-https://vanneck.xyz/blog/introducing-vanneck-capital.html
-https://vanneck.xyz/blog/how-the-accelerator-fund-works.html
-https://vanneck.xyz/blog/our-standard-terms.html
-https://vanneck.xyz/blog/what-to-prepare-before-a-first-call.html
-https://vanneck.xyz/blog/what-comes-with-the-check.html
-https://vanneck.xyz/blog/why-we-backed-skalor.html
-https://vanneck.xyz/blog/institutional-tokenization-founders.html
-https://vanneck.xyz/blog/how-to-read-a-token-unlock-schedule.html
+https://vanneck.xyz/blog/introducing-vanneck-capital/
+https://vanneck.xyz/blog/how-the-accelerator-fund-works/
+https://vanneck.xyz/blog/our-standard-terms/
+https://vanneck.xyz/blog/what-to-prepare-before-a-first-call/
+https://vanneck.xyz/blog/what-comes-with-the-check/
+https://vanneck.xyz/blog/why-we-backed-skalor/
+https://vanneck.xyz/blog/institutional-tokenization-founders/
+https://vanneck.xyz/blog/how-to-read-a-token-unlock-schedule/
 EOF
 )
 
