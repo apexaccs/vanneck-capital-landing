@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Notifies Bing/IndexNow of all indexable URLs on vanneck.xyz.
+# Run this on the server (needs outbound internet) after any content
+# update - new blog post, edited About page, etc.
+set -euo pipefail
+
+HOST="vanneck.xyz"
+KEY="3add04d481b1266f0ed82e763853156c"
+KEY_LOCATION="https://vanneck.xyz/${KEY}.txt"
+
+URLS=$(cat <<'EOF'
+https://vanneck.xyz/
+https://vanneck.xyz/about.html
+https://vanneck.xyz/blog/
+https://vanneck.xyz/blog/introducing-vanneck-capital.html
+https://vanneck.xyz/blog/how-the-accelerator-fund-works.html
+https://vanneck.xyz/blog/our-standard-terms.html
+https://vanneck.xyz/blog/what-to-prepare-before-a-first-call.html
+https://vanneck.xyz/blog/what-comes-with-the-check.html
+https://vanneck.xyz/blog/why-we-backed-skalor.html
+https://vanneck.xyz/blog/institutional-tokenization-founders.html
+https://vanneck.xyz/blog/how-to-read-a-token-unlock-schedule.html
+EOF
+)
+
+URL_JSON=$(printf '%s\n' "$URLS" | sed 's/.*/"&"/' | paste -sd, -)
+
+curl -s -X POST "https://api.indexnow.org/indexnow" \
+  -H "Content-Type: application/json; charset=utf-8" \
+  -d "{\"host\":\"${HOST}\",\"key\":\"${KEY}\",\"keyLocation\":\"${KEY_LOCATION}\",\"urlList\":[${URL_JSON}]}" \
+  -w "\nHTTP %{http_code}\n"
