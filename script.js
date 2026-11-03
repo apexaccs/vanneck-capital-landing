@@ -887,7 +887,6 @@
     { name: 'Darren Lim', photo: 'assets/img/team/darren.jpg', role: 'Investment Committee', tg: 't.me/liquidlab3', x: 'x.com/darrenvcz0n', mail: 'darrenmgmt@proton.me' },
     { name: 'Dolphin', photo: 'assets/img/team/dolphin.jpg', role: 'Business Development Manager', tg: 't.me/dlphin01', x: 'x.com/dlphin01', mail: 'dolphin@vanneck.xyz' },
     { name: 'Nick Buckler', photo: 'assets/img/team/nick-buckler.jpg', role: 'Business Developer', tg: 't.me/nickapephoto', x: 'x.com/flokamon6q', mail: null },
-    { name: 'Eddie Carter', photo: 'assets/img/team/eddie.jpg', role: 'Business Development', tg: 't.me/ed_vs', x: 'x.com/waaaw_eth', mail: null },
     { name: 'Rui Law', photo: 'assets/img/team/rui-law.jpg', role: 'Business Development', tg: null, x: 'x.com/_angery_', mail: null },
     { name: 'Son Jin', photo: 'assets/img/team/sonjin.jpg', role: 'Growth Advisor', tg: null, x: 'x.com/SonJin_yop', mail: null },
   ];
