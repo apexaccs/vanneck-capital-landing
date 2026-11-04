@@ -487,6 +487,18 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   outline:none;border-color:var(--cobalt);background:var(--white);
   box-shadow:0 0 0 3px rgba(29,75,168,.14)}
 .apply-form textarea{resize:vertical}
+.apply-form select{
+  appearance:none;-webkit-appearance:none;background:var(--bg-pale)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%231d4ba8' stroke-width='2'%3E%3Cpath d='M5 8l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 12px center;
+  background-size:16px;border:1.5px solid rgba(29,75,168,.24);border-radius:7px;
+  padding:11px 36px 11px 13px;font:600 15px var(--serif);color:var(--ink);cursor:pointer;
+  transition:border-color .25s var(--ease),box-shadow .25s var(--ease),background-color .25s var(--ease)}
+.apply-form select:focus{outline:none;border-color:var(--cobalt);background-color:var(--white);
+  box-shadow:0 0 0 3px rgba(29,75,168,.14)}
+.apply-form .checkbox-field{display:flex;flex-direction:row;align-items:flex-start;gap:9px;
+  font:500 13px var(--sans);letter-spacing:0;text-transform:none;color:var(--ink-soft)}
+.apply-form .checkbox-field input[type="checkbox"]{width:17px;height:17px;flex:none;margin-top:1px;
+  accent-color:var(--cobalt);cursor:pointer}
 .newsletter-form input{border:1px solid rgba(255,255,255,.3);border-bottom:1px solid rgba(255,255,255,.3);
   border-radius:5px;padding:9px 11px;background:rgba(255,255,255,.06);color:var(--white);
   font-family:var(--sans);font-weight:500}

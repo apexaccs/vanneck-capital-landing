@@ -96,6 +96,42 @@ app.post('/api/newsletter', async (req, res) => {
   }
 });
 
+app.post('/api/protection', async (req, res) => {
+  try {
+    const { contact, email, os, role, agree, website } = req.body || {};
+    if (website) return res.json({ ok: true }); // honeypot tripped - pretend success
+
+    if (!contact || !email || !os || !role || !agree || !isValidEmail(email)) {
+      return res.status(400).json({ ok: false, error: 'Missing or invalid fields' });
+    }
+    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+      console.error('protection: TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID not set');
+      return res.status(500).json({ ok: false, error: 'Server not configured' });
+    }
+
+    const text =
+      `<b>New Sophos protection application</b>\n` +
+      `<b>Contact:</b> ${escapeHtml(contact)}\n` +
+      `<b>Email:</b> ${escapeHtml(email)}\n` +
+      `<b>OS:</b> ${escapeHtml(os)}\n` +
+      `<b>Role:</b> ${escapeHtml(role)}`;
+
+    const tgRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'HTML' }),
+    });
+    if (!tgRes.ok) {
+      console.error('protection: telegram error', tgRes.status, await tgRes.text());
+      return res.status(502).json({ ok: false, error: 'Delivery failed' });
+    }
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('protection: unexpected error', err);
+    res.status(500).json({ ok: false, error: 'Server error' });
+  }
+});
+
 app.listen(PORT, '127.0.0.1', () => {
   console.log(`vanneck-backend listening on 127.0.0.1:${PORT}`);
 });

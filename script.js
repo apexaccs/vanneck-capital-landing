@@ -728,6 +728,23 @@
     'Newsletter signup',
     'Subscribed - thank you.'
   );
+
+  wireApiForm(
+    'protectionForm',
+    'protectionNote',
+    '/api/protection',
+    (d) => ({
+      contact: d.get('contact'),
+      email: d.get('email'),
+      os: d.get('os'),
+      role: d.get('role'),
+      agree: d.get('agree') ? true : false,
+    }),
+    (d) =>
+      `Contact: ${d.get('contact')}\nEmail: ${d.get('email')}\nOS: ${d.get('os')}\nRole: ${d.get('role')}`,
+    'Sophos protection application',
+    "Thanks - we'll review and reply."
+  );
 })();
 
 // Cookie consent banner
