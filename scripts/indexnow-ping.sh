@@ -12,6 +12,7 @@ URLS=$(cat <<'EOF'
 https://vanneck.xyz/
 https://vanneck.xyz/about/
 https://vanneck.xyz/blog/
+https://vanneck.xyz/deals/
 https://vanneck.xyz/blog/introducing-vanneck-capital/
 https://vanneck.xyz/blog/how-the-accelerator-fund-works/
 https://vanneck.xyz/blog/our-standard-terms/
