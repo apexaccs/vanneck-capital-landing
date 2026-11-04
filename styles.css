@@ -416,6 +416,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .site-footer .wordmark{color:var(--white)}
 .site-footer .wordmark small{color:var(--blue-light)}
 .footer-tag{font-size:13px;color:var(--blue-light);margin-top:10px;max-width:34ch;line-height:1.5}
+.footer-brand-row{display:flex;align-items:center;gap:11px}
+.footer-mark{width:30px;height:auto;filter:brightness(0) invert(1);opacity:.92}
 .footer-socials{margin-top:16px;gap:14px}
 .footer-socials a{color:var(--blue-light);width:18px;height:18px}
 .footer-socials a:hover{color:var(--white)}
