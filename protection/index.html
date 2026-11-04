@@ -26,8 +26,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../styles.css?v=9641405-53">
-<link rel="stylesheet" href="../assets/css/blog.css?v=9641405-53">
+<link rel="stylesheet" href="../styles.css?v=9641405-54">
+<link rel="stylesheet" href="../assets/css/blog.css?v=9641405-54">
 </head>
 <body>
 
@@ -87,6 +87,7 @@
 
 <main>
 <article class="blog-post-wrap protect-wrap">
+  <div class="protect-flower pos-top" aria-hidden="true"><img src="../assets/img/flowers/rose_left_9.webp" alt="" style="left:-631px;top:-639px"></div>
   <div class="blog-post-head" style="justify-content:flex-start;gap:16px">
     <a class="blog-post-back" href="../index.html">&larr; Vanneck Capital</a>
   </div>
@@ -109,12 +110,15 @@
 
     <h2>What's included</h2>
     <div class="protect-hero-media"><img src="../assets/img/protection/sophos-box.webp" alt="Sophos Endpoint Protection"></div>
-    <ul class="protect-list">
-      <li><span class="protect-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/></svg></span><div><strong>EDR on your device.</strong> Sophos endpoint detection and response, installed straight from Sophos.</div></li>
-      <li><span class="protect-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-8 4 16 2-8h4"/></svg></span><div><strong>MDR included.</strong> Sophos Managed Detection &amp; Response runs alongside EDR on your device - it needs to stay active for the warranty below to apply.</div></li>
-      <li><span class="protect-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6l7-3Z"/><path d="M9 12l2 2 4-4"/></svg></span><div><strong>Warranty coverage.</strong> Up to $1M under Sophos's terms.</div></li>
-      <li><span class="protect-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span><div><strong>12 months, no cost to you.</strong> Selected members only.</div></li>
-    </ul>
+    <div class="protect-list-wrap">
+      <div class="protect-flower pos-list" aria-hidden="true"><img src="../assets/img/flowers/carnation_right_9.webp" alt="" style="left:-650px;top:-660px"></div>
+      <ul class="protect-list">
+        <li><strong>EDR on your device.</strong> Sophos endpoint detection and response, installed straight from Sophos.</li>
+        <li><strong>MDR included.</strong> Sophos Managed Detection &amp; Response runs alongside EDR on your device - it needs to stay active for the warranty below to apply.</li>
+        <li><strong>Warranty coverage.</strong> Up to $1M under Sophos's terms.</li>
+        <li><strong>12 months, no cost to you.</strong> Selected members only.</li>
+      </ul>
+    </div>
 
     <h2>How it works</h2>
     <ol class="protect-steps">
@@ -123,8 +127,6 @@
       <li>You get an official Sophos link. We never send files or ask you to download anything in chat.</li>
       <li>Install, and book a setup call if you want one.</li>
     </ol>
-
-    <a href="#apply" class="protect-cta">Apply for coverage &rarr;</a>
 
     <div class="protect-form-wrap" id="apply">
       <form id="protectionForm" class="apply-form" novalidate>
@@ -150,12 +152,14 @@
     </div>
 
     <h2>FAQ</h2>
-    <dl class="protect-faq">
-      <dt>Is Vanneck able to see my device?</dt>
-      <dd>No. Data on your device is not sent to us.</dd>
-      <dt>What happens after 12 months?</dt>
-      <dd>Nothing happens without your written agreement.</dd>
-    </dl>
+    <details class="faq-item protect-faq" open>
+      <summary>Is Vanneck able to see my device?<span class="faq-chev" aria-hidden="true"></span></summary>
+      <p>No. Data on your device is not sent to us.</p>
+    </details>
+    <details class="faq-item protect-faq">
+      <summary>What happens after 12 months?<span class="faq-chev" aria-hidden="true"></span></summary>
+      <p>Nothing happens without your written agreement.</p>
+    </details>
   </div>
 </article>
 </main>
@@ -227,6 +231,6 @@
   </div>
 </div>
 
-<script src="../script.js?v=9641405-53"></script>
+<script src="../script.js?v=9641405-54"></script>
 </body>
 </html>

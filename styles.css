@@ -497,7 +497,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   box-shadow:0 0 0 3px rgba(29,75,168,.14)}
 .apply-form .checkbox-field{display:flex;flex-direction:row;align-items:flex-start;gap:9px;
   font:500 13px var(--sans);letter-spacing:0;text-transform:none;color:var(--ink-soft)}
-.apply-form .checkbox-field input[type="checkbox"]{width:17px;height:17px;flex:none;margin-top:1px;
+.apply-form .checkbox-field input[type="checkbox"]{appearance:auto;-webkit-appearance:auto;
+  width:18px;height:18px;flex:none;margin-top:1px;padding:0;background:none;border:1.5px solid rgba(29,75,168,.4);
   accent-color:var(--cobalt);cursor:pointer}
 .newsletter-form input{border:1px solid rgba(255,255,255,.3);border-bottom:1px solid rgba(255,255,255,.3);
   border-radius:5px;padding:9px 11px;background:rgba(255,255,255,.06);color:var(--white);
