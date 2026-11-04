@@ -736,12 +736,12 @@
     (d) => ({
       contact: d.get('contact'),
       email: d.get('email'),
-      os: d.get('os'),
       role: d.get('role'),
+      need: d.get('need') || '',
       agree: d.get('agree') ? true : false,
     }),
     (d) =>
-      `Contact: ${d.get('contact')}\nEmail: ${d.get('email')}\nOS: ${d.get('os')}\nRole: ${d.get('role')}`,
+      `Contact: ${d.get('contact')}\nEmail: ${d.get('email')}\nRole: ${d.get('role')}\nWhat for: ${d.get('need') || '-'}`,
     'Sophos protection application',
     "Thanks - we'll review and reply."
   );

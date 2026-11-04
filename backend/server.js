@@ -98,10 +98,10 @@ app.post('/api/newsletter', async (req, res) => {
 
 app.post('/api/protection', async (req, res) => {
   try {
-    const { contact, email, os, role, agree, website } = req.body || {};
+    const { contact, email, role, need, agree, website } = req.body || {};
     if (website) return res.json({ ok: true }); // honeypot tripped - pretend success
 
-    if (!contact || !email || !os || !role || !agree || !isValidEmail(email)) {
+    if (!contact || !email || !role || !agree || !isValidEmail(email)) {
       return res.status(400).json({ ok: false, error: 'Missing or invalid fields' });
     }
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
@@ -113,8 +113,8 @@ app.post('/api/protection', async (req, res) => {
       `<b>New Sophos protection application</b>\n` +
       `<b>Contact:</b> ${escapeHtml(contact)}\n` +
       `<b>Email:</b> ${escapeHtml(email)}\n` +
-      `<b>OS:</b> ${escapeHtml(os)}\n` +
-      `<b>Role:</b> ${escapeHtml(role)}`;
+      `<b>Role:</b> ${escapeHtml(role)}\n` +
+      `<b>What for:</b> ${escapeHtml(need || '(not given)')}`;
 
     const tgRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: 'POST',

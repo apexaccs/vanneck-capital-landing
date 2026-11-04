@@ -26,8 +26,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../styles.css?v=9641405-52">
-<link rel="stylesheet" href="../assets/css/blog.css?v=9641405-52">
+<link rel="stylesheet" href="../styles.css?v=9641405-53">
+<link rel="stylesheet" href="../assets/css/blog.css?v=9641405-53">
 </head>
 <body>
 
@@ -86,44 +86,51 @@
 </div>
 
 <main>
-<article class="blog-post-wrap" style="max-width:720px">
+<article class="blog-post-wrap protect-wrap">
   <div class="blog-post-head" style="justify-content:flex-start;gap:16px">
     <a class="blog-post-back" href="../index.html">&larr; Vanneck Capital</a>
   </div>
   <h1>Protection for the people we back</h1>
   <div class="blog-post-text">
-    <p>12 months of Sophos endpoint protection, with device warranty coverage, for selected members of our network.</p>
+    <div class="protect-partners">
+      <span>In partnership with</span>
+      <span class="protect-partner-badge"><img src="../assets/img/protection/sophos-mark.webp" alt="Sophos" width="22" height="22">Sophos</span>
+      <span class="protect-partner-sep" aria-hidden="true"></span>
+      <span class="protect-partner-badge"><img src="../assets/img/protection/longhash-mark.webp" alt="LongHash Ventures" width="22" height="22">LongHash Ventures</span>
+    </div>
+
+    <p>12 months of Sophos endpoint protection, with device warranty coverage, for selected members of our network. This programme runs with support from LongHash Ventures.</p>
+
+    <div class="protect-stats">
+      <div class="protect-stat"><b>12 months</b><span>Free coverage</span></div>
+      <div class="protect-stat"><b>$1M</b><span>Device warranty*</span></div>
+      <div class="protect-stat"><b>EDR + MDR</b><span>Both included</span></div>
+    </div>
 
     <h2>What's included</h2>
+    <div class="protect-hero-media"><img src="../assets/img/protection/sophos-box.webp" alt="Sophos Endpoint Protection"></div>
     <ul class="protect-list">
-      <li><strong>EDR on your device.</strong> Sophos endpoint detection and response, installed straight from Sophos.</li>
-      <li><strong>MDR included.</strong> Sophos Managed Detection &amp; Response runs alongside EDR on your device - it needs to stay active for the warranty below to apply.</li>
-      <li><strong>Warranty coverage.</strong> Up to $1M under Sophos's terms.</li>
-      <li><strong>12 months, no cost to you.</strong> Selected members only.</li>
+      <li><span class="protect-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/></svg></span><div><strong>EDR on your device.</strong> Sophos endpoint detection and response, installed straight from Sophos.</div></li>
+      <li><span class="protect-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-8 4 16 2-8h4"/></svg></span><div><strong>MDR included.</strong> Sophos Managed Detection &amp; Response runs alongside EDR on your device - it needs to stay active for the warranty below to apply.</div></li>
+      <li><span class="protect-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6l7-3Z"/><path d="M9 12l2 2 4-4"/></svg></span><div><strong>Warranty coverage.</strong> Up to $1M under Sophos's terms.</div></li>
+      <li><span class="protect-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span><div><strong>12 months, no cost to you.</strong> Selected members only.</div></li>
     </ul>
 
     <h2>How it works</h2>
-    <ol>
+    <ol class="protect-steps">
       <li>Apply below.</li>
       <li>We review and reply.</li>
       <li>You get an official Sophos link. We never send files or ask you to download anything in chat.</li>
       <li>Install, and book a setup call if you want one.</li>
     </ol>
 
-    <a href="#apply" class="protect-cta">Apply</a>
+    <a href="#apply" class="protect-cta">Apply for coverage &rarr;</a>
 
     <div class="protect-form-wrap" id="apply">
       <form id="protectionForm" class="apply-form" novalidate>
         <label class="hp-field" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
         <label>X handle or Telegram<input type="text" name="contact" required></label>
         <label>Email<input type="email" name="email" required></label>
-        <label>OS
-          <select name="os" required>
-            <option value="" disabled selected>Select...</option>
-            <option value="Mac">Mac</option>
-            <option value="Windows">Windows</option>
-          </select>
-        </label>
         <label>Role
           <select name="role" required>
             <option value="" disabled selected>Select...</option>
@@ -134,11 +141,12 @@
             <option value="other">Other</option>
           </select>
         </label>
+        <label>What do you need Sophos for? <span style="text-transform:none;font-weight:500">(optional)</span><textarea name="need" rows="3"></textarea></label>
         <label class="checkbox-field"><input type="checkbox" name="agree" required> I agree to be contacted about this programme.</label>
         <button type="submit">Apply</button>
         <p class="form-note" id="protectionNote" aria-live="polite"></p>
       </form>
-      <p class="protect-fine-print">Protection reduces risk, it does not make you unhackable. We don't collect wallet addresses, balances or documents.</p>
+      <p class="protect-fine-print">Protection reduces risk, it does not make you unhackable. We don't collect wallet addresses, balances or documents. *Warranty terms are set by Sophos, not Vanneck.</p>
     </div>
 
     <h2>FAQ</h2>
@@ -219,6 +227,6 @@
   </div>
 </div>
 
-<script src="../script.js?v=9641405-52"></script>
+<script src="../script.js?v=9641405-53"></script>
 </body>
 </html>
