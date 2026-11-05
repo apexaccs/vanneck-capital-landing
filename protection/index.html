@@ -28,6 +28,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles.css?v=9641405-57">
 <link rel="stylesheet" href="../assets/css/blog.css?v=9641405-57">
+<link rel="stylesheet" href="../assets/css/protect-problems.css?v=9641405-57">
 </head>
 <body>
 
@@ -106,15 +107,118 @@
       <div class="protect-stat"><div class="protect-petal" aria-hidden="true"><img src="../assets/img/flowers/carnation_petal3.webp" alt=""></div><b>EDR + MDR</b><span>Both included</span></div>
     </div>
 
-    <h2>What's included</h2>
+    <!-- Why consumer protection falls short -->
+    <div class="protect-problems-block">
+
+      <!-- Problem 1: Consumer AV gaps -->
+      <div class="protect-problem-card reveal">
+        <div class="protect-pc-flower" aria-hidden="true">
+          <img src="../assets/img/flowers/rose_right_9.webp" alt="">
+        </div>
+        <div class="protect-pc-content">
+          <div class="protect-pc-logos">
+            <div class="ppc-badge">
+              <img src="data:image/webp;base64,UklGRsoDAABXRUJQVlA4WAoAAAAQAAAATwAATwAAQUxQSAwCAAABmQswRPQ/bkCWbdtqpZxzIuXu7l7VAOzLoQt80yyHFri7u7u767NKcnM2TsjN4K/GiJiACaBkDmpG2C+AELCOEcYYEUQQQgBAEQACFjFBBBOMEIfwiZChFAMABQBgBxOCCSJ8Dbr169Wlkgi889Rjj31UZBBQCpQNjAnhazJoyqgWRowQQmp0GtChyleP3XDXK0VKgbLBIQasNiIE5A9ZpVaDpk2o98lWh0UUQOoYE1XWIEmWazdjni3ughhJvxANeiVCCOlT5S4FkD4mfEZSrJwRs4Ax4WJJERcokj7CBEuOMQDyXwiZk7mMZQ1A1vxLYDYAKJUUKEFY+oBA6IukSkK1iI2gch5J6oNAGyuUUXBeIKHrmjURIn2gYqEL7ksm56wBVRhLHwEj8NR2gUROc7XzCGJDLPTVPick8dxpwxoIO1Sk5KlN7hjzVznbjGjjczAbCMRmfXHJWit0+YtZO5TpVs3DiB0qUvLOQXet0uuPCnaK9KvncRBLVSxQ8Nplty02RfzuvR3YoAZlHMwWArFATs5dF41bpMYvjBsOaTegQQUXI/YoIxDKeeYCY55x1VjoqZPemNatXjkHIxaDiqhI0Qd33Mbaed7J6TaqTTWfgxGrQamYEcj74LmXjCa9WtUp5xGM2K5AGUagJASechVcLkYyEBSomIoR4WCCkWwEBQDAGMlSIHO3AlZQOCCYAQAAUAsAnQEqUABQAD6RQppJJaQioSj0m4iwEglAEqBp+OAG2duwDeW1+BpMmiTCMN4+hBB8KK5M/mmOrFuYd/dfMRich4IlkWq2WIj/vA6V5+mQNr34flbqWlEsxoXV0GonMxIwAP77/VDZ954AcEwhT+FTarVIIhjF9GzEQX8vfJO4mjJdT73Y6F+u8xVm+oX/MiG2FfQjfClC12lD1Txyd8XUqXlfNVdaoydwIDfK/sjJNtMcCqXh5VEG5z3LXUCFWhNxCnA5FFhBfToh3f1qgznnHXEd7RGVhJ8TrOlSGkSbplxvPCJoalQRwYLW/KP9yws5K4kPeUCgn1xWo3sR5QlE44q3RVyRFZ6WAAO9quq5ziqhTrq+fvJXjtLYRD+r5fsVOiAxKdWkA4Odw2g8X1uyg1RIL33IAKLzds8fjrVhHzIJtHQQhHQdfZwEtjjz7SZOfSpGPDh+/8yj+Tn55yiDwwjX2PHKHZc+L/9sLAHwfZVBWlYz75n88AGvsPxqBKvcEjmv2eh6IppupvJfuRPpBH+zoAAA" alt="Windows Defender" width="32" height="32">
+              <span>Windows Defender</span>
+            </div>
+            <div class="ppc-badge">
+              <img src="data:image/webp;base64,UklGRlAEAABXRUJQVlA4IEQEAACQFgCdASpQAFAAPpE4l0eloyUhNbHsALASCWoAzmxaxvfGfkBzRPS5n313zxvFF6TXmA/hfSz/03qAf8P+zda76FfSl/tPgkHa5zwxyHCDsB/kBwBBoKuYdV/m/GJ9M+wL0ePQ1/dZ0rTqc/smdY+9YYsIWmvYc12tHbg/zWbA00HpLRJfoH91uxhDpNtLOmWmD16NPypMukV2DGPDbPgaOV+tXvk5DKDZhzdgWaCy4owB4RvVbYkzwGlgooAA/v3AiCt8R1LAN5U1vweeE87jM95GN0tvJ4rIRsQtTWdx71/HKzkZ79jddX2md7wlaG5Tj4WrTOeqB13Cj2w5jTN/7ZYfy/273Bd4HqX7XGaxcBTatUvYuieUZsQ5XaEHHRMqI7DiSlAbVbGUPsd5b9SREVLMNBUyMuX+yP/EKhXQkDE52bNICI7SpjfQWn7aWFCDTllO0WfESUuvYIcEORFxloWd3AhBlGxXswiKpmp/o1JI2RCWf6qnAu+pbSSaD5FtIGGP9gekRpBSjLeCzfefdcKdVWsaWhn/2bl7thlKxk2kk31K0eNoRHGMvRhS20NdiMDixf9sCuDmQKoxCLQp/qHOypd/GEdoDLrJRg0bCXYvQxkMyyjIExYA/d9ERUeXo/p74hRWBqcynR5WYUvKBd9dPVVE/yLHC4i92XmWRtvwALwyiuB+IfxRN1yZu0C0SvsTnr/hsXZClmw3sUAGCTIDOi6OHyqXOgoz3r4qBNwaVYR0bpE7pokROD8gEeu5NsPYLvXtv1jpINh7EP1WcSDEKXJbycnyhyp1tkOLLy+VA8Ee8JGLGwE6jMQC7H+Ghe72442EiHiBaymovnginV7XRhfruvVvWqUAxRRvvsTIqCpS7BW2b93WFIYPE8CeXcFGcCK/UVWb/y6uDrGT6wDJMcEziGmAH2CWPhGNhXi2bCRtRu2uapoGSlLbEJRrT6W/aDx/xrdfvVUaiT4nCZN0LIKFKTu/EqJ6SBjHfhTmauSMB8VWSzkWLXFE8muPyoLp52naozRpl2+95PXZErve1oFhUp1p5uwU4XGhkM2RGLtz5qGj0lz6jQxdUyP9Mibl4xQrrd+zL9tA+swdzF05KGF4+T1+AOVXc6F4CRTXLRJ9Dube+RuS21lIJ3U2DZYD+KfNoVH9PrvTqApgRW9xmA7b1lkf156IiojKGYq+2dvH/m76/ELckAFAO0mMaCNqEy+4fMAFJpLJlhfpB8Rgoi9cw+oh77HPpNDoMHncErXP7Rr/LGTBKUedMMQwDvEysHo4btIvcoWQKaWo52wV49uOZhr41bDtpww7ot/O48e6k6CSY8TpVeMkNWAD+YV3nARNxV0je8GCZy5dTieavLy6il6ivyK162Wbxqby4znYL2lTJx5fwPb5M0SPI/djj/A5BEa+bq+gKJ8MzQKYnIDHAdx5V1O/eDghqPgAAAA=" alt="Kaspersky" width="32" height="32">
+              <span>Kaspersky</span>
+            </div>
+            <div class="ppc-badge">
+              <img src="data:image/webp;base64,UklGRsoDAABXRUJQVlA4IL4DAACQFgCdASpQAFAAPoE2lkelIyIhNbh8AKAQCWwAxYoZfkuqs9J/Jnnc96fDHOaIi9IPZXxb1NvMA/Tb9TOsB5gP1A6iH0zfIB/cv8z1gHoAfsz6Z/sl+TBmok2BvoynQYKY/47qGb1Pfrv7AH6AMDacxKdLWnLk3Ink7yZmJAj72KHva0+qOvSDWhA8wK5MjPF4oWxGnYHUkI6uIxRry14Ypt0jMSn+eKOLalWngYSUe5Dr/K+7FGxKI4KtxIAA/vxKAPf3N8a+HabFn6JJTea3CjwBCnwexQN/n/iwX7SqjB/NRB3AQno37Kax/rfDNJwmP4tvgcVRdizputv5/4mBaBtYC/QGrsjaHXE3En5kWXD4R54nvIoHjgK8blyeDX0C7IzZI5XVlIziPXrs95V11aywRX3/sDLw4MHFAl59cfWEEgnLsxtUuufVUrq1kn3vi/NWMYIxbIlVo6OjiJzqj3rtuewUfEA8voPgptdLrKvH15SJP5rXhe50W99liGaLLJdmK1WJeQuAnBce/2RF7ht9H+dWEfxMXF76ot5IV8IpxTgodIWEGa/XaDLKmi3JoQdSFIEkJ6e4lay3qN//US1Z5UilCSDBf5oO4y7DC6KVX5qxJ9o0jaFZAAuoyuUUxI4ygxh2nbgAThsKwXCUFdMPy8T7lQoIwk1JarqV2O60dVAW/60Hpton9qo3reCa017Ys86+NfmO4xQqDNqXzl24Wn6Ciwwgj0uxYmHbdt+WGOqAZW5FZ8vt6L7vyVuy9ndzylpvbkilFD+PJuW40Ps5p8abVtvGNoTeQCofLgIusz8fCl0I36Nfarqe0yrV1af8zjC+JRpSpaeO3g+xGYLspTipla7pelZLoCmBLDci4qi3m1czzKeBofmIn5vzvqcBGzAvl9Bw5H/2HwjB5m2k2+h5DGu7RKliJ660RRCtzJK/+4Vv+A3OTab/7Ml0LFzI5n35yEvd76FpP0CtOJ9IlKbRMPgoY5Dfc0PJWTKYp+oSgkJeYOQukaLW52rLHSilupfObLXxaOwy0wjzI3YTiyBuLMCSejBWlR5oTTdT+LJSMmlv4x84NB5Z+fxNARr1qzUD/CqAIfbNzo9j2y1SBwniMjwJ0HRmxOj6bWsNF7av5Dnt42GLztnEAU5F4e1oLfVDNmI+nzUH5I0JF9wNntTAZxdKnApo0Hcd001hl9tysHlMZ+Kv8/3Dt1PJghUvDA6fGAhEL9CWM+1gEVYZDXWDV76Gn+DQ2fY2NozmeI5YLRNrY3GKcNAA" alt="Malwarebytes" width="32" height="32">
+              <span>Malwarebytes</span>
+            </div>
+          </div>
+          <h3>Consumer AV misses real threats — documented cases</h3>
+          <div class="protect-pc-cases">
+            <div class="ppc-case">
+              <span class="ppc-case-label">Windows Defender</span>
+              <p>Nodersok used fileless techniques to infect thousands across the US and Europe without Defender raising an alert (2019). Conti ransomware executed from a Defender exclusion folder with no warning until Microsoft patched the flaw in February 2022. A SmartScreen shortcut-nesting bug spread ARC Stealer, Lumma and Meduza throughout 2024. Black Hat researchers demonstrated that intercepted signature updates could make Defender silently ignore Conti and Mimikatz.</p>
+            </div>
+            <div class="ppc-case">
+              <span class="ppc-case-label">Kaspersky</span>
+              <p>Kaspersky ranked among the top five products by missed detections in a Malwarebytes study, alongside Avast, ESET, AVG and Norton. User forum reports document samples that reached the endpoint undetected and were added to the database only after the fact.</p>
+            </div>
+            <div class="ppc-case">
+              <span class="ppc-case-label">Malwarebytes</span>
+              <p>A known malware sample detected by 44 of 55 VirusTotal engines went unnoticed by Malwarebytes (BleepingComputer, 2017). Fake MSI Afterburner installer components passed through both Defender and Malwarebytes without triggering a single detection.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Problem 2: No real EDR on Mac -->
+      <div class="protect-problem-card protect-problem-card--alt reveal">
+        <div class="protect-pc-flower protect-pc-flower--left" aria-hidden="true">
+          <img src="../assets/img/flowers/daisy_left_9.webp" alt="">
+        </div>
+        <div class="protect-pc-content">
+          <h3>Mac has no real consumer EDR option</h3>
+          <p class="ppc-lead">Consumer antivirus on macOS watches what files look like. EDR watches what processes actually do in real time — memory writes, kernel calls, lateral movement. That gap is exactly where modern macOS malware operates.</p>
+          <p>Sophos brings full EDR to macOS, the same grade used by enterprise security teams, without requiring any in-house expertise to manage.</p>
+        </div>
+      </div>
+
+      <!-- Problem 3: Cold wallets + fake Ledger -->
+      <div class="protect-problem-card reveal">
+        <div class="protect-pc-flower" aria-hidden="true">
+          <img src="../assets/img/flowers/rose_right_9.webp" alt="">
+        </div>
+        <div class="protect-pc-content">
+          <div class="protect-pc-logos">
+            <div class="ppc-badge">
+              <img src="data:image/webp;base64,UklGRhoBAABXRUJQVlA4IA4BAADQCQCdASpQAFAAPpFEmkilpCKhLN5oALASCWkAFcQdUCun/lv43R53+ACwFEmOFrzZc1hjjQKdu02CQAgCQqQjcPCn9WHSR5l0/3yS98c6ZO7+yYTMN1AA/t9oA2UiOvRaQxI7T5GxdH1Ltl+X8qOFLOkJohpa00M+xMXUxT2V1PQ8X70WtXuyBPw+OVN3T+U7j/dISoJaOzowfA3fMBUpycz+idiHbbsl0gsuYrXecJd6/vpb7rateDPtT+qCP0P/jS1ZnM+kuBaJ8iTKtBs5QnLEPOE1ufUAyhdjyDZ88ktEAOv1ggHaUWDWRn41b8O1ggfk6YsQBY5O+xteP4HYG6Zq9qSss1zfBEjwAAA=" alt="Ledger" width="32" height="32">
+              <span>Ledger</span>
+            </div>
+          </div>
+          <h3>A cold wallet can’t protect you if your device is already compromised</h3>
+          <p class="ppc-lead">Attackers with device access don’t target the hardware — they replace the software. The result is indistinguishable from the real application.</p>
+          <div class="protect-pc-cases">
+            <div class="ppc-case">
+              <span class="ppc-case-label">Windows — April 2020</span>
+              <p>Ledger warned of malware that replaced Ledger Live locally on disk. After a fake update prompt, it requested the user’s 24-word seed phrase. There was no visible difference from a legitimate update flow.</p>
+            </div>
+            <div class="ppc-case">
+              <span class="ppc-case-label">macOS — 2024–2025</span>
+              <p>Moonlock tracked four simultaneous active campaigns. Malware families Odyssey and AMOS (Atomic macOS Stealer) replaced the genuine Ledger Live with a clone that showed a “suspicious activity” alert and prompted for the seed phrase.</p>
+            </div>
+            <div class="ppc-case">
+              <span class="ppc-case-label">Chrome extension</span>
+              <p>A counterfeit Ledger browser extension offered “wallet sync” — which required entering the full seed phrase. The difference between the genuine extension and the fake was not visible to the average user.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Problem 4: Network injections -->
+      <div class="protect-problem-card protect-problem-card--alt reveal">
+        <div class="protect-pc-flower protect-pc-flower--left" aria-hidden="true">
+          <img src="../assets/img/flowers/daisy_left_9.webp" alt="">
+        </div>
+        <div class="protect-pc-content">
+          <h3>Network injections reach any device that has ever been online</h3>
+          <p class="ppc-lead">Using a separate device for crypto does not eliminate risk if that device has ever connected to a network.</p>
+          <p>Network-layer attacks operate at the router or ISP level, intercepting traffic and injecting malicious code into unencrypted sessions. A device that has browsed the web even once can be targeted this way. Nothing changes visibly on the device — until the payload executes.</p>
+        </div>
+      </div>
+
+      <!-- Conclusion bridge -->
+      <div class="protect-conclusion">
+        <p>The goal isn’t to plan for what happens when malware reaches your device.<br><strong>The goal is to stop it from ever getting there.</strong></p>
+      </div>
+    </div>
+
+    <h2>What’s included</h2>
     <div class="protect-hero-media"><img src="../assets/img/protection/sophos-box.webp" alt="Sophos Endpoint Protection"></div>
     <div class="protect-list-wrap">
       <div class="protect-decor pos-list" aria-hidden="true"><img src="../assets/img/flowers/daisy_left_9.webp" alt=""></div>
       <ul class="protect-list">
-        <li><strong>EDR on your device.</strong> Sophos endpoint detection and response, installed straight from Sophos.</li>
-        <li><strong>MDR included.</strong> Sophos Managed Detection &amp; Response runs alongside EDR on your device - it needs to stay active for the warranty below to apply.</li>
-        <li><strong>Warranty coverage.</strong> Up to $1M under Sophos's terms.</li>
-        <li><strong>12 months, no cost to you.</strong> Selected members only.</li>
+        <li><strong>EDR on your device.</strong>Sophos endpoint detection, protecting your device 24/7.</li>
+        <li><strong>MDR included.</strong>Sophos Managed Detection runs alongside EDR on your device and gives you even a higher grade of security. The Sophos team immediately reacts to any threat possible and stops it from getting to your PC.</li>
+        <li><strong>Warranty coverage.</strong>Funds stolen with Sophos installed? Don’t worry — Sophos will compensate you an amount up to $1M for your stolen funds.</li>
+        <li><strong>12 months with no cost to you.</strong></li>
+        <li><strong>No payment or card linking.</strong>For our network and selected users only.</li>
       </ul>
     </div>
 
@@ -146,7 +250,7 @@
         <button type="submit">Apply</button>
         <p class="form-note" id="protectionNote" aria-live="polite"></p>
       </form>
-      <p class="protect-fine-print">Protection reduces risk, it does not make you unhackable. We don't collect wallet addresses, balances or documents. *Warranty terms are set by Sophos, not Vanneck.</p>
+      <p class="protect-fine-print">Protection reduces risk, it does not make you unhackable. We don’t collect wallet addresses, balances or documents. *Warranty terms are set by Sophos, not Vanneck.</p>
     </div>
 
   </div>
@@ -166,18 +270,20 @@
         <a href="https://t.me/VanneckCapital" aria-label="Telegram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3 2.7 11.8c-1.3.5-1.3 1.2-.2 1.6l4.9 1.5 1.9 5.8c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.2-2.1 4.6 3.4c.8.5 1.4.2 1.6-.8L22 5.3c.3-1.2-.4-1.7-1.1-1Z"/></svg></a>
       </div>
     </div>
-    <div class="footer-col">
+    <div class="footer-col footer-col--two-col">
       <h4>Site</h4>
-      <a href="../index.html#problem">Problem</a>
-      <a href="../index.html#solution">Solution</a>
-      <a href="../index.html#portfolio">Portfolio</a>
-      <a href="../deals/">Deals</a>
-      <a href="../protection/">Protection</a>
-      <a href="../index.html#team">Team</a>
-      <a href="../index.html#services">What's included</a>
-      <a href="../blog/">Blog</a>
-      <a href="../about/">About</a>
-      <a href="../index.html#faq">FAQ</a>
+      <div class="footer-col-grid">
+        <a href="../index.html#problem">Problem</a>
+        <a href="../index.html#solution">Solution</a>
+        <a href="../index.html#portfolio">Portfolio</a>
+        <a href="../deals/">Deals</a>
+        <a href="../protection/">Protection</a>
+        <a href="../index.html#team">Team</a>
+        <a href="../index.html#services">What’s included</a>
+        <a href="../blog/">Blog</a>
+        <a href="../about/">About</a>
+        <a href="../index.html#faq">FAQ</a>
+      </div>
     </div>
     <div class="footer-col">
       <h4>Newsletter</h4>
@@ -201,7 +307,7 @@
       </div>
       <div>
         <h4>Terms of service (summary)</h4>
-        <p>This site is informational and does not constitute an offer to sell or a solicitation of an offer to buy any security. Any investment is made solely under definitive, negotiated agreements following diligence, not on the basis of this website. Figures reflect Vanneck Capital's own track record and are not a guarantee of future results.</p>
+        <p>This site is informational and does not constitute an offer to sell or a solicitation of an offer to buy any security. Any investment is made solely under definitive, negotiated agreements following diligence, not on the basis of this website. Figures reflect Vanneck Capital’s own track record and are not a guarantee of future results.</p>
       </div>
       <div>
         <h4>Cookies &amp; privacy</h4>
@@ -216,7 +322,7 @@
 </footer>
 
 <div class="cookie-banner" id="cookieBanner" hidden>
-  <p>We use cookies to run this site and, with your consent, to understand how it's used.</p>
+  <p>We use cookies to run this site and, with your consent, to understand how it’s used.</p>
   <div class="cookie-actions">
     <button id="cookieDecline" class="cookie-btn ghost">Decline</button>
     <button id="cookieAccept" class="cookie-btn">Accept</button>
