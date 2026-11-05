@@ -425,6 +425,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   margin-bottom:14px}
 .footer-col a{display:block;font-size:13.5px;color:rgba(255,255,255,.82);padding:5px 0}
 .footer-col a:hover{color:var(--white)}
+.footer-col--two-col .footer-col-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
 .newsletter-form{display:flex;gap:8px;margin-top:4px}
 .newsletter-form input{flex:1;font:400 13.5px var(--sans);padding:9px 11px;border-radius:5px;border:1px solid rgba(255,255,255,.25);
   background:rgba(255,255,255,.06);color:var(--white)}
