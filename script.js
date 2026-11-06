@@ -665,7 +665,7 @@
 // newsletter form posts to the backend (adds the contact via Resend).
 // Falls back to a mailto: draft if the request itself fails.
 (function () {
-  const CONTACT_EMAIL = 'hello@vanneckcapital.com';
+  const CONTACT_EMAIL = 'hello@vanneck.xyz';
 
   function wireApiForm(formId, noteId, endpoint, buildPayload, buildMailtoBody, subjectPrefix, successMsg) {
     const form = document.getElementById(formId);
