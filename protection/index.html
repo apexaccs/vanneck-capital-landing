@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../styles.css?v=9641405-60">
+<link rel="stylesheet" href="../styles.css?v=9641405-61">
 <link rel="stylesheet" href="../assets/css/blog.css?v=9641405-58">
 <link rel="stylesheet" href="../assets/css/protect-problems.css?v=9641405-58">
 </head>
@@ -257,10 +257,10 @@
     <div class="protect-form-wrap" id="apply">
       <form id="protectionForm" class="apply-form" novalidate>
         <label class="hp-field" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
-        <label>X handle or Telegram<input type="text" name="contact" required></label>
-        <label>Email<input type="email" name="email" required></label>
-        <label>Role
-          <select name="role" required>
+        <label><span class="lbl">X handle or Telegram <i class="req" aria-hidden="true">*</i></span><input type="text" name="contact" required aria-required="true"></label>
+        <label><span class="lbl">Email <i class="req" aria-hidden="true">*</i></span><input type="email" name="email" required aria-required="true"></label>
+        <label><span class="lbl">Role <i class="req" aria-hidden="true">*</i></span>
+          <select name="role" required aria-required="true">
             <option value="" disabled selected>Select...</option>
             <option value="trader">Trader</option>
             <option value="builder">Builder</option>
@@ -269,8 +269,8 @@
             <option value="other">Other</option>
           </select>
         </label>
-        <label>What do you need Sophos for? <span style="text-transform:none;font-weight:500">(optional)</span><textarea name="need" rows="3"></textarea></label>
-        <label class="checkbox-field"><input type="checkbox" name="agree" required> I agree to be contacted about this programme.</label>
+        <label><span class="lbl">What do you need Sophos for? <span class="opt">(optional)</span></span><textarea name="need" rows="3"></textarea></label>
+        <label class="checkbox-field"><input type="checkbox" name="agree" required aria-required="true"> <span>I agree to be contacted about this programme. <i class="req" aria-hidden="true">*</i></span></label>
         <button type="submit">Apply</button>
         <p class="form-note" id="protectionNote" aria-live="polite"></p>
       </form>
@@ -355,6 +355,6 @@
   </div>
 </div>
 
-<script src="../script.js?v=9641405-60"></script>
+<script src="../script.js?v=9641405-61"></script>
 </body>
 </html>

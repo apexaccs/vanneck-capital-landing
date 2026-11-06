@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css?v=9641405-60">
+<link rel="stylesheet" href="./styles.css?v=9641405-61">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -1219,11 +1219,11 @@
       <p>Tell us what you're building. We read every application.</p>
       <form id="applyForm" class="apply-form" novalidate>
         <label class="hp-field" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
-        <label>Name<input type="text" name="name" required></label>
-        <label>Email<input type="email" name="email" required></label>
-        <label>Project<input type="text" name="project" required></label>
-        <label>Deck or site link<input type="url" name="link"></label>
-        <label>Tell us more<textarea name="message" rows="4"></textarea></label>
+        <label><span class="lbl">Name <i class="req" aria-hidden="true">*</i></span><input type="text" name="name" required aria-required="true"></label>
+        <label><span class="lbl">Email <i class="req" aria-hidden="true">*</i></span><input type="email" name="email" required aria-required="true"></label>
+        <label><span class="lbl">Project <i class="req" aria-hidden="true">*</i></span><input type="text" name="project" required aria-required="true"></label>
+        <label><span class="lbl">Deck or site link</span><input type="url" name="link"></label>
+        <label><span class="lbl">Tell us more</span><textarea name="message" rows="4"></textarea></label>
         <button type="submit">Send application</button>
         <p class="form-note" id="applyNote" aria-live="polite"></p>
       </form>
@@ -1319,6 +1319,6 @@
 </div>
 
 
-<script src="./script.js?v=9641405-60"></script>
+<script src="./script.js?v=9641405-61"></script>
 </body>
 </html>
