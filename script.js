@@ -661,90 +661,291 @@
   targets.forEach((el) => io.observe(el));
 })();
 
-// Apply form posts to the backend (lands in the Telegram channel);
-// newsletter form posts to the backend (adds the contact via Resend).
-// Falls back to a mailto: draft if the request itself fails.
+// Forms post to the backend: apply + protection land in the Telegram chat,
+// newsletter lands in Telegram and the Resend audience. There is no email
+// fallback: if delivery fails the visitor sees an error banner, keeps what
+// they typed and can retry.
 (function () {
-  const CONTACT_EMAIL = 'hello@vanneck.xyz';
+  const TG_URL = 'https://t.me/VanneckCapital';
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-  function wireApiForm(formId, noteId, endpoint, buildPayload, buildMailtoBody, subjectPrefix, successMsg) {
-    const form = document.getElementById(formId);
-    const note = document.getElementById(noteId);
+  // ── banner (success / error) ─────────────────────────────────────────────
+  let modal;
+  let lastFocus = null;
+
+  function buildModal() {
+    modal = document.createElement('div');
+    modal.className = 'fm-overlay';
+    modal.hidden = true;
+    modal.innerHTML =
+      '<div class="fm-card" role="dialog" aria-modal="true" aria-labelledby="fmTitle" aria-describedby="fmText">' +
+        '<img class="fm-flower" src="/assets/img/flowers/rose_right_9.webp" alt="" aria-hidden="true">' +
+        '<button type="button" class="fm-close" aria-label="Close">&times;</button>' +
+        '<div class="fm-icon" aria-hidden="true"></div>' +
+        '<h3 id="fmTitle"></h3>' +
+        '<p id="fmText"></p>' +
+        '<div class="fm-actions">' +
+          '<button type="button" class="fm-btn" data-fm-close></button>' +
+          '<a class="fm-link" href="' + TG_URL + '" target="_blank" rel="noopener" hidden>Write on Telegram</a>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal || e.target.closest('.fm-close') || e.target.closest('[data-fm-close]')) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.hidden) closeModal();
+    });
+  }
+
+  function showModal(kind, title, text, closeLabel) {
+    if (!modal) buildModal();
+    const ok = kind === 'ok';
+    modal.querySelector('.fm-card').dataset.kind = ok ? 'ok' : 'error';
+    modal.querySelector('.fm-icon').innerHTML = ok
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v6M12 17h.01"/></svg>';
+    modal.querySelector('#fmTitle').textContent = title;
+    modal.querySelector('#fmText').textContent = text;
+    modal.querySelector('[data-fm-close]').textContent = closeLabel || 'Close';
+    modal.querySelector('.fm-link').hidden = ok;
+    lastFocus = document.activeElement;
+    modal.hidden = false;
+    requestAnimationFrame(() => modal.classList.add('is-open'));
+    document.body.style.overflow = 'hidden';
+    modal.querySelector('[data-fm-close]').focus();
+  }
+
+  function closeModal() {
+    if (!modal || modal.hidden) return;
+    modal.classList.remove('is-open');
+    document.body.style.overflow = '';
+    setTimeout(() => { modal.hidden = true; }, 220);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  // ── field errors ─────────────────────────────────────────────────────────
+  function fieldEl(form, name) {
+    return form.querySelector('[name="' + name + '"]');
+  }
+
+  function clearErrors(form) {
+    form.querySelectorAll('.field-error').forEach((n) => n.remove());
+    form.querySelectorAll('[aria-invalid]').forEach((n) => n.removeAttribute('aria-invalid'));
+  }
+
+  function setFieldError(form, name, msg) {
+    const input = fieldEl(form, name);
+    if (!input) return false;
+    const label = input.closest('label');
+    const err = document.createElement('span');
+    err.className = 'field-error';
+    err.setAttribute('role', 'alert');
+    err.textContent = msg;
+    input.setAttribute('aria-invalid', 'true');
+    if (label && label.classList.contains('checkbox-field')) label.insertAdjacentElement('afterend', err);
+    else if (label) label.appendChild(err);
+    else input.insertAdjacentElement('afterend', err);
+    return true;
+  }
+
+  function normalizeUrl(v) {
+    const s = v.trim();
+    if (!s) return '';
+    return /^[a-z][a-z0-9+.-]*:\/\//i.test(s) ? s : 'https://' + s;
+  }
+
+  function isHttpUrl(s) {
+    try {
+      const u = new URL(s);
+      return (u.protocol === 'http:' || u.protocol === 'https:') && u.hostname.includes('.');
+    } catch (e) {
+      return false;
+    }
+  }
+
+  const val = (d, k) => String(d.get(k) || '').trim();
+
+  // ── form wiring ──────────────────────────────────────────────────────────
+  // validate(data) -> { field: message }; buildPayload(data) -> JSON body
+  function wireApiForm(cfg) {
+    const form = document.getElementById(cfg.formId);
+    const note = document.getElementById(cfg.noteId);
     if (!form) return;
+    form.noValidate = true;
+    let busy = false;
+
+    form.addEventListener('input', (e) => {
+      const t = e.target;
+      if (t.getAttribute && t.getAttribute('aria-invalid')) {
+        t.removeAttribute('aria-invalid');
+        const label = t.closest('label');
+        const err = label && (label.querySelector('.field-error') ||
+          (label.nextElementSibling && label.nextElementSibling.classList.contains('field-error') ? label.nextElementSibling : null));
+        if (err) err.remove();
+      }
+      if (note) note.textContent = '';
+    });
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (busy) return;
       const data = new FormData(form);
       // honeypot: real visitors never fill a field hidden off-screen
       if (data.get('website')) {
         form.reset();
         return;
       }
+
+      clearErrors(form);
+      if (note) note.textContent = '';
+      const errors = cfg.validate(data);
+      const names = Object.keys(errors);
+      if (names.length) {
+        if (cfg.inlineErrors === false) {
+          if (note) note.textContent = errors[names[0]];
+        } else {
+          names.forEach((n) => setFieldError(form, n, errors[n]));
+        }
+        const first = fieldEl(form, names[0]);
+        if (first) first.focus();
+        return;
+      }
+
+      busy = true;
       const submitBtn = form.querySelector('button[type="submit"]');
       if (submitBtn) submitBtn.disabled = true;
       if (note) note.textContent = 'Sending...';
+
       try {
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(buildPayload(data)),
-        });
-        if (!res.ok) throw new Error('request failed');
-        if (note) note.textContent = successMsg;
-        form.reset();
+        const res = await post(cfg.endpoint, cfg.buildPayload(data));
+        if (res.ok) {
+          if (note) note.textContent = '';
+          form.reset();
+          showModal('ok', cfg.successTitle, cfg.successText, 'Close');
+          return;
+        }
+        let body = null;
+        try { body = await res.json(); } catch (err) { /* not JSON */ }
+        if (res.status === 400 && body && body.field) {
+          const placed = cfg.inlineErrors !== false && setFieldError(form, body.field, body.error || 'Please check this field');
+          if (placed) {
+            const badField = fieldEl(form, body.field);
+            if (badField) badField.focus();
+          } else if (note) {
+            note.textContent = body.error || 'Please check your input';
+          }
+          return;
+        }
+        throw new Error('delivery failed');
       } catch (err) {
-        const subject = encodeURIComponent(`${subjectPrefix}: ${data.get('project') || data.get('email') || ''}`);
-        window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${encodeURIComponent(buildMailtoBody(data))}`;
-        if (note) note.textContent = "Couldn't send automatically - opening your email client instead.";
-        form.reset();
+        if (note) note.textContent = '';
+        showModal(
+          'error',
+          "We couldn't send it",
+          'Something went wrong on our side. What you typed is still in the form: please try again in a minute, or write to us on Telegram.',
+          'Try again'
+        );
       } finally {
+        busy = false;
         if (submitBtn) submitBtn.disabled = false;
       }
     });
   }
 
-  wireApiForm(
-    'applyForm',
-    'applyNote',
-    '/api/apply',
-    (d) => ({
-      name: d.get('name'),
-      email: d.get('email'),
-      project: d.get('project'),
-      link: d.get('link') || '',
-      message: d.get('message') || '',
-    }),
-    (d) =>
-      `Name: ${d.get('name')}\nEmail: ${d.get('email')}\nProject: ${d.get('project')}\nLink: ${d.get('link') || '-'}\n\n${d.get('message') || ''}`,
-    'Application',
-    'Thanks - we reply within a few days.'
-  );
+  // POST with a 15s timeout; one retry on network failure or 502/503/504.
+  async function post(url, payload) {
+    let last;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 15000);
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: ctrl.signal,
+        });
+        if (res.ok || ![502, 503, 504].includes(res.status)) return res;
+        last = res;
+      } catch (err) {
+        last = err;
+      } finally {
+        clearTimeout(timer);
+      }
+      await new Promise((r) => setTimeout(r, 900));
+    }
+    if (last instanceof Response) return last;
+    throw last;
+  }
 
-  wireApiForm(
-    'newsletterForm',
-    'newsletterNote',
-    '/api/newsletter',
-    (d) => ({ email: d.get('email') }),
-    (d) => `Please subscribe: ${d.get('email')}`,
-    'Newsletter signup',
-    'Subscribed - thank you.'
-  );
-
-  wireApiForm(
-    'protectionForm',
-    'protectionNote',
-    '/api/protection',
-    (d) => ({
-      contact: d.get('contact'),
-      email: d.get('email'),
-      role: d.get('role'),
-      need: d.get('need') || '',
-      agree: d.get('agree') ? true : false,
+  wireApiForm({
+    formId: 'applyForm',
+    noteId: 'applyNote',
+    endpoint: '/api/apply',
+    validate(d) {
+      const err = {};
+      const name = val(d, 'name');
+      const project = val(d, 'project');
+      const link = val(d, 'link');
+      if (name.length < 2) err.name = 'Please enter your name';
+      else if (name.length > 100) err.name = 'Name is too long';
+      if (!EMAIL_RE.test(val(d, 'email'))) err.email = 'Please enter a valid email';
+      if (project.length < 2) err.project = 'Please tell us the project name';
+      else if (project.length > 200) err.project = 'Project name is too long';
+      if (link && !isHttpUrl(normalizeUrl(link))) err.link = 'Please enter a valid link';
+      if (val(d, 'message').length > 2000) err.message = 'Message is too long';
+      return err;
+    },
+    buildPayload: (d) => ({
+      name: val(d, 'name'),
+      email: val(d, 'email'),
+      project: val(d, 'project'),
+      link: normalizeUrl(val(d, 'link')),
+      message: val(d, 'message'),
     }),
-    (d) =>
-      `Contact: ${d.get('contact')}\nEmail: ${d.get('email')}\nRole: ${d.get('role')}\nWhat for: ${d.get('need') || '-'}`,
-    'Sophos protection application',
-    "Thanks - we'll review and reply."
-  );
+    successTitle: 'Form submitted',
+    successText: "Thank you! We've received your application. Please wait for our reply.",
+  });
+
+  wireApiForm({
+    formId: 'protectionForm',
+    noteId: 'protectionNote',
+    endpoint: '/api/protection',
+    validate(d) {
+      const err = {};
+      const contact = val(d, 'contact');
+      if (contact.length < 3 || !/[a-z0-9]{2,}/i.test(contact)) err.contact = 'Please enter your X handle or Telegram';
+      else if (contact.length > 100) err.contact = 'This is too long';
+      if (!EMAIL_RE.test(val(d, 'email'))) err.email = 'Please enter a valid email';
+      if (!val(d, 'role')) err.role = 'Please select your role';
+      if (val(d, 'need').length > 1000) err.need = 'Text is too long';
+      if (!d.get('agree')) err.agree = 'Please confirm to continue';
+      return err;
+    },
+    buildPayload: (d) => ({
+      contact: val(d, 'contact'),
+      email: val(d, 'email'),
+      role: val(d, 'role'),
+      need: val(d, 'need'),
+      agree: !!d.get('agree'),
+    }),
+    successTitle: 'Form submitted',
+    successText: "Thank you! We've received your application. Please wait for our reply.",
+  });
+
+  wireApiForm({
+    formId: 'newsletterForm',
+    noteId: 'newsletterNote',
+    endpoint: '/api/newsletter',
+    inlineErrors: false,
+    validate(d) {
+      return EMAIL_RE.test(val(d, 'email')) ? {} : { email: 'Please enter a valid email' };
+    },
+    buildPayload: (d) => ({ email: val(d, 'email') }),
+    successTitle: "You're subscribed",
+    successText: 'Thank you! Occasional notes on deals and the market. No spam.',
+  });
 })();
 
 // Cookie consent banner
