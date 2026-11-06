@@ -22,11 +22,6 @@
   padding: 32px;
 }
 
-.protect-problem-card--alt {
-  background: var(--white);
-  border-color: rgba(29,75,168,.14);
-}
-
 /* gzhel flower: 3D perspective tilt, painted look with shadow */
 .protect-pc-flower {
   position: absolute;
@@ -118,10 +113,6 @@
   border: 1px solid rgba(29,75,168,.12);
   border-radius: 12px;
   padding: 14px 18px;
-}
-
-.protect-problem-card--alt .ppc-case {
-  background: var(--bg-pale);
 }
 
 .ppc-case-label {
