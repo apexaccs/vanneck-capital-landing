@@ -14,7 +14,7 @@
   </url>
   <url>
     <loc>https://vanneck.xyz/blog/</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -92,7 +92,13 @@
   </url>
   <url>
     <loc>https://vanneck.xyz/blog/liquidation-preference-and-anti-dilution/</loc>
-    <lastmod>2026-11-06</lastmod>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://vanneck.xyz/blog/build-your-data-room/</loc>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

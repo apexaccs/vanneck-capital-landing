@@ -56,6 +56,7 @@
 .blog-modal-text p,.blog-post-text p{font-size:15px;line-height:1.65;color:var(--ink-soft);margin-bottom:12px}
 .blog-modal-text ul,.blog-modal-text ol,.blog-post-text ul,.blog-post-text ol{margin:0 0 14px 22px;color:var(--ink-soft)}
 .blog-modal-text li,.blog-post-text li{font-size:15px;line-height:1.6;margin-bottom:6px}
+.blog-modal-text code,.blog-post-text code{font:500 .88em ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--bg-pale);color:var(--cobalt);border:1px solid rgba(29,75,168,.16);border-radius:4px;padding:1px 6px;white-space:nowrap}
 .blog-modal-text a,.blog-post-text a{color:var(--blue-mid);text-decoration:underline;text-underline-offset:2px}
 
 /* standalone article page */

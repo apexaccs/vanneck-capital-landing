@@ -25,6 +25,7 @@ https://vanneck.xyz/blog/how-to-read-a-token-unlock-schedule/
 https://vanneck.xyz/blog/safe-saft-token-warrant-hybrid/
 https://vanneck.xyz/blog/how-to-check-an-investor/
 https://vanneck.xyz/blog/liquidation-preference-and-anti-dilution/
+https://vanneck.xyz/blog/build-your-data-room/
 EOF
 )
 
