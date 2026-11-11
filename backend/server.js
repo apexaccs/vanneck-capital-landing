@@ -170,7 +170,7 @@ app.post('/api/protection', async (req, res) => {
     const need = clean(body.need);
 
     if (contact.length < 3 || contact.length > 100 || !/[a-z0-9]{2,}/i.test(contact)) {
-      return bad(res, 'contact', 'Please enter your X handle or Telegram');
+      return bad(res, 'contact', 'Please enter your X handle');
     }
     if (!isValidEmail(email)) return bad(res, 'email', 'Please enter a valid email');
     if (!ROLES.includes(role)) return bad(res, 'role', 'Please select your role');

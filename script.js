@@ -666,7 +666,7 @@
 // fallback: if delivery fails the visitor sees an error banner, keeps what
 // they typed and can retry.
 (function () {
-  const TG_URL = 'https://t.me/VanneckCapital';
+  const X_URL = 'https://x.com/VanneckCapital';
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   // ── banner (success / error) ─────────────────────────────────────────────
@@ -686,7 +686,7 @@
         '<p id="fmText"></p>' +
         '<div class="fm-actions">' +
           '<button type="button" class="fm-btn" data-fm-close></button>' +
-          '<a class="fm-link" href="' + TG_URL + '" target="_blank" rel="noopener" hidden>Write on Telegram</a>' +
+          '<a class="fm-link" href="' + X_URL + '" target="_blank" rel="noopener" hidden>Write to us on X</a>' +
         '</div>' +
       '</div>';
     document.body.appendChild(modal);
@@ -843,7 +843,7 @@
         showModal(
           'error',
           "We couldn't send it",
-          'Something went wrong on our side. What you typed is still in the form: please try again in a minute, or write to us on Telegram.',
+          'Something went wrong on our side. What you typed is still in the form: please try again in a minute, or write to us on X.',
           'Try again'
         );
       } finally {
@@ -915,7 +915,7 @@
     validate(d) {
       const err = {};
       const contact = val(d, 'contact');
-      if (contact.length < 3 || !/[a-z0-9]{2,}/i.test(contact)) err.contact = 'Please enter your X handle or Telegram';
+      if (contact.length < 3 || !/[a-z0-9]{2,}/i.test(contact)) err.contact = 'Please enter your X handle';
       else if (contact.length > 100) err.contact = 'This is too long';
       if (!EMAIL_RE.test(val(d, 'email'))) err.email = 'Please enter a valid email';
       if (!val(d, 'role')) err.role = 'Please select your role';
@@ -1097,28 +1097,27 @@
   if (!box) return;
 
   const team = [
-    { name: 'Trevor Cesur', photo: 'assets/img/team/trevor.jpg', role: 'Co-Founder & Business Development', tg: 't.me/trevhl', x: 'x.com/TrevorCesur', mail: 'trevor@vanneck.xyz' },
-    { name: 'Siaha Akpro', photo: 'assets/img/team/siaha-akpro.jpg', role: 'Managing Partner', tg: null, x: null, mail: null },
-    { name: 'Liam Clark', photo: 'assets/img/team/liam-clark-2.jpg', role: 'General Partner', tg: null, x: 'x.com/Sonchqm', mail: null },
-    { name: 'Edward Lindemann', photo: 'assets/img/team/edwaaard.jpg', role: 'CTO', tg: null, x: 'x.com/edlindex', mail: 'edwardlindemann.ch@gmail.com' },
-    { name: 'Kyle Allen', photo: 'assets/img/team/kyle-allen.jpg', role: 'CFO & Business Development', tg: 't.me/Kylegalaxy', x: 'x.com/DiCoFirsties', mail: null },
-    { name: 'Darren Lim', photo: 'assets/img/team/darren.jpg', role: 'Investment Committee', tg: 't.me/liquidlab3', x: 'x.com/darrenvcz0n', mail: 'darrenmgmt@proton.me' },
-    { name: 'Dolphin', photo: 'assets/img/team/dolphin.jpg', role: 'Business Development Manager', tg: 't.me/dlphin01', x: 'x.com/dlphin01', mail: 'dolphin@vanneck.xyz' },
-    { name: 'Nick Buckler', photo: 'assets/img/team/nick-buckler.jpg', role: 'Business Developer', tg: 't.me/nickapephoto', x: 'x.com/flokamon6q', mail: null },
-    { name: 'Son Jin', photo: 'assets/img/team/sonjin.jpg', role: 'Growth Advisor', tg: null, x: 'x.com/SonJin_yop', mail: null },
+    { name: 'Trevor Cesur', photo: 'assets/img/team/trevor.jpg', role: 'Co-Founder & Business Development', x: 'x.com/TrevorCesur', mail: 'trevor@vanneck.xyz' },
+    { name: 'Siaha Akpro', photo: 'assets/img/team/siaha-akpro.jpg', role: 'Managing Partner', x: null, mail: null },
+    { name: 'Liam Clark', photo: 'assets/img/team/liam-clark-2.jpg', role: 'General Partner', x: 'x.com/Sonchqm', mail: null },
+    { name: 'Edward Lindemann', photo: 'assets/img/team/edwaaard.jpg', role: 'CTO', x: 'x.com/edlindex', mail: 'edwardlindemann.ch@gmail.com' },
+    { name: 'Kyle Allen', photo: 'assets/img/team/kyle-allen.jpg', role: 'CFO & Business Development', x: 'x.com/DiCoFirsties', mail: null },
+    { name: 'Darren Lim', photo: 'assets/img/team/darren.jpg', role: 'Investment Committee', x: 'x.com/darrenvcz0n', mail: 'darrenmgmt@proton.me' },
+    { name: 'Dolphin', photo: 'assets/img/team/dolphin.jpg', role: 'Business Development Manager', x: 'x.com/dlphin01', mail: 'dolphin@vanneck.xyz' },
+    { name: 'Nick Buckler', photo: 'assets/img/team/nick-buckler.jpg', role: 'Business Developer', x: 'x.com/flokamon6q', mail: null },
+    { name: 'Son Jin', photo: 'assets/img/team/sonjin.jpg', role: 'Growth Advisor', x: 'x.com/SonJin_yop', mail: null },
   ];
 
   function normalize(v) {
     if (!v) return '';
     return v.trim().toLowerCase()
       .replace(/^https?:\/\//, '')
-      .replace(/^t\.me\//, '')
       .replace(/^x\.com\//, '')
       .replace(/^mailto:/, '')
       .replace(/^@/, '');
   }
 
-  let kind = 'tg';
+  let kind = 'x';
   const tabs = box.querySelectorAll('.verify-tab');
   const input = box.querySelector('#verifyInput');
   const btn = box.querySelector('#verifyBtn');
