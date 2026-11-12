@@ -666,7 +666,7 @@
 // fallback: if delivery fails the visitor sees an error banner, keeps what
 // they typed and can retry.
 (function () {
-  const X_URL = 'https://x.com/VanneckCapital';
+  const X_URL = 'https://x.com/VanneckPartner';
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   // ── banner (success / error) ─────────────────────────────────────────────
