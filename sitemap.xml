@@ -14,7 +14,7 @@
   </url>
   <url>
     <loc>https://vanneck.xyz/blog/</loc>
-    <lastmod>2026-11-13</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -104,7 +104,13 @@
   </url>
   <url>
     <loc>https://vanneck.xyz/blog/pro-rata-rights-explained/</loc>
-    <lastmod>2026-11-13</lastmod>
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://vanneck.xyz/blog/what-dtcc-on-solana-means-for-token-founders/</loc>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

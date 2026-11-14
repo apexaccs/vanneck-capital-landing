@@ -27,6 +27,7 @@ https://vanneck.xyz/blog/liquidation-preference-and-anti-dilution/
 https://vanneck.xyz/blog/build-your-data-room/
 https://vanneck.xyz/blog/token-unlock-schedule-worked-example/
 https://vanneck.xyz/blog/pro-rata-rights-explained/
+https://vanneck.xyz/blog/what-dtcc-on-solana-means-for-token-founders/
 EOF
 )
 
