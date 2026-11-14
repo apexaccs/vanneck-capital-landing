@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pro-rata rights, explained with one worked example - Vanneck Capital Blog</title>
+<meta name="description" content="What pro-rata means, how the math works, and what founders should plan for before the next round.">
+<link rel="canonical" href="https://vanneck.xyz/blog/pro-rata-rights-explained/">
+<link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="../../assets/img/icons/favicon-48.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../../assets/img/icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="../../assets/img/icons/icon-512.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vanneck Capital">
+<meta property="og:title" content="Pro-rata rights, explained with one worked example - Vanneck Capital Blog">
+<meta property="og:description" content="What pro-rata means, how the math works, and what founders should plan for before the next round.">
+<meta property="og:url" content="https://vanneck.xyz/blog/pro-rata-rights-explained/">
+<meta property="og:image" content="https://vanneck.xyz/assets/img/blog/prorata.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pro-rata rights, explained with one worked example - Vanneck Capital Blog">
+<meta name="twitter:description" content="What pro-rata means, how the math works, and what founders should plan for before the next round.">
+<meta name="twitter:image" content="https://vanneck.xyz/assets/img/blog/prorata.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles.css?v=9641405-61">
+<link rel="stylesheet" href="../../assets/css/blog.css?v=9641405-63">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Pro-rata rights, explained with one worked example",
+  "description": "What pro-rata means, how the math works, and what founders should plan for before the next round.",
+  "image": "https://vanneck.xyz/assets/img/blog/prorata.webp",
+  "datePublished": "2026-11-13",
+  "dateModified": "2026-11-13",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://vanneck.xyz/blog/pro-rata-rights-explained/" },
+  "author": { "@type": "Organization", "name": "Vanneck Capital", "url": "https://vanneck.xyz/" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Vanneck Capital",
+    "logo": { "@type": "ImageObject", "url": "https://vanneck.xyz/assets/img/icons/icon-512.png" }
+  }
+}
+</script>
+</head>
+<body>
+<header class="nav" id="nav">
+  <a class="brand" href="../../index.html" aria-label="Vanneck Capital - home">
+    <img class="mark" src="../../assets/img/mark-v.png" alt="" width="58" height="41">
+    <span class="wordmark">VANNECK<small>CAPITAL</small></span>
+  </a>
+  <nav class="nav-pill" id="navPill" aria-label="Sections">
+    <a href="../../index.html#problem">Problem</a>
+    <a href="../../index.html#solution">Solution</a>
+    <a href="../../index.html#portfolio">Portfolio</a>
+    <a href="../../deals/">Deals</a>
+    <a href="../../index.html#team">Team</a>
+    <a href="../../index.html#services">Services</a>
+    <a href="../../blog/" class="is-active">Blog</a>
+    <a href="../../about/">About</a>
+    <a href="../../index.html#faq">FAQ</a>
+  </nav>
+  <div class="socials" aria-label="Social links">
+    <a href="https://x.com/VanneckPartner" aria-label="X (Twitter)" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M3 3l7.5 9.6L3.4 21h2.3l6.2-7.1 5 7.1H21l-7.9-10 7-8h-2.3l-5.7 6.5L7.9 3H3zm3.4 1.7h2.1l9 12.6h-2.1L6.4 4.7z"/></svg>
+    </a>
+    <a href="https://wellfound.com/company/vanneck-capital" aria-label="Wellfound" target="_blank" rel="noopener">
+      <svg viewBox="0 0 375 375" aria-hidden="true"><path fill-rule="evenodd" d="M323.5 269.1C312.5 264.1 307.5 256.2 307.5 244.0C307.5 234.4 308.9 230.4 314.6 224.6C336.4 202.2 373.0 228.4 359.0 256.3C352.7 268.8 336.0 274.9 323.5 269.1ZM61.5 261.8C59.6 255.8 19.1 125.4 13.4 106.8C12.9 105.1 14.4 105.0 36.4 105.0C51.1 105.0 60.1 105.4 60.5 106.0C60.8 106.6 62.7 113.2 64.6 120.8C66.5 128.3 72.4 151.4 77.7 172.0C82.9 192.6 87.9 212.3 88.7 215.8C89.5 219.3 90.3 222.0 90.5 221.8C90.7 221.6 95.8 203.3 102.0 181.0C108.1 158.7 114.7 134.9 116.6 128.0C118.6 121.1 120.8 113.1 121.6 110.2L123.1 105.0L146.5 105.0C170.0 105.0 170.0 105.0 171.0 107.2C171.8 109.2 190.3 175.1 197.6 202.5C199.0 207.4 200.8 214.0 201.6 217.0L203.2 222.5L206.0 211.5C214.1 179.2 232.2 108.3 232.6 106.8C233.1 105.1 235.1 105.0 256.6 105.0C283.9 105.0 281.7 103.4 276.4 119.5C274.4 125.5 269.3 141.8 265.0 155.5C258.4 176.8 248.9 206.8 232.7 258.5L229.2 269.5L204.4 269.8C190.8 269.9 179.3 269.7 178.9 269.3C178.2 268.6 173.4 250.8 153.1 175.3C150.0 163.7 147.2 153.9 146.9 153.6C146.6 153.3 145.2 157.6 143.7 163.3C142.2 168.9 137.2 187.4 132.4 204.5C127.7 221.6 121.9 242.9 119.4 251.9C117.0 260.9 114.7 268.6 114.4 269.1C114.1 269.6 102.7 270.0 89.0 270.0L64.1 270.0L61.5 261.8ZM327.5 158.1C320.2 156.3 312.8 150.2 309.3 143.2C306.3 137.0 306.7 123.8 310.2 117.9C322.2 97.5 353.0 99.9 360.4 121.8C367.6 142.7 348.8 163.3 327.5 158.1Z"/></svg>
+      </a>
+    <a href="https://app.dealroom.co/investors/vanneck_capital" aria-label="Dealroom" target="_blank" rel="noopener">
+      <svg viewBox="0 0 184 184" aria-hidden="true"><path fill-rule="evenodd" d="M6.0 122.0L6.0 96.0L21.0 96.0L36.0 96.0L36.0 122.0L36.0 148.0L21.0 148.0L6.0 148.0L6.0 122.0ZM44.7 147.2C44.5 146.8 44.4 128.3 44.5 106.0L44.6 65.5L59.5 65.5L74.5 65.5L74.8 106.8L75.0 148.0L60.1 148.0C51.8 148.0 44.9 147.7 44.7 147.2ZM83.0 91.5L83.0 34.8L108.2 35.3C126.6 35.6 135.2 36.2 139.6 37.4C165.1 43.9 177.5 61.2 177.4 90.0C177.3 113.3 168.9 130.1 152.6 139.9C142.0 146.3 136.5 147.2 108.2 147.7L83.0 148.2L83.0 91.5ZM131.5 121.0C136.8 118.7 139.4 116.0 142.8 109.7C145.3 104.8 145.5 103.7 145.5 91.5C145.5 68.5 138.8 60.0 120.4 60.0L113.1 60.0L112.8 90.6C112.6 107.4 112.7 121.6 113.0 122.0C114.4 124.3 125.6 123.7 131.5 121.0Z"/></svg>
+      </a>
+  </div>
+  <a class="blog-exit-btn" href="../../index.html"><svg class="flower-ico" viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><circle cx="12" cy="7.2" r="3.1"/><circle cx="16.8" cy="10" r="3.1"/><circle cx="15" cy="15.6" r="3.1"/><circle cx="9" cy="15.6" r="3.1"/><circle cx="7.2" cy="10" r="3.1"/></g><circle cx="12" cy="11.3" r="2.3" fill="#fff"/><circle cx="12" cy="11.3" r="1" fill="currentColor"/></svg>Main site</a>
+</header>
+
+<main>
+<article class="blog-post-wrap">
+  <div class="blog-post-head">
+    <a class="blog-post-back" href="../">&larr; Blog</a>
+    <time datetime="2026-11-13">November 13, 2026</time>
+  </div>
+  <img class="blog-post-banner" src="/assets/img/blog/prorata.webp" alt="Pro-rata rights, explained with one worked example">
+  <h1>Pro-rata rights, explained with one worked example</h1>
+  <div class="blog-post-text" id="post-content">
+
+<p>A founder closes a seed round with a clean cap table. Eighteen months later the next round opens, and an early investor says, "We would like to use our pro-rata." It helps to know what that sentence means before the call, not during it.</p>
+
+<h2>What the right is</h2>
+<p>A pro-rata right lets an investor buy a share of a future round equal to their current ownership. The purpose is to hold the same percentage while new shares are issued. It is an option, not an obligation. In Vanneck deals, pro-rata rights are part of our standard terms.</p>
+
+<h2>A worked example</h2>
+<ul>
+<li>A $500K check at a $10M post-money valuation is 5%.</li>
+<li>The company later raises $4M at a $20M post-money valuation. New investors receive 20% of the company ($4M divided by $20M).</li>
+<li>An investor who does nothing is diluted from 5% to 4% (5% x (1 - 0.20)).</li>
+<li>With pro-rata, the investor buys 5% of the round, which is $200K (5% x $4M). That buys 1% of the company ($200K divided by $20M), and 4% plus 1% is 5% again.</li>
+</ul>
+<p>The example is simplified. It ignores option pool changes and any other terms of the round.</p>
+
+<h2>What founders should plan for</h2>
+<ul>
+<li>Reserve the allocation when you size the round. In the example, $200K of the $4M is spoken for before you call a single new investor. With several holders of pro-rata, the reserved share can be large.</li>
+<li>Ask each investor early whether they intend to use the right. A late answer can reshape the round.</li>
+<li>Pro-rata can be waived. A new lead sometimes asks existing investors to give up part of theirs. That is a negotiation, not a default.</li>
+</ul>
+
+<h2>What to check in a term sheet</h2>
+<ul>
+<li>Who holds the right: all investors, or only those above a size threshold.</li>
+<li>What the percentage is measured on: fully diluted ownership or issued shares only.</li>
+<li>Whether the right covers every future round or only the next one, and when it expires.</li>
+<li>Whether it sits in the investment agreement or in a side letter.</li>
+</ul>
+
+<p>Agree on these four points in the first term sheet. It is cheaper than agreeing on them in the middle of the next round.</p>
+
+<p><em>This article is general information for founders and not legal or financial advice.</em></p>
+
+  </div>
+  <nav class="blog-post-pager"><a href="../token-unlock-schedule-worked-example/">&larr; How to read a token unlock schedule: a worked example</a><a class="blog-post-pager-all" href="../">All articles</a><span></span></nav>
+</article>
+
+</main>
+<footer class="site-footer blog-footer">
+  <div class="footer-bottom">
+    <a href="../../index.html">&larr; Back to vanneck.xyz</a>
+    <span>&copy; 2025 Vanneck &amp; Partners Ltd. All rights reserved.</span>
+  </div>
+</footer>
+
+
+</body>
+</html>
