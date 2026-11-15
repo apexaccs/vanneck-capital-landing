@@ -168,3 +168,7 @@ main{flex:1 0 auto}
   .blog-post-pager{flex-direction:column;align-items:flex-start}
   .blog-post-pager a{max-width:100%}
 }
+
+.blog-post-byline{margin:-6px 0 22px;font:500 14px var(--sans);color:var(--ink-soft)}
+.blog-post-byline a{color:var(--cobalt);text-decoration:none}
+.blog-post-byline a:hover{text-decoration:underline}
