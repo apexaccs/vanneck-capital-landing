@@ -10,6 +10,8 @@
 .blog-exit-btn:hover{color:var(--white);background:var(--blue-mid);border-color:var(--blue-mid)}
 .blog-exit-btn .flower-ico{width:12px;height:12px;flex:none}
 .nav-pill a.is-active{color:var(--blue-mid);background:var(--bg-pale)}
+/* socials hidden at <=1000px: keep the button on its own row instead of the 3rd column */
+@media (max-width:1000px){.blog-exit-btn{grid-column:1/-1;grid-row:2}}
 
 .blog-hero{width:100%;overflow:hidden;background:var(--white)}
 .blog-hero img{width:100%;height:auto;display:block}
