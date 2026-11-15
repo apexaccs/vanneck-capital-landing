@@ -1,8 +1,61 @@
+import net from 'node:net';
 import express from 'express';
 import 'dotenv/config';
 
 const app = express();
 app.disable('x-powered-by');
+
+// Rate limiting for every /api/* request, in memory (single process). It runs
+// before the body is parsed, so floods are rejected cheaply and never reach
+// Telegram or Resend. Two layers: per client IP, and a global ceiling that
+// still holds if the IP header is spoofed (e.g. someone bypassing Cloudflare).
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_PER_IP = 10;
+const RATE_GLOBAL = 60;
+
+function createCounter(windowMs) {
+  const hits = new Map();
+  setInterval(() => {
+    const now = Date.now();
+    for (const [key, e] of hits) if (e.resetAt <= now) hits.delete(key);
+  }, windowMs).unref();
+  return (key) => {
+    const now = Date.now();
+    let e = hits.get(key);
+    if (!e || e.resetAt <= now) {
+      e = { count: 0, resetAt: now + windowMs };
+      hits.set(key, e);
+    }
+    e.count += 1;
+    return { count: e.count, retryAfter: Math.max(1, Math.ceil((e.resetAt - now) / 1000)) };
+  };
+}
+
+const countAll = createCounter(RATE_WINDOW_MS);
+const countIp = createCounter(RATE_WINDOW_MS);
+
+// Cloudflare sets CF-Connecting-IP itself. Without it (direct hit) fall back to
+// the socket address, which is never client-controlled.
+function clientKey(req) {
+  const cf = req.get('cf-connecting-ip');
+  if (cf && net.isIP(cf.trim())) return cf.trim();
+  return req.socket.remoteAddress || 'unknown';
+}
+
+app.use('/api/', (req, res, next) => {
+  const global = countAll('all');
+  if (global.count > RATE_GLOBAL) {
+    res.set('Retry-After', String(global.retryAfter));
+    return res.status(429).json({ ok: false, error: 'Too many requests, please try again later' });
+  }
+  const ip = countIp(clientKey(req));
+  if (ip.count > RATE_PER_IP) {
+    res.set('Retry-After', String(ip.retryAfter));
+    return res.status(429).json({ ok: false, error: 'Too many requests, please try again later' });
+  }
+  next();
+});
+
 app.use(express.json({ limit: '32kb' }));
 
 const PORT = process.env.PORT || 3000;

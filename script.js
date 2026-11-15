@@ -825,6 +825,11 @@
           showModal('ok', cfg.successTitle, cfg.successText, 'Close');
           return;
         }
+        if (res.status === 429) {
+          if (note) note.textContent = '';
+          showModal('error', 'Too many attempts', 'Please wait a few minutes and try again.', 'Close');
+          return;
+        }
         let body = null;
         try { body = await res.json(); } catch (err) { /* not JSON */ }
         if (res.status === 400 && body && body.field) {
