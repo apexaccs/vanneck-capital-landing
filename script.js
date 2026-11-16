@@ -1103,7 +1103,6 @@
 
   const team = [
     { name: 'Trevor Cesur', photo: 'assets/img/team/trevor.jpg', role: 'Co-Founder & Business Development', x: 'x.com/TrevorCesur', mail: 'trevor@vanneck.xyz' },
-    { name: 'Siaha Akpro', photo: 'assets/img/team/siaha-akpro.jpg', role: 'Managing Partner', x: null, mail: null },
     { name: 'Liam Clark', photo: 'assets/img/team/liam-clark-2.jpg', role: 'General Partner', x: 'x.com/Sonchqm', mail: null },
     { name: 'Edward Lindemann', photo: 'assets/img/team/edwaaard.jpg', role: 'CTO', x: 'x.com/edlindex', mail: 'edwardlindemann.ch@gmail.com' },
     { name: 'Kyle Allen', photo: 'assets/img/team/kyle-allen.jpg', role: 'CFO & Business Development', x: 'x.com/DiCoFirsties', mail: null },
