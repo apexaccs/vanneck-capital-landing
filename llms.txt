@@ -21,6 +21,7 @@ Vanneck Capital is not VanEck Capital, the private-markets investment platform o
 
 ## Blog articles
 
+- [What a $14.2B stablecoin contraction says about liquidity](https://vanneck.xyz/blog/stablecoin-contraction-liquidity/): Stablecoin supply fell $14.2B in 30 days. What the data says, what it does not, and what founders planning a raise can take from it.
 - [What DTCC on Solana means for token founders](https://vanneck.xyz/blog/what-dtcc-on-solana-means-for-token-founders/): DTCC plans to bring tokenized securities to Solana in H2 2027. What is confirmed, what is not, and what founders should ask.
 - [Pro-rata rights, explained with one worked example](https://vanneck.xyz/blog/pro-rata-rights-explained/): What pro-rata means, how the math works, and what founders should plan for before the next round.
 - [How to read a token unlock schedule: a worked example](https://vanneck.xyz/blog/token-unlock-schedule-worked-example/): Cliff, linear unlock, circulating supply and FDV: a worked example with a made-up token.
