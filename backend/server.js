@@ -34,11 +34,16 @@ function createCounter(windowMs) {
 const countAll = createCounter(RATE_WINDOW_MS);
 const countIp = createCounter(RATE_WINDOW_MS);
 
-// Cloudflare sets CF-Connecting-IP itself. Without it (direct hit) fall back to
-// the socket address, which is never client-controlled.
+// Client IP for rate limiting. The backend listens on 127.0.0.1 only, so the
+// only caller is nginx, which sets X-Real-IP itself (overwriting anything a
+// visitor sends) and resolves Cloudflare via the real_ip module. CF-Connecting-IP
+// is kept only as a fallback for the period before nginx sends X-Real-IP; once
+// the site is off Cloudflare it must not be trusted and can be deleted.
 function clientKey(req) {
-  const cf = req.get('cf-connecting-ip');
-  if (cf && net.isIP(cf.trim())) return cf.trim();
+  const real = (req.get('x-real-ip') || '').trim();
+  if (net.isIP(real)) return real;
+  const cf = (req.get('cf-connecting-ip') || '').trim();
+  if (net.isIP(cf)) return cf;
   return req.socket.remoteAddress || 'unknown';
 }
 
