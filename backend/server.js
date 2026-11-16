@@ -36,14 +36,10 @@ const countIp = createCounter(RATE_WINDOW_MS);
 
 // Client IP for rate limiting. The backend listens on 127.0.0.1 only, so the
 // only caller is nginx, which sets X-Real-IP itself (overwriting anything a
-// visitor sends) and resolves Cloudflare via the real_ip module. CF-Connecting-IP
-// is kept only as a fallback for the period before nginx sends X-Real-IP; once
-// the site is off Cloudflare it must not be trusted and can be deleted.
+// visitor sends). Never trust any other client-supplied IP header here.
 function clientKey(req) {
   const real = (req.get('x-real-ip') || '').trim();
   if (net.isIP(real)) return real;
-  const cf = (req.get('cf-connecting-ip') || '').trim();
-  if (net.isIP(cf)) return cf;
   return req.socket.remoteAddress || 'unknown';
 }
 
