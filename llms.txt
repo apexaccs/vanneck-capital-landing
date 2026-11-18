@@ -16,7 +16,17 @@ Vanneck Capital is not VanEck Capital, the private-markets investment platform o
 - [Home](https://vanneck.xyz/): What Vanneck Capital does, the services that come with the check, portfolio, team, FAQ and the application form.
 - [About](https://vanneck.xyz/about/): The registered company, where it is based, the team, and which similarly named companies Vanneck Capital is not connected to.
 - [Deals](https://vanneck.xyz/deals/): Investments Vanneck Capital can confirm with a public source. Check size and date are shown only where there is consent to share them.
+- [Team](https://vanneck.xyz/team/): The partners and operators behind Vanneck Capital, with roles and backgrounds.
 - [Blog](https://vanneck.xyz/blog/): Plain-language guides for founders on terms, token mechanics, due diligence and fundraising.
+
+## Deal pages
+
+- [Skalor](https://vanneck.xyz/deals/skalor/): Vanneck Capital invested $1.5M in Aug 2026, confirmed by Medium (Provenance).
+- [RWA Inc](https://vanneck.xyz/deals/rwa-inc/): Vanneck Capital invested $800K in Jul 2026, confirmed by Paragraph.
+- [Okto](https://vanneck.xyz/deals/okto/): Vanneck Capital invested $750K in Nov 2025, confirmed by X - @Firstprint_HQ.
+- [Folks Finance](https://vanneck.xyz/deals/folks-finance/): Vanneck Capital invested $500K in Sep 2024, confirmed by DEV Community.
+- [Cambria](https://vanneck.xyz/deals/cambria/): Vanneck Capital invested $125K, confirmed by Telegram - ZeroBlock Feed.
+- [Mises](https://vanneck.xyz/deals/mises/): Vanneck Capital invested $1M in Mar 2023, confirmed by Dealroom - Vanneck Capital portfolio.
 
 ## Blog articles
 

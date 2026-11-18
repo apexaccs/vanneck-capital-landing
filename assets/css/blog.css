@@ -174,3 +174,23 @@ main{flex:1 0 auto}
 .blog-post-byline{margin:-6px 0 22px;font:500 14px var(--sans);color:var(--ink-soft)}
 .blog-post-byline a{color:var(--cobalt);text-decoration:none}
 .blog-post-byline a:hover{text-decoration:underline}
+
+/* deal + team pages */
+.deal-card h3 a{color:inherit;text-decoration:none}
+.deal-card h3 a:hover{color:var(--blue-mid)}
+.deal-page .deal-back{font:600 13px var(--sans);margin-bottom:22px}
+.deal-page .deal-back a{color:var(--blue-mid);text-decoration:none}
+.deal-page .deal-card-head{margin-bottom:12px}
+.deal-page h2{font-family:var(--serif);font-weight:600;font-size:24px;color:var(--ink);margin:36px 0 10px}
+.deal-page p,.deal-page li{font-size:16px;line-height:1.65;color:var(--ink-soft)}
+.deal-page a{color:var(--blue-mid)}
+.deal-facts{margin:28px 0 0;background:var(--white);border-radius:16px;box-shadow:0 1px 3px rgba(20,33,61,.08);overflow:hidden}
+.deal-facts>div{display:flex;gap:16px;padding:13px 20px;border-bottom:1px solid var(--bg-pale)}
+.deal-facts>div:last-child{border-bottom:0}
+.deal-facts dt{flex:0 0 150px;font:600 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);padding-top:3px}
+.deal-facts dd{margin:0;font:500 15px var(--sans);color:var(--ink)}
+.deal-others{padding-left:20px;margin:0}
+.team-page .team-grid--page{padding:40px 0 20px}
+.team-card h2{font-family:var(--serif);font-weight:600;font-style:italic;color:var(--ink);font-size:18px;margin:0}
+.team-page .deals-lead a{color:var(--blue-mid)}
+@media (max-width:600px){.deal-facts>div{flex-direction:column;gap:2px}.deal-facts dt{flex:none}}
