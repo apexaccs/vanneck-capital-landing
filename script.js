@@ -1102,24 +1102,26 @@
   if (!box) return;
 
   const team = [
-    { name: 'Trevor Cesur', photo: 'assets/img/team/trevor.jpg', role: 'Co-Founder & Business Development', x: 'x.com/TrevorCesur', mail: 'trevor@vanneck.xyz' },
-    { name: 'Liam Clark', photo: 'assets/img/team/liam-clark-2.jpg', role: 'General Partner', x: 'x.com/Sonchqm', mail: null },
-    { name: 'Edward Lindemann', photo: 'assets/img/team/edwaaard.jpg', role: 'CTO', x: 'x.com/edlindex', mail: 'edwardlindemann.ch@gmail.com' },
-    { name: 'Kyle Allen', photo: 'assets/img/team/kyle-allen.jpg', role: 'CFO & Business Development', x: 'x.com/DiCoFirsties', mail: null },
-    { name: 'Nick Buckler', photo: 'assets/img/team/nick-buckler.jpg', role: 'Business Developer', x: 'x.com/flokamon6q', mail: null },
-    { name: 'Son Jin', photo: 'assets/img/team/sonjin.jpg', role: 'Growth Advisor', x: 'x.com/SonJin_yop', mail: null },
+    { name: 'Trevor Cesur', photo: 'assets/img/team/trevor.jpg', role: 'Co-Founder & Business Development', tg: 't.me/trevhl', x: 'x.com/TrevorCesur', mail: 'trevor@vanneck.xyz' },
+    { name: 'Liam Clark', photo: 'assets/img/team/liam-clark-2.jpg', role: 'General Partner', tg: null, x: 'x.com/Sonchqm', mail: null },
+    { name: 'Edward Lindemann', photo: 'assets/img/team/edwaaard.jpg', role: 'CTO', tg: null, x: 'x.com/edlindex', mail: 'edwardlindemann.ch@gmail.com' },
+    { name: 'Kyle Allen', photo: 'assets/img/team/kyle-allen.jpg', role: 'CFO & Business Development', tg: 't.me/Kylegalaxy', x: 'x.com/DiCoFirsties', mail: null },
+    { name: 'Nick Buckler', photo: 'assets/img/team/nick-buckler.jpg', role: 'Business Developer', tg: 't.me/nickapephoto', x: 'x.com/flokamon6q', mail: null },
+    { name: 'Son Jin', photo: 'assets/img/team/sonjin.jpg', role: 'Growth Advisor', tg: null, x: 'x.com/SonJin_yop', mail: null },
+    { name: 'Moon', photo: 'assets/img/team/moon.jpg', role: 'BD Manager APAC', tg: 't.me/kloakatoken2022', x: 'x.com/MoonNFT1185', mail: null },
   ];
 
   function normalize(v) {
     if (!v) return '';
     return v.trim().toLowerCase()
       .replace(/^https?:\/\//, '')
+      .replace(/^t\.me\//, '')
       .replace(/^x\.com\//, '')
       .replace(/^mailto:/, '')
       .replace(/^@/, '');
   }
 
-  let kind = 'x';
+  let kind = 'tg';
   const tabs = box.querySelectorAll('.verify-tab');
   const input = box.querySelector('#verifyInput');
   const btn = box.querySelector('#verifyBtn');
