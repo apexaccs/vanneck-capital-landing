@@ -8,8 +8,9 @@
 import { Buffer } from 'node:buffer';
 
 const API_KEY = process.env.RESEND_API_KEY;
-const FROM = process.env.RESEND_FROM; // e.g. "Vanneck Capital <calls@vanneck.xyz>"
+const FROM = process.env.RESEND_FROM; // e.g. "Vanneck Capital <admin@vanneck.xyz>"
 const REPLY_TO = process.env.RESEND_REPLY_TO || '';
+const FROM_EMAIL = (/<([^>]+)>/.exec(FROM || '') || [])[1] || FROM || 'admin@vanneck.xyz';
 const SITE = 'https://vanneck.xyz';
 
 export const mailConfigured = () => Boolean(API_KEY && FROM);
@@ -48,7 +49,7 @@ function ics(b, label) {
   const fold = (s) => s.replace(/[\\,;]/g, (c) => `\\${c}`).replace(/\n/g, '\\n');
   return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Vanneck Capital//Calls//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
     'BEGIN:VEVENT', `UID:${b.id}@vanneck.xyz`, `DTSTAMP:${stamp(Date.now())}`, `DTSTART:${stamp(b.start)}`, `DTEND:${stamp(b.end)}`,
-    `SUMMARY:${fold(title)}`, `DESCRIPTION:${fold(details)}`, b.meetLink ? `URL:${b.meetLink}` : null, 'ORGANIZER;CN=Vanneck Capital:mailto:calls@vanneck.xyz',
+    `SUMMARY:${fold(title)}`, `DESCRIPTION:${fold(details)}`, b.meetLink ? `URL:${b.meetLink}` : null, `ORGANIZER;CN=Vanneck Capital:mailto:${FROM_EMAIL}`,
     'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:Call with Vanneck Capital', 'TRIGGER:-PT15M', 'END:VALARM',
     'END:VEVENT', 'END:VCALENDAR'].filter(Boolean).join('\r\n') + '\r\n';
 }
