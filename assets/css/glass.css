@@ -1,0 +1,129 @@
+/* ── Glass layer, sitewide ──────────────────────────────────────────────
+   Soft cobalt auroras behind sections, frosted-glass cards and the anchors
+   for the 3D glass flowers (assets/js/glass-flowers.js, loaded by
+   script.js). Loaded after styles.css / blog.css on every page. */
+:root{
+  --glass-bg:linear-gradient(140deg,rgba(255,255,255,.74),rgba(255,255,255,.42));
+  --glass-border:rgba(255,255,255,.78);
+  --glass-shadow:0 26px 56px -34px rgba(15,44,107,.42),inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(29,75,168,.06);
+  --glass-blur:blur(16px) saturate(1.45);
+}
+
+/* aurora backgrounds: sections become transparent and paint soft blobs
+   on a pseudo-layer behind their content */
+.solution-wrap,.portfolio-wrap,.team-wrap,.services-wrap,.faq-wrap{background:transparent;isolation:isolate;position:relative;overflow:hidden}
+.solution-wrap::before,.portfolio-wrap::before,.team-wrap::before,.services-wrap::before,.faq-wrap::before,
+.problem-stage::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(38% 30% at 12% 18%,rgba(159,184,244,.42),transparent 70%),
+    radial-gradient(34% 28% at 88% 34%,rgba(63,115,209,.20),transparent 70%),
+    radial-gradient(42% 30% at 30% 82%,rgba(185,204,255,.45),transparent 70%),
+    radial-gradient(30% 24% at 80% 86%,rgba(29,75,168,.12),transparent 70%),
+    linear-gradient(180deg,#fff,#f5f8ff 50%,#fff)}
+.portfolio-wrap::before{background:
+    radial-gradient(36% 22% at 86% 10%,rgba(159,184,244,.42),transparent 70%),
+    radial-gradient(34% 24% at 10% 46%,rgba(63,115,209,.16),transparent 70%),
+    radial-gradient(40% 24% at 70% 88%,rgba(185,204,255,.5),transparent 70%),
+    linear-gradient(180deg,#fff,#f4f7ff 50%,#fff)}
+.team-wrap::before{background:
+    radial-gradient(34% 30% at 18% 22%,rgba(185,204,255,.5),transparent 70%),
+    radial-gradient(36% 30% at 84% 62%,rgba(63,115,209,.18),transparent 70%),
+    linear-gradient(180deg,#fff,#f4f7ff 60%,#fff)}
+.problem-stage{isolation:isolate}
+.problem-stage::before{background:
+    radial-gradient(30% 34% at 14% 70%,rgba(159,184,244,.4),transparent 70%),
+    radial-gradient(28% 32% at 86% 30%,rgba(63,115,209,.16),transparent 70%),
+    #fff}
+@media (prefers-reduced-transparency:reduce){
+  .solution-wrap::before,.portfolio-wrap::before,.team-wrap::before,.services-wrap::before,.faq-wrap::before,.problem-stage::before{background:#fff}
+}
+
+/* subpages: aurora on the whole main area */
+main{position:relative;isolation:isolate}
+main::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(520px 420px at 8% 260px,rgba(159,184,244,.38),transparent 70%),
+    radial-gradient(560px 460px at 94% 620px,rgba(63,115,209,.14),transparent 70%),
+    radial-gradient(620px 480px at 22% 1300px,rgba(185,204,255,.42),transparent 70%),
+    radial-gradient(560px 460px at 88% 1900px,rgba(159,184,244,.32),transparent 70%),
+    radial-gradient(620px 480px at 14% 2600px,rgba(63,115,209,.10),transparent 70%),
+    linear-gradient(180deg,#fff,#f6f9ff 40%,#fff)}
+
+/* frosted glass surfaces */
+.nav{background:rgba(255,255,255,.72);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5)}
+.nav-pill{background:rgba(255,255,255,.62);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border-color:rgba(255,255,255,.85);box-shadow:0 14px 34px -20px rgba(20,33,61,.3),inset 0 1px 0 #fff,inset 0 0 0 1px rgba(29,75,168,.07)}
+.nav-sheet{background:rgba(255,255,255,.86);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
+
+.port-card,.svc-card,.faq-apply,.faq-book,.verify-card,.blog-card,.deal-card,.verify-box{
+  background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);box-shadow:var(--glass-shadow)}
+.port-card{border-radius:18px;padding:12px}
+.port-card::before{left:18px;right:18px;border-radius:0 0 3px 3px}
+.port-avatar{border-radius:12px}
+.port-avatar img{background:rgba(255,255,255,.85)}
+.port-card:hover,.svc-card:hover,.blog-card:hover{box-shadow:0 30px 60px -30px rgba(15,44,107,.5),inset 0 1px 0 #fff,inset 0 0 0 1px rgba(29,75,168,.1)}
+.svc-card{border-radius:22px}
+.svc-card::before{left:22px;right:22px;border-radius:0 0 3px 3px}
+.faq-apply,.faq-book{border-radius:22px}
+.faq-list{background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);border-radius:22px;padding:8px 26px 10px}
+.faq-item:last-child{border-bottom:none}
+.verify-box{border-radius:24px}
+.verify-card{border-radius:14px}
+.blog-card{border-radius:22px}
+.deal-card{border-radius:22px}
+
+.team-card{background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);border-radius:24px;padding:26px 18px 24px;
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+.team-card:hover{transform:translateY(-4px);box-shadow:0 30px 60px -30px rgba(15,44,107,.5),inset 0 1px 0 #fff}
+
+.apply-form input,.apply-form textarea,.apply-form select,.verify-row input,.cs-trigger{background:rgba(255,255,255,.78)}
+.port-more{background:rgba(255,255,255,.66);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-shadow)}
+.cs-options{background:rgba(255,255,255,.9);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
+
+/* long reads sit on a glass sheet */
+.blog-post-wrap:not(.deals-wrap):not(.calls-wrap){position:relative;margin-top:28px;margin-bottom:80px;border-radius:28px;
+  background:linear-gradient(160deg,rgba(255,255,255,.86),rgba(255,255,255,.66));
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);padding-bottom:70px}
+@media (max-width:760px){
+  .blog-post-wrap:not(.deals-wrap):not(.calls-wrap){border-radius:0;margin-top:0;border-left:0;border-right:0}
+}
+
+/* ── 3D glass flower anchors ─────────────────────────────────────────── */
+.glass-3d{position:absolute;display:block;pointer-events:none;z-index:2}
+.glass-3d::before{content:"";position:absolute;inset:10%;border-radius:50%;
+  background:radial-gradient(circle,rgba(63,115,209,.28),rgba(159,184,244,.16) 45%,transparent 70%);filter:blur(8px);
+  animation:g3dGlow 7s ease-in-out infinite alternate}
+@keyframes g3dGlow{from{transform:scale(.9);opacity:.75}to{transform:scale(1.08);opacity:1}}
+.glass-3d.sm{width:180px;height:180px}
+.glass-3d.md{width:250px;height:250px}
+.glass-3d.lg{width:310px;height:310px}
+/* homepage spots */
+.g3d-sol-a{right:5%;top:70px}
+.g3d-sol-b{left:5%;top:210px}
+.g3d-port-a{right:5%;top:40px}
+.g3d-port-b{left:5%;top:120px}
+.g3d-team-a{left:5%;top:50px}
+.g3d-team-b{right:6%;top:150px}
+.g3d-svc-a{right:4%;top:40px}
+.g3d-svc-b{left:5%;top:150px}
+.g3d-faq-a{left:5%;top:40px}
+.g3d-faq-b{right:6%;top:110px}
+.g3d-prob-a{left:5%;bottom:8%}
+.g3d-prob-b{right:5%;bottom:16%}
+/* subpages: boxes are placed and sized by assets/js/glass-loader.js */
+@media (max-width:1100px){
+  .glass-3d.lg{width:220px;height:220px}
+  .glass-3d.md{width:180px;height:180px}
+  .glass-3d.sm{width:140px;height:140px}
+}
+@media (max-width:860px){
+  .g3d-sol-b,.g3d-port-b,.g3d-team-b,.g3d-svc-b,.g3d-faq-b,.g3d-prob-b{display:none}
+  .glass-3d.lg,.glass-3d.md,.glass-3d.sm{width:104px;height:104px}
+  .g3d-sol-a,.g3d-port-a,.g3d-team-a,.g3d-svc-a,.g3d-faq-a{top:-12px;left:auto;right:2px}
+  .g3d-prob-a{left:auto;right:8px;bottom:3%}
+}
+@media (prefers-reduced-motion:reduce){.glass-3d::before{animation:none}}

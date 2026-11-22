@@ -383,7 +383,7 @@
       if (!(c.getContext('webgl2') || c.getContext('webgl'))) return;
     } catch (e) { return; }
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    import(new URL('calls-flowers.js?v=1', SCRIPT_SRC).href)
+    import(new URL('glass-flowers.js?v=1', SCRIPT_SRC).href)
       .then((m) => { flowers = m.mountFlowers(stage, { reduced }); requestAnimationFrame(() => stage.classList.add('ready')); })
       .catch(() => { /* keep the static flower */ });
   }

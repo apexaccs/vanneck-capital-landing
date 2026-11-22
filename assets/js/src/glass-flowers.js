@@ -1,8 +1,13 @@
-// Glass flowers for /calls/: three procedural flowers (rose, daisy, tulip),
-// loose petals and orbs in tinted, refractive glass over a soft cobalt
-// backdrop. Built into assets/js/calls-flowers.js with:
-//   npx esbuild assets/js/src/calls-flowers.js --bundle --minify --format=esm --outfile=assets/js/calls-flowers.js
-// (three@0.170.0). The page shows a static fallback when WebGL is missing.
+// Glass flowers: three procedural flowers (rose, daisy, tulip), loose petals
+// and orbs in tinted glass.
+//   mountFlowers(host)  - the /calls/ hero stage (refractive glass over a
+//                         soft cobalt backdrop drawn in the scene);
+//   mountOrnaments()    - one fixed, transparent canvas for the whole page
+//                         that draws a flower into every visible .glass-3d
+//                         element (scissored viewports, so one WebGL context).
+// Built into assets/js/glass-flowers.js with (three@0.170.0):
+//   npx esbuild assets/js/src/glass-flowers.js --bundle --minify --format=esm --outfile=assets/js/glass-flowers.js
+// Pages keep working without it; nothing here is needed for content.
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, BufferGeometry, Float32BufferAttribute,
   SphereGeometry, IcosahedronGeometry, MeshPhysicalMaterial, Color, DoubleSide, CanvasTexture,
@@ -315,5 +320,187 @@ export function mountFlowers(host, { reduced = false } = {}) {
   return {
     celebrate() { celebrateAt = (performance.now() - start) / 1000; if (reduced) frame(performance.now()); else loop(); },
     destroy() { cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); window.removeEventListener('pointermove', onMove); renderer.dispose(); },
+  };
+}
+
+
+// ── page ornaments ──────────────────────────────────────────────────────
+// Glass that reads over HTML (the canvas is transparent, so there is no
+// scene behind the petals to refract): clear tinted petals with strong
+// reflections, iridescent edges and some see-through.
+function overlayGlass(opts = {}) {
+  return new MeshPhysicalMaterial({
+    color: new Color(opts.color ?? 0xcfdcff),
+    metalness: 0,
+    roughness: opts.roughness ?? 0.07,
+    transparent: true,
+    opacity: opts.opacity ?? 0.62,
+    iridescence: opts.iridescence ?? 0.75,
+    iridescenceIOR: 1.3,
+    iridescenceThicknessRange: [140, 460],
+    clearcoat: 1,
+    clearcoatRoughness: 0.06,
+    specularIntensity: 1,
+    envMapIntensity: opts.env ?? 1.7,
+    side: DoubleSide,
+    depthWrite: opts.depthWrite ?? true,
+  });
+}
+
+export function mountOrnaments({ selector = '.glass-3d', reduced = false } = {}) {
+  const els = [...document.querySelectorAll(selector)];
+  if (!els.length) return null;
+
+  const canvas = document.createElement('canvas');
+  canvas.className = 'glass-3d-canvas';
+  canvas.setAttribute('aria-hidden', 'true');
+  canvas.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:40';
+  document.body.appendChild(canvas);
+  const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
+  renderer.setClearColor(0x000000, 0);
+  renderer.toneMapping = ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.95;
+  renderer.outputColorSpace = SRGBColorSpace;
+  renderer.autoClear = false;
+  const pmrem = new PMREMGenerator(renderer);
+  const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+  const mats = {
+    blue: overlayGlass({ color: 0x6f95ec, opacity: 0.8, iridescence: 0.8 }),
+    deep: overlayGlass({ color: 0x2c5ccc, opacity: 0.86, iridescence: 0.55 }),
+    pale: overlayGlass({ color: 0x9db7f6, opacity: 0.8, iridescence: 1 }),
+    pearl: overlayGlass({ color: 0xe8efff, opacity: 0.92, roughness: 0.2, iridescence: 1 }),
+  };
+  const build = {
+    rose: () => makeRose(mats.blue, mats.deep),
+    daisy: () => makeDaisy(mats.pale, mats.pearl),
+    tulip: () => makeTulip(mats.deep, mats.blue),
+  };
+  const loose = petalGeometry({ length: 0.42, width: 0.32, cup: 0.35, cross: 0.3, round: 0.5, segL: 14, segW: 8 });
+  const orb = new IcosahedronGeometry(1, 5);
+  const rnd = (a, b) => a + Math.random() * (b - a);
+
+  const items = els.map((el, n) => {
+    const kind = build[el.dataset.flower] ? el.dataset.flower : ['rose', 'daisy', 'tulip'][n % 3];
+    const scene = new Scene();
+    scene.environment = env;
+    const sun = new DirectionalLight(0xffffff, 1.4);
+    sun.position.set(-3, 5, 4);
+    scene.add(sun);
+    const camera = new PerspectiveCamera(30, 1, 0.1, 50);
+    camera.position.set(0, 0, 6.2);
+    const holder = new Group();
+    scene.add(holder);
+    const f = build[kind]();
+    const tilt = Number(el.dataset.tilt || 0.85);
+    f.g.rotation.set(tilt, rnd(0, TAU), rnd(-0.3, 0.3));
+    f.g.scale.setScalar(0.001);
+    holder.add(f.g);
+    const floaters = [];
+    const extra = el.dataset.extra === '0' ? 0 : 3;
+    for (let i = 0; i < extra; i++) {
+      const isOrb = i !== 1;
+      const m = new Mesh(isOrb ? orb : loose, isOrb ? mats.pearl : mats.blue);
+      m.scale.setScalar(isOrb ? rnd(0.06, 0.11) : rnd(0.55, 0.75));
+      const a = (i / extra) * TAU + rnd(-0.4, 0.4);
+      const base = [Math.cos(a) * 1.0, Math.sin(a) * 0.9, rnd(-0.3, 0.3)];
+      m.position.set(...base);
+      holder.add(m);
+      floaters.push({ m, base, sp: rnd(0.4, 0.8), ph: rnd(0, TAU), rs: [rnd(-0.6, 0.6), rnd(-0.6, 0.6)] });
+    }
+    return { el, scene, camera, holder, f, floaters, kind, born: -1, spin: (n % 2 ? -1 : 1) * rnd(0.08, 0.14), phase: rnd(0, TAU), visible: false };
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    for (const en of entries) {
+      const it = items.find((x) => x.el === en.target);
+      if (it) it.visible = en.isIntersecting && en.boundingClientRect.width > 4;
+    }
+    kick();
+  }, { rootMargin: '120px 0px' });
+  items.forEach((it) => io.observe(it.el));
+
+  const pointer = new Vector2();
+  const look = new Vector2();
+  const onMove = (e) => pointer.set((e.clientX / innerWidth) * 2 - 1, (e.clientY / innerHeight) * 2 - 1);
+  window.addEventListener('pointermove', onMove, { passive: true });
+  let lastScroll = window.scrollY;
+  let scrollVel = 0;
+
+  const start = performance.now();
+  let last = start;
+  let raf = 0;
+  let running = false;
+  let W = 0;
+  let H = 0;
+
+  function frame(now) {
+    const t = (now - start) / 1000;
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (innerWidth !== W || innerHeight !== H) { W = innerWidth; H = innerHeight; renderer.setSize(W, H, false); }
+    const sy = window.scrollY;
+    scrollVel += ((sy - lastScroll) - scrollVel) * 0.2;
+    lastScroll = sy;
+    look.lerp(pointer, 1 - Math.pow(0.003, dt));
+
+    renderer.setScissorTest(false);
+    renderer.clear();
+    renderer.setScissorTest(true);
+    let any = false;
+    for (const it of items) {
+      if (!it.visible) continue;
+      const r = it.el.getBoundingClientRect();
+      if (r.width < 4 || r.bottom < 0 || r.top > H || r.right < 0 || r.left > W) continue;
+      any = true;
+      if (it.born < 0) it.born = t;
+      const k = reduced ? 1 : MathUtils.clamp((t - it.born) / 1.6, 0, 1);
+      const e = 1 - Math.pow(1 - k, 3);
+      it.f.g.scale.setScalar(Math.max(0.001, 0.4 + 0.6 * e));
+      const breathe = reduced ? 0 : Math.sin(t * 0.9 + it.phase) * 0.05;
+      for (const p of it.f.petals) p.hinge.rotation.x = -(p.tilt + (1 - e) * (1.45 - p.tilt) * 0.9 + breathe * (1.6 - p.tilt));
+      if (!reduced) {
+        it.f.g.rotation.y += dt * it.spin + scrollVel * 0.0025;
+        it.holder.position.y = Math.sin(t * 0.7 + it.phase) * 0.08;
+        it.holder.rotation.y = look.x * 0.25;
+        it.holder.rotation.x = look.y * 0.15;
+        for (const p of it.floaters) {
+          p.m.position.y = p.base[1] + Math.sin(t * p.sp + p.ph) * 0.15;
+          p.m.rotation.x += dt * p.rs[0];
+          p.m.rotation.z += dt * p.rs[1];
+        }
+      }
+      it.camera.aspect = r.width / r.height;
+      // the flower (radius ~1.2) fills the box; floaters may brush the edges
+      const fit = 1.32 / Math.tan(MathUtils.degToRad(15)) / Math.min(1, it.camera.aspect);
+      it.camera.position.z = fit;
+      it.camera.updateProjectionMatrix();
+      renderer.setViewport(r.left, H - r.bottom, r.width, r.height);
+      renderer.setScissor(r.left, H - r.bottom, r.width, r.height);
+      renderer.render(it.scene, it.camera);
+    }
+    return any;
+  }
+
+  function step(now) {
+    const any = frame(now);
+    const settling = items.some((it) => it.visible && it.born >= 0 && (now - start) / 1000 - it.born < 2);
+    if (!document.hidden && (any || settling) && (!reduced || settling)) raf = requestAnimationFrame(step);
+    else running = false;
+  }
+  function kick() {
+    if (running) return;
+    running = true;
+    raf = requestAnimationFrame(step);
+  }
+  // with reduced motion there is no loop: redraw on scroll so flowers stay in place
+  window.addEventListener('scroll', () => { if (reduced) requestAnimationFrame(frame); else kick(); }, { passive: true });
+  window.addEventListener('resize', () => requestAnimationFrame(frame), { passive: true });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) kick(); });
+  kick();
+
+  return {
+    destroy() { cancelAnimationFrame(raf); io.disconnect(); window.removeEventListener('pointermove', onMove); renderer.dispose(); canvas.remove(); },
   };
 }
