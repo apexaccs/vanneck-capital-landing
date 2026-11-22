@@ -1,5 +1,5 @@
 [Unit]
-Description=Vanneck Capital backend (apply form -> Telegram, newsletter -> Resend)
+Description=Vanneck Capital backend (forms and call bookings -> Telegram, newsletter -> Resend)
 After=network.target
 
 [Service]
@@ -12,6 +12,8 @@ RestartSec=3
 User=www-data
 NoNewPrivileges=true
 PrivateTmp=true
+# /var/lib/vanneck-backend: booked call times (no personal data)
+StateDirectory=vanneck-backend
 
 [Install]
 WantedBy=multi-user.target

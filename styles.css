@@ -411,6 +411,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .faq-apply{background:var(--bg-pale);border-radius:8px;padding:28px 26px;position:sticky;top:120px}
 .faq-apply h3{font-family:var(--serif);font-weight:600;font-size:21px;color:var(--cobalt);margin-bottom:6px}
 .faq-apply>p{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:16px}
+.faq-side{display:grid;gap:22px;align-content:start}
+.faq-side .faq-apply{position:static}
+.faq-book{background:var(--bg-pale);border-radius:8px;padding:28px 26px}
+.faq-book h3{font-family:var(--serif);font-weight:600;font-size:21px;color:var(--cobalt);margin-bottom:6px}
+.faq-book>p{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:16px}
+.hero-book{display:inline-block;margin-top:28px;padding:13px 30px;border-radius:999px;background:var(--cobalt);color:var(--white);
+  font:600 17px var(--serif);letter-spacing:.02em;box-shadow:0 12px 26px -14px rgba(29,75,168,.7);
+  transition:background .25s var(--ease),transform .25s var(--ease)}
+.hero-book:hover{background:var(--bg-deep);transform:translateY(-1px)}
 .apply-form{display:grid;gap:12px}
 .apply-form label{display:grid;gap:5px;font:600 11px var(--serif);letter-spacing:.04em;
   text-transform:uppercase;color:var(--ink-soft)}

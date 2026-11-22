@@ -17,6 +17,7 @@ Vanneck Capital is not VanEck Capital, the private-markets investment platform o
 - [About](https://vanneck.xyz/about/): The registered company, where it is based, the team, and which similarly named companies Vanneck Capital is not connected to.
 - [Deals](https://vanneck.xyz/deals/): Investments Vanneck Capital can confirm with a public source. Check size and date are shown only where there is consent to share them.
 - [Team](https://vanneck.xyz/team/): The partners and operators behind Vanneck Capital, with roles and backgrounds.
+- [Book a call](https://vanneck.xyz/calls/): Book an intro, partnership, hiring or investment call with the team; free times are shown in your time zone.
 - [Blog](https://vanneck.xyz/blog/): Plain-language guides for founders on terms, token mechanics, due diligence and fundraising.
 
 ## Deal pages

@@ -953,6 +953,53 @@
   });
 })();
 
+// "Book a call" card on the main page: check name, company and email, then
+// carry them to /calls/ where the visitor picks a time.
+(function () {
+  const form = document.getElementById('bookForm');
+  if (!form) return;
+  form.noValidate = true;
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const clear = (input) => {
+    input.removeAttribute('aria-invalid');
+    const err = input.closest('label').querySelector('.field-error');
+    if (err) err.remove();
+  };
+  form.addEventListener('input', (e) => { if (e.target.getAttribute('aria-invalid')) clear(e.target); });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = {};
+    const errors = {};
+    for (const n of ['name', 'company', 'email']) {
+      clear(form.elements[n]);
+      data[n] = form.elements[n].value.trim();
+    }
+    if (data.name.length < 2) errors.name = 'Please enter your name';
+    if (data.company.length < 2) errors.company = 'Please enter your company';
+    if (!EMAIL_RE.test(data.email)) errors.email = 'Please enter a valid email';
+    const names = Object.keys(errors);
+    if (names.length) {
+      for (const n of names) {
+        const input = form.elements[n];
+        const err = document.createElement('span');
+        err.className = 'field-error';
+        err.setAttribute('role', 'alert');
+        err.textContent = errors[n];
+        input.setAttribute('aria-invalid', 'true');
+        input.closest('label').appendChild(err);
+      }
+      form.elements[names[0]].focus();
+      return;
+    }
+    try {
+      sessionStorage.setItem('vanneck-book', JSON.stringify(data));
+      window.location.href = './calls/';
+    } catch (err) {
+      window.location.href = './calls/?' + new URLSearchParams(data);
+    }
+  });
+})();
+
 // Cookie consent banner
 (function () {
   const banner = document.getElementById('cookieBanner');

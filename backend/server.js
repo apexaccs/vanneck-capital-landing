@@ -1,6 +1,7 @@
 import net from 'node:net';
 import express from 'express';
 import 'dotenv/config';
+import { registerCallRoutes } from './calls.js';
 
 const app = express();
 app.disable('x-powered-by');
@@ -33,6 +34,11 @@ function createCounter(windowMs) {
 
 const countAll = createCounter(RATE_WINDOW_MS);
 const countIp = createCounter(RATE_WINDOW_MS);
+// Read-only GETs (free call slots, served from a one-minute cache) get their
+// own, looser per-IP budget so browsing the booking page never eats into the
+// limits that protect the forms.
+const RATE_READS_PER_IP = 120;
+const countReads = createCounter(RATE_WINDOW_MS);
 
 // Client IP for rate limiting. The backend listens on 127.0.0.1 only, so the
 // only caller is nginx, which sets X-Real-IP itself (overwriting anything a
@@ -44,6 +50,14 @@ function clientKey(req) {
 }
 
 app.use('/api/', (req, res, next) => {
+  if (req.method === 'GET') {
+    const reads = countReads(clientKey(req));
+    if (reads.count > RATE_READS_PER_IP) {
+      res.set('Retry-After', String(reads.retryAfter));
+      return res.status(429).json({ ok: false, error: 'Too many requests, please try again later' });
+    }
+    return next();
+  }
   const global = countAll('all');
   if (global.count > RATE_GLOBAL) {
     res.set('Retry-After', String(global.retryAfter));
@@ -247,6 +261,8 @@ app.post('/api/protection', async (req, res) => {
     res.status(500).json({ ok: false, error: 'Server error' });
   }
 });
+
+registerCallRoutes(app, { sendTelegram, escapeHtml, isValidEmail, isHttpUrl, bad, clean });
 
 app.listen(PORT, '127.0.0.1', () => {
   console.log(`vanneck-backend listening on 127.0.0.1:${PORT}`);
