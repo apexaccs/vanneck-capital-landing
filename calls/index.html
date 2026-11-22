@@ -26,9 +26,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../styles.css?v=9641405-64">
+<link rel="stylesheet" href="../styles.css?v=9641405-65">
 <link rel="stylesheet" href="../assets/css/blog.css?v=9641405-63">
-<link rel="stylesheet" href="../assets/css/calls.css?v=1">
+<link rel="stylesheet" href="../assets/css/calls.css?v=3">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -85,6 +85,7 @@
   </nav>
 
   <div class="socials" aria-label="Social links">
+    <a class="nav-cta" href="/calls/" aria-current="page">Book a call</a>
     <a href="https://x.com/VanneckPartner" aria-label="X (Twitter)" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24"><path d="M3 3l7.5 9.6L3.4 21h2.3l6.2-7.1 5 7.1H21l-7.9-10 7-8h-2.3l-5.7 6.5L7.9 3H3zm3.4 1.7h2.1l9 12.6h-2.1L6.4 4.7z"/></svg>
     </a>
@@ -112,6 +113,7 @@
   <a href="../blog/">Blog</a>
   <a href="../about/">About</a>
   <a href="../index.html#faq">FAQ</a>
+  <a class="nav-sheet-cta" href="/calls/">Book a call</a>
   <div class="nav-sheet-socials">
     <a href="https://x.com/VanneckPartner" aria-label="X (Twitter)" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24"><path d="M3 3l7.5 9.6L3.4 21h2.3l6.2-7.1 5 7.1H21l-7.9-10 7-8h-2.3l-5.7 6.5L7.9 3H3zm3.4 1.7h2.1l9 12.6h-2.1L6.4 4.7z"/></svg>
@@ -125,79 +127,127 @@
   </div>
 </div>
 
-<main>
-<article class="blog-post-wrap calls-wrap" id="calls">
-  <h1>Book a call</h1>
-  <p class="calls-lead">Choose the kind of call and a time that suits you. Times are shown in your time zone. We confirm every call and send the meeting link by email.</p>
+<main class="calls-page" id="calls">
+<div class="calls-bg" aria-hidden="true">
+  <span class="cb-blob b1"></span><span class="cb-blob b2"></span><span class="cb-blob b3"></span>
+  <img class="cb-petal p1" src="../assets/img/flowers/rose_petal1.webp" alt="">
+  <img class="cb-petal p2" src="../assets/img/flowers/daisy_petal2.webp" alt="">
+  <img class="cb-petal p3" src="../assets/img/flowers/carnation_petal3.webp" alt="">
+  <img class="cb-petal p4" src="../assets/img/flowers/rose_petal4.webp" alt="">
+  <img class="cb-petal p5" src="../assets/img/flowers/daisy_petal1.webp" alt="">
+</div>
 
-  <div class="calls-unavailable" id="callsUnavailable" hidden>
-    Online booking is temporarily unavailable. You can still <a href="../index.html#apply">send us an application</a> and we will come back to you.
+<section class="calls-hero" aria-labelledby="callsTitle">
+  <div class="calls-stage" id="callsStage" aria-hidden="true">
+    <img class="calls-stage-fallback" src="../assets/img/flowers/rose_bud_head.webp" alt="">
+  </div>
+  <div class="calls-hero-card glass">
+    <span class="calls-eyebrow">Vanneck Capital · Calls</span>
+    <h1 id="callsTitle">Book a <em>call</em></h1>
+    <p class="calls-lead">Choose the kind of call and a time that suits you. Times are shown in your time zone. We confirm every call and send the meeting link by email.</p>
+    <ul class="calls-facts">
+      <li><b>30-60</b> min calls</li>
+      <li><b>Your</b> time zone</li>
+      <li><b>No fee</b>, ever</li>
+    </ul>
+  </div>
+</section>
+
+<div class="calls-layout">
+  <div class="calls-main">
+    <div class="calls-unavailable glass" id="callsUnavailable" hidden>
+      Online booking is temporarily unavailable. You can still <a href="../index.html#apply">send us an application</a> and we will come back to you.
+    </div>
+
+    <section class="calls-step" id="stepType" aria-labelledby="stepTypeTitle">
+        <h2 id="stepTypeTitle"><span class="calls-num">1</span> Choose a call</h2>
+        <div class="calls-types" role="radiogroup" aria-labelledby="stepTypeTitle">
+            <button type="button" class="calls-type" role="radio" aria-checked="false" data-type="intro"><i class="ct-ico" aria-hidden="true"></i><b>Intro call</b><em>Get to know us and what we back</em><span>45 min</span></button>
+            <button type="button" class="calls-type" role="radio" aria-checked="false" data-type="partnership"><i class="ct-ico" aria-hidden="true"></i><b>Partnership call</b><em>Co-investment, services, ecosystem</em><span>60 min</span></button>
+            <button type="button" class="calls-type" role="radio" aria-checked="false" data-type="hiring"><i class="ct-ico" aria-hidden="true"></i><b>Hiring interview</b><em>Join the Vanneck team</em><span>30 min</span></button>
+            <button type="button" class="calls-type" role="radio" aria-checked="false" data-type="investment"><i class="ct-ico" aria-hidden="true"></i><b>Investment call</b><em>Walk us through your round</em><span>60 min</span></button>
+        </div>
+      </section>
+
+      <section class="calls-step" id="stepTime" aria-labelledby="stepTimeTitle">
+        <div class="calls-step-head">
+          <h2 id="stepTimeTitle"><span class="calls-num">2</span> Pick a time</h2>
+          <div class="calls-settings">
+            <label class="calls-tz">Time zone <select id="callsTz"></select></label>
+            <div class="calls-hours" role="group" aria-label="Time format">
+              <button type="button" data-fmt="24" aria-pressed="true">24h</button>
+              <button type="button" data-fmt="12" aria-pressed="false">12h</button>
+            </div>
+          </div>
+        </div>
+        <div class="calls-days" id="callsDays" role="listbox" aria-label="Day"></div>
+        <div class="calls-slots" id="callsSlots" aria-live="polite"></div>
+        <p class="calls-status" id="callsStatus" aria-live="polite"></p>
+      </section>
+
+      <section class="calls-step" id="stepDetails" aria-labelledby="stepDetailsTitle" hidden>
+        <h2 id="stepDetailsTitle"><span class="calls-num">3</span> Your details</h2>
+        <p class="calls-picked" id="callsPicked"></p>
+        <form id="callsForm" class="apply-form calls-form" novalidate>
+          <label class="hp-field" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+          <label><span class="lbl">Name <i class="req" aria-hidden="true">*</i></span><input type="text" name="name" autocomplete="name" required aria-required="true"></label>
+          <label><span class="lbl">Company <i class="req" aria-hidden="true">*</i></span><input type="text" name="company" autocomplete="organization" required aria-required="true"></label>
+          <label><span class="lbl">Email <i class="req" aria-hidden="true">*</i></span><input type="email" name="email" autocomplete="email" required aria-required="true"></label>
+          <label><span class="lbl">Role / title</span><input type="text" name="role" autocomplete="organization-title"></label>
+          <label><span class="lbl">Website or deck link</span><input type="url" name="link" placeholder="https://"></label>
+          <label><span class="lbl">Telegram or X</span><input type="text" name="contact" placeholder="@handle"></label>
+          <label><span class="lbl">Stage</span>
+            <select name="stage">
+              <option value="">Select...</option>
+              <option>Pre-seed</option>
+              <option>Seed</option>
+              <option>Series A</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label><span class="lbl">How did you hear about us?</span><input type="text" name="source"></label>
+          <label class="wide"><span class="lbl">Inquiry <i class="req" aria-hidden="true">*</i></span><textarea name="inquiry" rows="5" required aria-required="true" placeholder="What would you like to discuss?"></textarea></label>
+          <button type="submit">Confirm booking</button>
+          <p class="form-note" id="callsNote" aria-live="polite"></p>
+        </form>
+      </section>
+
+    <section class="calls-done glass" id="callsDone" hidden>
+      <div class="calls-burst" id="callsBurst" aria-hidden="true"></div>
+      <div class="calls-badge" aria-hidden="true"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="callsPgOk" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#F4F8FF"/><stop offset="1" stop-color="#C9DAF6"/></radialGradient></defs><g fill="url(#callsPgOk)" stroke="#1D4BA8" stroke-width="1.3"><circle cx="32" cy="17.5" r="11.5"/><circle cx="45.8" cy="27.5" r="11.5"/><circle cx="40.5" cy="43.8" r="11.5"/><circle cx="23.5" cy="43.8" r="11.5"/><circle cx="18.2" cy="27.5" r="11.5"/></g><circle cx="32" cy="34" r="15.5" fill="#fff" stroke="#1D4BA8" stroke-width="1.3"/><circle cx="32" cy="34" r="12.4" fill="none" stroke="#8FB1EC" stroke-width=".8" stroke-dasharray="1.2 2.2"/><path d="M23.4 34.6c1.5-.9 2.7-.1 3.5 1l2.4 3.3c3.4-7.6 8.2-12.6 14-16.3.9-.5 1.5.6.7 1.3-5.3 4.6-9.7 10.5-13.7 19.1-.5 1.1-1.8 1.3-2.6.2l-4.7-6.4c-.7-1-1.4-1.6.4-2.2z" fill="#1D4BA8"/></svg></div>
+      <h2>Your call is booked</h2>
+      <p class="calls-when"></p>
+      <p>Thank you! We will email you the meeting link before the call.</p>
+      <p class="calls-add-label">Add it to your calendar</p>
+      <div class="calls-cal">
+        <a class="calls-cal-btn" id="calGoogle" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 9.5h18M8 2.8v3.6M16 2.8v3.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><text x="12" y="18.6" text-anchor="middle" font-size="8.2" font-weight="700" font-family="Inter,Arial,sans-serif" fill="currentColor">G</text></svg>Google Calendar</a>
+        <a class="calls-cal-btn" id="calOutlook" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 9.5h18M8 2.8v3.6M16 2.8v3.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><text x="12" y="18.6" text-anchor="middle" font-size="8.2" font-weight="700" font-family="Inter,Arial,sans-serif" fill="currentColor">O</text></svg>Outlook</a>
+        <a class="calls-cal-btn" id="calIcs" href="#" download="vanneck-call.ics"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 9.5h18M8 2.8v3.6M16 2.8v3.6M12 12.3v5.6m-2.6-2.5 2.6 2.6 2.6-2.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Apple / other (.ics)</a>
+      </div>
+      <div class="calls-done-actions">
+        <a class="calls-btn ghost" href="../index.html">Back to vanneck.xyz</a>
+      </div>
+    </section>
   </div>
 
-  <section class="calls-step" id="stepType" aria-labelledby="stepTypeTitle">
-    <h2 id="stepTypeTitle"><span class="calls-num">1</span> Choose a call</h2>
-    <div class="calls-types" role="radiogroup" aria-labelledby="stepTypeTitle">
-        <button type="button" class="calls-type" role="radio" aria-checked="false" data-type="intro"><b>Intro call</b><span>45 min</span></button>
-        <button type="button" class="calls-type" role="radio" aria-checked="false" data-type="partnership"><b>Partnership call</b><span>60 min</span></button>
-        <button type="button" class="calls-type" role="radio" aria-checked="false" data-type="hiring"><b>Hiring interview</b><span>30 min</span></button>
-        <button type="button" class="calls-type" role="radio" aria-checked="false" data-type="investment"><b>Investment call</b><span>60 min</span></button>
+  <aside class="calls-aside" aria-label="Your call">
+    <div class="calls-summary glass">
+      <h2>Your call</h2>
+      <dl>
+        <div><dt>Type</dt><dd id="sumType">Not chosen yet</dd></div>
+        <div><dt>Date</dt><dd id="sumDate">-</dd></div>
+        <div><dt>Time</dt><dd id="sumTime">-</dd></div>
+        <div><dt>Time zone</dt><dd id="sumTz">-</dd></div>
+      </dl>
+      <ol class="calls-next">
+        <li><b>Pick a time</b> that suits you, it is held for you at once.</li>
+        <li><b>We review</b> your details and email the meeting link.</li>
+        <li><b>Talk</b> with the Vanneck team at the time you chose.</li>
+      </ol>
+      <p class="calls-safe">Vanneck never asks founders to pay for a call. If anyone does, verify them in our <a href="../index.html#team">Team</a> section.</p>
     </div>
-  </section>
-
-  <section class="calls-step" id="stepTime" aria-labelledby="stepTimeTitle">
-    <div class="calls-step-head">
-      <h2 id="stepTimeTitle"><span class="calls-num">2</span> Pick a time</h2>
-      <div class="calls-settings">
-        <label class="calls-tz">Time zone <select id="callsTz"></select></label>
-        <div class="calls-hours" role="group" aria-label="Time format">
-          <button type="button" data-fmt="24" aria-pressed="true">24h</button>
-          <button type="button" data-fmt="12" aria-pressed="false">12h</button>
-        </div>
-      </div>
-    </div>
-    <div class="calls-days" id="callsDays" role="listbox" aria-label="Day"></div>
-    <div class="calls-slots" id="callsSlots" aria-live="polite"></div>
-    <p class="calls-status" id="callsStatus" aria-live="polite"></p>
-  </section>
-
-  <section class="calls-step" id="stepDetails" aria-labelledby="stepDetailsTitle" hidden>
-    <h2 id="stepDetailsTitle"><span class="calls-num">3</span> Your details</h2>
-    <p class="calls-picked" id="callsPicked"></p>
-    <form id="callsForm" class="apply-form calls-form" novalidate>
-      <label class="hp-field" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
-      <label><span class="lbl">Name <i class="req" aria-hidden="true">*</i></span><input type="text" name="name" autocomplete="name" required aria-required="true"></label>
-      <label><span class="lbl">Company <i class="req" aria-hidden="true">*</i></span><input type="text" name="company" autocomplete="organization" required aria-required="true"></label>
-      <label><span class="lbl">Email <i class="req" aria-hidden="true">*</i></span><input type="email" name="email" autocomplete="email" required aria-required="true"></label>
-      <label><span class="lbl">Role / title</span><input type="text" name="role" autocomplete="organization-title"></label>
-      <label><span class="lbl">Website or deck link</span><input type="url" name="link" placeholder="https://"></label>
-      <label><span class="lbl">Telegram or X</span><input type="text" name="contact" placeholder="@handle"></label>
-      <label><span class="lbl">Stage</span>
-        <select name="stage">
-          <option value="">Select...</option>
-          <option>Pre-seed</option>
-          <option>Seed</option>
-          <option>Series A</option>
-          <option>Other</option>
-        </select>
-      </label>
-      <label><span class="lbl">How did you hear about us?</span><input type="text" name="source"></label>
-      <label class="wide"><span class="lbl">Inquiry <i class="req" aria-hidden="true">*</i></span><textarea name="inquiry" rows="5" required aria-required="true" placeholder="What would you like to discuss?"></textarea></label>
-      <button type="submit">Confirm booking</button>
-      <p class="form-note" id="callsNote" aria-live="polite"></p>
-    </form>
-  </section>
-
-  <section class="calls-done" id="callsDone" hidden>
-    <div class="calls-badge" aria-hidden="true"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="callsPgOk" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#F4F8FF"/><stop offset="1" stop-color="#C9DAF6"/></radialGradient></defs><g fill="url(#callsPgOk)" stroke="#1D4BA8" stroke-width="1.3"><circle cx="32" cy="17.5" r="11.5"/><circle cx="45.8" cy="27.5" r="11.5"/><circle cx="40.5" cy="43.8" r="11.5"/><circle cx="23.5" cy="43.8" r="11.5"/><circle cx="18.2" cy="27.5" r="11.5"/></g><circle cx="32" cy="34" r="15.5" fill="#fff" stroke="#1D4BA8" stroke-width="1.3"/><circle cx="32" cy="34" r="12.4" fill="none" stroke="#8FB1EC" stroke-width=".8" stroke-dasharray="1.2 2.2"/><path d="M23.4 34.6c1.5-.9 2.7-.1 3.5 1l2.4 3.3c3.4-7.6 8.2-12.6 14-16.3.9-.5 1.5.6.7 1.3-5.3 4.6-9.7 10.5-13.7 19.1-.5 1.1-1.8 1.3-2.6.2l-4.7-6.4c-.7-1-1.4-1.6.4-2.2z" fill="#1D4BA8"/></svg></div>
-    <h2>Your call is booked</h2>
-    <p class="calls-when"></p>
-    <p>Thank you! We will email you the meeting link before the call.</p>
-    <div class="calls-done-actions">
-      <a class="calls-btn" id="callsIcs" href="#" download="vanneck-call.ics">Add to my calendar</a>
-      <a class="calls-btn ghost" href="../index.html">Back to vanneck.xyz</a>
-    </div>
-  </section>
-</article>
+  </aside>
+</div>
 </main>
 
 <footer class="site-footer blog-footer">
@@ -268,6 +318,6 @@
 </div>
 
 <script src="../script.js?v=9641405-71"></script>
-<script src="../assets/js/calls.js?v=1"></script>
+<script src="../assets/js/calls.js?v=3"></script>
 </body>
 </html>

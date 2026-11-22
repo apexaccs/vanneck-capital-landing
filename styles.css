@@ -44,6 +44,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .socials a{display:inline-flex;width:18px;height:18px;color:var(--ink-soft);transition:color .25s,transform .3s var(--ease)}
 .socials a svg{width:100%;height:100%;fill:currentColor}
 .socials a:hover{color:var(--cobalt);transform:scale(1.22)}
+.socials a.nav-cta{width:auto;height:auto;margin-right:6px;padding:9px 18px;border-radius:999px;white-space:nowrap;
+  font:600 13.5px var(--sans);color:var(--white);background:linear-gradient(140deg,#2a5bc4,#1d4ba8 55%,#163c8b);
+  box-shadow:0 10px 20px -12px rgba(29,75,168,.9),inset 0 1px 0 rgba(255,255,255,.3)}
+.socials a.nav-cta:hover{color:var(--white);transform:translateY(-1px);box-shadow:0 14px 24px -12px rgba(29,75,168,1)}
+.nav-sheet a.nav-sheet-cta{margin-top:8px;text-align:center;color:var(--white);font-weight:600;
+  background:linear-gradient(140deg,#2a5bc4,#1d4ba8 55%,#163c8b)}
+.nav-sheet a.nav-sheet-cta:hover{background:var(--bg-deep)}
 
 .nav-toggle{display:none;flex-direction:column;justify-content:center;gap:5px;width:22px;height:22px;justify-self:end}
 .nav-toggle span{height:2px;background:var(--ink);border-radius:2px}
@@ -67,6 +74,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .wordmark{font-size:25px}
   .wordmark small{font-size:10px;margin-top:5px}
   .nav-pill a{padding:9px 10px;font-size:13px}
+  .socials a.nav-cta{padding:8px 13px;font-size:12.5px;margin-right:2px}
+}
+@media (max-width:1120px){
+  .socials a:not(.nav-cta){display:none}
 }
 @media (max-width:1000px){
   .socials{display:none}

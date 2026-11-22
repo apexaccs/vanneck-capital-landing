@@ -2,6 +2,7 @@
 // and book it. Free slots come from the backend, which reads the host's
 // Google Calendar; bookings land in the team's Telegram chat.
 (function () {
+  const SCRIPT_SRC = document.currentScript ? document.currentScript.src : '';
   const root = document.getElementById('calls');
   if (!root) return;
 
@@ -44,19 +45,41 @@
   if (!zones.includes(browserTz)) zones.unshift(browserTz);
   if (!zones.includes('UTC')) zones.push('UTC');
 
-  const offsetOf = (z) => {
+  // Labels like Google Calendar: "(GMT+01:00) Central European Time - Budapest",
+  // sorted by offset. The city only tells zones with the same name apart.
+  const tzPart = (z, style) => {
     try {
-      const p = new Intl.DateTimeFormat('en-US', { timeZone: z, timeZoneName: 'shortOffset' }).formatToParts(new Date()).find((x) => x.type === 'timeZoneName');
+      const p = new Intl.DateTimeFormat('en-US', { timeZone: z, timeZoneName: style }).formatToParts(new Date()).find((x) => x.type === 'timeZoneName');
       return p ? p.value : '';
     } catch (e) { return ''; }
   };
-  for (const z of zones) {
-    const o = document.createElement('option');
-    const off = offsetOf(z);
-    o.value = z;
-    o.textContent = z.replace(/_/g, ' ') + (off ? ` (${off})` : '');
-    tzSel.appendChild(o);
-  }
+  const nameCache = new Map();
+  const tzName = (z) => {
+    if (!nameCache.has(z)) {
+      let n = tzPart(z, 'longGeneric') || tzPart(z, 'long');
+      if (!n || /^GMT[+-]/.test(n)) n = z.split('/').pop().replace(/_/g, ' ');
+      nameCache.set(z, n === 'Coordinated Universal Time' ? 'UTC' : n);
+    }
+    return nameCache.get(z);
+  };
+  const offsetMin = (z) => {
+    const m = /GMT([+-])(\d{1,2})(?::(\d{2}))?/.exec(tzPart(z, 'shortOffset'));
+    return m ? (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3] || 0)) : 0;
+  };
+  const fmtOffset = (min) => {
+    const a = Math.abs(min);
+    return `GMT${min < 0 ? '-' : '+'}${String(Math.floor(a / 60)).padStart(2, '0')}:${String(a % 60).padStart(2, '0')}`;
+  };
+  const city = (z) => z.split('/').pop().replace(/_/g, ' ');
+  zones
+    .map((z) => ({ z, off: offsetMin(z), name: tzName(z) }))
+    .sort((a, b) => a.off - b.off || a.name.localeCompare(b.name) || city(a.z).localeCompare(city(b.z)))
+    .forEach(({ z, off, name }) => {
+      const o = document.createElement('option');
+      o.value = z;
+      o.textContent = `(${fmtOffset(off)}) ${name}${name === city(z) || z === 'UTC' ? '' : ` - ${city(z)}`}`;
+      tzSel.appendChild(o);
+    });
 
   let use12h = false;
   try { use12h = ['h11', 'h12'].includes(new Intl.DateTimeFormat(undefined, { hour: 'numeric' }).resolvedOptions().hourCycle); } catch (e) { /* keep 24h */ }
@@ -80,11 +103,27 @@
 
   function setStatus(html) { statusEl.innerHTML = html || ''; }
 
+  // ── sidebar summary ────────────────────────────────────────────────────
+  const sum = { type: $('sumType'), date: $('sumDate'), time: $('sumTime'), tz: $('sumTz') };
+  function setSum(el, text) {
+    if (!el || el.textContent === text) return;
+    el.textContent = text;
+    el.classList.remove('set');
+    if (text && text !== '-' && text !== 'Not chosen yet') { void el.offsetWidth; el.classList.add('set'); }
+  }
+  function updateSummary() {
+    setSum(sum.type, type ? `${TYPES[type].label}, ${TYPES[type].minutes} min` : 'Not chosen yet');
+    setSum(sum.date, slot ? dayPart(slot, { weekday: 'long', day: 'numeric', month: 'long' }) : '-');
+    setSum(sum.time, slot ? `${timeLabel(slot)}-${timeLabel(slot + TYPES[type].minutes * 60e3)}` : '-');
+    setSum(sum.tz, tzName(tz));
+  }
+
   function render() {
     hourBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.fmt === fmt)));
     typeBtns.forEach((b) => b.setAttribute('aria-checked', String(b.dataset.type === type)));
     daysEl.innerHTML = '';
     slotsEl.innerHTML = '';
+    updateSummary();
     if (!type) return;
     const groups = new Map();
     for (const t of slots) {
@@ -93,12 +132,14 @@
       groups.get(k).push(t);
     }
     if (!groups.size) {
-      setStatus('No free times in the next three weeks for this call. Please <a href="../index.html#apply">send us an application</a> and we will come back to you.');
+      setStatus('No free times are open for this call right now. Please <a href="../index.html#apply">send us an application</a> and we will come back to you.');
       return;
     }
     if (!day || !groups.has(day)) day = groups.keys().next().value;
+    let di = 0;
     for (const [k, list] of groups) {
       const b = document.createElement('button');
+      b.style.setProperty('--i', String(di++));
       b.type = 'button';
       b.className = 'calls-day';
       b.dataset.day = k;
@@ -112,21 +153,22 @@
       b.setAttribute('aria-label', `${dateLong(t)}, ${list.length} free ${list.length === 1 ? 'time' : 'times'}`);
       daysEl.appendChild(b);
     }
-    for (const t of groups.get(day)) {
+    groups.get(day).forEach((t, i) => {
       const b = document.createElement('button');
+      b.style.setProperty('--i', String(i));
       b.type = 'button';
       b.className = 'calls-slot';
       b.dataset.t = String(t);
       b.setAttribute('aria-pressed', String(t === slot));
       b.textContent = timeLabel(t);
       slotsEl.appendChild(b);
-    }
+    });
     if (slot) showPicked();
   }
 
   function showPicked() {
     const m = TYPES[type].minutes * 60e3;
-    pickedEl.textContent = `${TYPES[type].label} · ${dateLong(slot)} · ${timeLabel(slot)}-${timeLabel(slot + m)} (${tz.replace(/_/g, ' ')})`;
+    pickedEl.textContent = `${TYPES[type].label} · ${dateLong(slot)} · ${timeLabel(slot)}-${timeLabel(slot + m)} (${tzName(tz)})`;
     const change = document.createElement('button');
     change.type = 'button';
     change.textContent = 'Change';
@@ -299,20 +341,64 @@
   function showDone(b) {
     const start = Date.parse(b.start);
     const end = Date.parse(b.end);
-    done.querySelector('.calls-when').textContent = `${b.label} · ${dateLong(start)} · ${timeLabel(start)}-${timeLabel(end)} (${tz.replace(/_/g, ' ')})`;
+    done.querySelector('.calls-when').textContent = `${b.label} · ${dateLong(start)} · ${timeLabel(start)}-${timeLabel(end)} (${tzName(tz)})`;
+    const title = `${b.label} with Vanneck Capital`;
+    const details = 'We will email you the meeting link before the call. https://vanneck.xyz';
     const stamp = (t) => new Date(t).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    const qs = (o) => Object.entries(o).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+    $('calGoogle').href = `https://calendar.google.com/calendar/render?${qs({ action: 'TEMPLATE', text: title, dates: `${stamp(start)}/${stamp(end)}`, details })}`;
+    $('calOutlook').href = `https://outlook.live.com/calendar/0/action/compose?${qs({ subject: title, startdt: new Date(start).toISOString(), enddt: new Date(end).toISOString(), body: details, path: '/calendar/action/compose', rru: 'addevent' })}`;
     const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Vanneck Capital//Calls//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
       'BEGIN:VEVENT', `UID:${b.id}@vanneck.xyz`, `DTSTAMP:${stamp(Date.now())}`, `DTSTART:${stamp(start)}`, `DTEND:${stamp(end)}`,
-      `SUMMARY:${b.label} with Vanneck Capital`, 'DESCRIPTION:We will email you the meeting link.', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n') + '\r\n';
-    const link = $('callsIcs');
-    link.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+      `SUMMARY:${title}`, `DESCRIPTION:${details}`, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n') + '\r\n';
+    $('calIcs').href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
     stepType.hidden = true;
     stepTime.hidden = true;
     stepDetails.hidden = true;
     done.hidden = false;
+    burst();
+    if (flowers) flowers.celebrate();
     try { sessionStorage.removeItem(PREFILL_KEY); } catch (e) { /* storage blocked */ }
     done.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+
+  // porcelain petals flying out of the badge
+  function burst() {
+    const host = $('callsBurst');
+    if (!host || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    host.innerHTML = '';
+    const imgs = ['rose_petal1', 'rose_petal3', 'daisy_petal2', 'carnation_petal1', 'daisy_petal4', 'carnation_petal3'];
+    for (let i = 0; i < 18; i++) {
+      const im = document.createElement('img');
+      im.src = `../assets/img/flowers/${imgs[i % imgs.length]}.webp`;
+      im.alt = '';
+      const a = (i / 18) * Math.PI * 2 + Math.random() * 0.3;
+      const r = 140 + Math.random() * 170;
+      im.style.setProperty('--dx', `${Math.cos(a) * r * 1.5}px`);
+      im.style.setProperty('--dy', `${Math.sin(a) * r * 0.8 + 60}px`);
+      im.style.setProperty('--r', `${Math.round(Math.random() * 540 - 270)}deg`);
+      im.style.animationDelay = `${0.15 + Math.random() * 0.25}s`;
+      im.style.width = `${24 + Math.random() * 20}px`;
+      host.appendChild(im);
+    }
+  }
+
+  // ── glass flowers (WebGL) in the hero; the static image stays as fallback ──
+  let flowers = null;
+  function startFlowers() {
+    const stage = $('callsStage');
+    if (!stage || !SCRIPT_SRC) return;
+    try {
+      const c = document.createElement('canvas');
+      if (!(c.getContext('webgl2') || c.getContext('webgl'))) return;
+    } catch (e) { return; }
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    import(new URL('calls-flowers.js?v=1', SCRIPT_SRC).href)
+      .then((m) => { flowers = m.mountFlowers(stage, { reduced }); requestAnimationFrame(() => stage.classList.add('ready')); })
+      .catch(() => { /* keep the static flower */ });
+  }
+  if (document.readyState === 'complete') setTimeout(startFlowers, 50);
+  else window.addEventListener('load', () => setTimeout(startFlowers, 50), { once: true });
 
   // ── start: prefill from the main page, optional ?type= ──────────────────
   const pre = readJSON(sessionStorage, PREFILL_KEY) || {};
