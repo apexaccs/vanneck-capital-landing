@@ -322,7 +322,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .team-role{display:block;font:600 10.5px var(--serif);letter-spacing:.08em;text-transform:uppercase;
   color:var(--blue-mid);margin:4px 0 8px}
 .team-card p{font-size:13.5px;font-weight:500;line-height:1.5;color:var(--ink-soft);max-width:28ch}
-.team-more{text-align:center;margin:-64px 0 56px;font:600 14px var(--sans)}
+.team-more{position:relative;z-index:2;text-align:center;margin:-64px 0 56px;font:600 14px var(--sans)}
 .team-more a{color:var(--blue-mid);text-decoration:none}
 
 /* ── team: verification widget ──────────────────────────────────────── */
@@ -424,6 +424,20 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .faq-apply>p{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:16px}
 .faq-side{display:grid;gap:22px;align-content:start}
 .faq-side .faq-apply{position:static}
+/* FAQ row: apply card stretches to the FAQ's height (the message box grows),
+   the book card spans both columns underneath */
+.faq-layout{align-items:stretch;row-gap:32px}
+.faq-side{display:flex;flex-direction:column}
+.faq-side .faq-apply{flex:1;display:flex;flex-direction:column}
+.faq-apply .apply-form{flex:1;display:flex;flex-direction:column;gap:12px}
+.faq-apply .apply-form label:has(textarea){flex:1;display:flex;flex-direction:column}
+.faq-apply .apply-form textarea{flex:1;min-height:110px}
+.faq-book--wide{grid-column:1/-1;display:grid;grid-template-columns:minmax(200px,.75fr) 2.25fr;gap:32px;align-items:end}
+.faq-book--wide .faq-book-intro>p{font-size:14px;font-weight:500;color:var(--ink-soft);margin:0}
+.faq-book--wide .apply-form{grid-template-columns:repeat(3,minmax(0,1fr)) auto;align-items:start;column-gap:14px}
+.faq-book--wide .apply-form label{min-width:0}
+.faq-book--wide .apply-form input{width:100%;min-width:0;box-sizing:border-box}
+.faq-book--wide .apply-form button{margin-top:18px;min-height:42px;padding:0 30px;white-space:nowrap;align-self:start}
 .faq-book{background:var(--bg-pale);border-radius:8px;padding:28px 26px}
 .faq-book h3{font-family:var(--serif);font-weight:600;font-size:21px;color:var(--cobalt);margin-bottom:6px}
 .faq-book>p{font-size:14px;font-weight:500;color:var(--ink-soft);margin-bottom:16px}
@@ -526,7 +540,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .cookie-btn.ghost{background:transparent;color:var(--ink-soft);border:1px solid rgba(29,75,168,.25)}
 
 @media (max-width:860px){
-  .faq-layout{grid-template-columns:1fr}
+  .faq-layout{grid-template-columns:minmax(0,1fr)}
+  .faq-book--wide{grid-template-columns:1fr;gap:16px}
+  .faq-book--wide .apply-form{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .faq-book--wide .apply-form label:nth-of-type(3),.faq-book--wide .apply-form button{grid-column:1/-1}
+  .faq-book--wide .apply-form button{margin-top:4px}
   .faq-apply{position:static}
   .footer-top{grid-template-columns:1fr;gap:32px}
   .legal-grid{grid-template-columns:1fr;gap:20px}
