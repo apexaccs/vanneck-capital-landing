@@ -342,16 +342,6 @@
     const start = Date.parse(b.start);
     const end = Date.parse(b.end);
     done.querySelector('.calls-when').textContent = `${b.label} · ${dateLong(start)} · ${timeLabel(start)}-${timeLabel(end)} (${tzName(tz)})`;
-    const title = `${b.label} with Vanneck Capital`;
-    const details = 'We will email you the meeting link before the call. https://vanneck.xyz';
-    const stamp = (t) => new Date(t).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-    const qs = (o) => Object.entries(o).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
-    $('calGoogle').href = `https://calendar.google.com/calendar/render?${qs({ action: 'TEMPLATE', text: title, dates: `${stamp(start)}/${stamp(end)}`, details })}`;
-    $('calOutlook').href = `https://outlook.live.com/calendar/0/action/compose?${qs({ subject: title, startdt: new Date(start).toISOString(), enddt: new Date(end).toISOString(), body: details, path: '/calendar/action/compose', rru: 'addevent' })}`;
-    const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Vanneck Capital//Calls//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
-      'BEGIN:VEVENT', `UID:${b.id}@vanneck.xyz`, `DTSTAMP:${stamp(Date.now())}`, `DTSTART:${stamp(start)}`, `DTEND:${stamp(end)}`,
-      `SUMMARY:${title}`, `DESCRIPTION:${details}`, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n') + '\r\n';
-    $('calIcs').href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
     stepType.hidden = true;
     stepTime.hidden = true;
     stepDetails.hidden = true;
