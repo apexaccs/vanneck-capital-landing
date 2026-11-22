@@ -84,14 +84,13 @@ function layout({ preheader, eyebrow, title, intro, body }) {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:580px">
     <tr><td align="center" style="padding:0 0 22px">
       <a href="${SITE}" style="text-decoration:none"><img src="${SITE}/assets/img/mark-v.png" width="42" height="30" alt="" style="display:inline-block;vertical-align:middle;border:0">
-      <span style="display:inline-block;vertical-align:middle;margin-left:10px;font:600 22px ${SERIF};letter-spacing:.06em;color:${C.cobalt}">VANNECK</span>
-      <span style="display:inline-block;vertical-align:middle;margin-left:6px;font:500 10px ${SANS};letter-spacing:.4em;color:#3F73D1">CAPITAL</span></a>
+      <span style="display:inline-block;vertical-align:middle;margin-left:10px;font:600 22px ${SERIF};letter-spacing:.06em;color:${C.cobalt}">VANNECK CAPITAL</span></a>
     </td></tr>
     <tr><td style="background:#ffffff;border:1px solid #ffffff;border-radius:24px;box-shadow:0 24px 60px -34px rgba(15,44,107,.45);overflow:hidden">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         <tr><td style="height:6px;background:${C.cobalt};background-image:linear-gradient(90deg,${C.cobalt},#6F95EC,${C.cobalt});font-size:0;line-height:0">&nbsp;</td></tr>
         <tr><td style="padding:34px 36px 8px">
-          <p style="margin:0 0 10px;font:600 11px ${SANS};letter-spacing:.16em;text-transform:uppercase;color:#3F73D1">${esc(eyebrow)}</p>
+          <p style="margin:0 0 6px;font:italic 600 18px ${SERIF};color:${C.cobalt}">${esc(eyebrow)}</p>
           <h1 style="margin:0 0 14px;font:600 32px/1.15 ${SERIF};color:${C.ink}">${title}</h1>
           <p style="margin:0;font:400 17px/1.55 ${SERIF};color:${C.soft}">${intro}</p>
         </td></tr>
@@ -117,10 +116,9 @@ export function render(kind, b, label, minutes) {
     ['Call', `${esc(label)} <span style="font:400 15px ${SERIF};color:${C.soft}">· ${minutes} min</span>`],
     ['Date', esc(w.day)],
     ['Time', `${esc(w.time)}<br><span style="font:400 14px ${SANS};color:${C.soft}">${esc(w.zone)}</span>`],
-    ['Meeting', b.meetLink ? `<a href="${esc(b.meetLink)}" style="color:${C.cobalt}">${esc(b.meetLink)}</a>` : `<span style="font-weight:500;color:${C.soft}">Link arrives by email 1 hour before</span>`],
   ]);
   const details = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.pale};border-radius:16px;padding:6px 20px">${rows}</table>`;
-  const calButtons = `<p style="margin:26px 0 10px;font:600 11px ${SANS};letter-spacing:.12em;text-transform:uppercase;color:#3F73D1">Add to your calendar</p>
+  const calButtons = `<p style="margin:26px 0 10px;font:italic 600 18px ${SERIF};color:${C.cobalt}">Add to your calendar</p>
     <table role="presentation" cellpadding="0" cellspacing="0"><tr>
       <td style="padding:0 8px 8px 0">${button(cal.google, 'Google Calendar')}</td>
       <td style="padding:0 8px 8px 0">${button(cal.outlook, 'Outlook', false)}</td>
@@ -151,7 +149,7 @@ export function render(kind, b, label, minutes) {
         preheader: `${rel === 'today' ? 'Today' : 'Tomorrow'}, ${w.time} (${w.zone})`,
         eyebrow: 'Reminder',
         title: `See you ${rel}`,
-        intro: `Hi ${first}, a quick reminder about your call with Vanneck Capital. ${b.meetLink ? 'The meeting link is below.' : 'We will send the meeting link one hour before we start.'}`,
+        intro: `Hi ${first}, a quick reminder about your call with Vanneck Capital. ${b.meetLink ? 'Use the button below to join.' : 'We will send the meeting link one hour before we start.'}`,
         body: details + (b.meetLink ? `<p style="margin:26px 0 0">${button(b.meetLink, 'Join the call')}</p>` : calButtons),
       }),
       text: `Hi ${b.name},\n\nA reminder about your call with Vanneck Capital ${rel}.\n\n${textBlock}\n\n${b.meetLink ? `Join: ${b.meetLink}` : 'We will send the meeting link one hour before the call.'}\n\nVanneck Capital - ${SITE}`,
@@ -164,11 +162,10 @@ export function render(kind, b, label, minutes) {
     subject: soon ? `Your call with Vanneck Capital starts in 1 hour` : `Your meeting link for the call with Vanneck Capital`,
     html: layout({
       preheader: `${w.time} (${w.zone}) - join link inside`,
-      eyebrow: soon ? 'Starting soon' : 'Meeting link',
-      title: soon ? 'We start in one hour' : 'Your meeting link',
-      intro: `Hi ${first}, here is the link to join your call with Vanneck Capital. See you ${soon ? 'soon' : `on ${esc(w.day)}`}.`,
-      body: `<p style="margin:0 0 24px">${button(b.meetLink, 'Join the call')}</p>` + details
-        + `<p style="margin:18px 0 0;font:400 13px ${SANS};color:${C.soft}">If the button does not work, copy this link: <a href="${esc(b.meetLink)}" style="color:${C.cobalt};word-break:break-all">${esc(b.meetLink)}</a></p>`,
+      eyebrow: soon ? 'Starting soon' : 'Ready to join',
+      title: soon ? 'We start in one hour' : 'Your call is ready',
+      intro: `Hi ${first}, everything is ready for your call with Vanneck Capital. Use the button below to join. See you ${soon ? 'soon' : `on ${esc(w.day)}`}.`,
+      body: details + `<p style="margin:26px 0 0">${button(b.meetLink, 'Join the call')}</p>`,
     }),
     text: `Hi ${b.name},\n\nHere is the link to join your call with Vanneck Capital:\n${b.meetLink}\n\n${textBlock}\n\nVanneck Capital - ${SITE}`,
     attachments: [],
