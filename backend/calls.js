@@ -1,8 +1,8 @@
 // Call booking: free slots from Google Calendar (read-only) and bookings that
 // land in the Telegram chat.
 //
-// Availability = events in a dedicated "call hours" calendar (the host's
-// working windows, usually recurring), minus busy time in the host's main
+// Availability = weekly hours from CALLS_HOURS (or, if that is not set, events
+// in a dedicated "call hours" calendar), minus busy time in the host's main
 // calendar(s), minus calls already booked here. Google is only read, never
 // written; booked times are kept locally (times only, no personal data) so
 // the same slot cannot be taken twice before the host adds it to the calendar.
@@ -28,6 +28,8 @@ const MIN_NOTICE_MS = num(process.env.CALLS_MIN_NOTICE_HOURS, 12) * 3600e3;
 const HORIZON_MS = num(process.env.CALLS_HORIZON_DAYS, 21) * 86400e3;
 const BUFFER_MS = num(process.env.CALLS_BUFFER_MINUTES, 15) * 60e3;
 const STEP_MS = num(process.env.CALLS_STEP_MINUTES, 30) * 60e3;
+const HOURS_TZ = (process.env.CALLS_TIMEZONE || '').trim();
+const WEEKLY = parseWeekly(process.env.CALLS_HOURS || '');
 const CACHE_MS = 60e3;
 const STORE_FILE = process.env.BOOKINGS_FILE
   || path.join(process.env.STATE_DIRECTORY || '/var/lib/vanneck-backend', 'bookings.json');
@@ -74,7 +76,57 @@ async function gapi(url, init = {}) {
   return r.json();
 }
 
+// CALLS_HOURS="Mon 18:00-20:30; Sat 10:00-12:00, 13:00-19:30" in CALLS_TIMEZONE.
+// Returns { weekday (0 = Sun): [[startMin, endMin], ...] } or null if unset/invalid.
+function parseWeekly(src) {
+  if (!src.trim()) return null;
+  const days = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
+  const out = {};
+  const toMin = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+  for (const part of src.split(';').map((x) => x.trim()).filter(Boolean)) {
+    const m = part.match(/^([a-z]{3})[a-z]*\s+(.+)$/i);
+    const wd = m && days[m[1].toLowerCase()];
+    if (wd === undefined) { console.error(`CALLS_HOURS: cannot read "${part}"`); return null; }
+    for (const r of m[2].split(',').map((x) => x.trim())) {
+      const rm = r.match(/^([01]?\d|2[0-3]):([0-5]\d)\s*-\s*([01]?\d|2[0-4]):([0-5]\d)$/);
+      const a = rm && toMin(`${rm[1]}:${rm[2]}`), b = rm && toMin(`${rm[3]}:${rm[4]}`);
+      if (!rm || b <= a || b > 1440) { console.error(`CALLS_HOURS: bad range "${r}" in "${part}"`); return null; }
+      (out[wd] ||= []).push([a, b]);
+    }
+  }
+  return out;
+}
+
+// UTC offset (ms) of a time zone at instant t.
+function tzOffset(t, tz) {
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
+    .formatToParts(new Date(t)).map((x) => [x.type, Number(x.value)]));
+  return Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second) - Math.floor(t / 1000) * 1000;
+}
+// Wall-clock time in tz -> epoch ms (DST-safe).
+function zoned(y, mo, d, minutes, tz) {
+  const guess = Date.UTC(y, mo, d, 0, minutes);
+  let t = guess - tzOffset(guess, tz);
+  t = guess - tzOffset(t, tz);
+  return t;
+}
+
+function weeklyWindows(now) {
+  const tz = HOURS_TZ || 'UTC';
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, year: 'numeric', month: 'numeric', day: 'numeric' })
+    .formatToParts(new Date(now)).map((x) => [x.type, Number(x.value)]));
+  const windows = [];
+  const days = Math.ceil(HORIZON_MS / 86400e3) + 2;
+  for (let i = 0; i <= days; i++) {
+    const date = new Date(Date.UTC(p.year, p.month - 1, p.day + i));
+    const [y, mo, d] = [date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()];
+    for (const [a, b] of WEEKLY[date.getUTCDay()] || []) windows.push([zoned(y, mo, d, a, tz), zoned(y, mo, d, b, tz)]);
+  }
+  return { windows, timeZone: tz };
+}
+
 async function fetchWindows(timeMin, timeMax) {
+  if (WEEKLY) return weeklyWindows(Date.parse(timeMin));
   const windows = [];
   let timeZone = 'UTC';
   let pageToken;
@@ -168,7 +220,7 @@ function withLock(fn) {
   return run;
 }
 
-const configured = () => Boolean(KEY_FILE && AVAILABILITY_ID);
+const configured = () => Boolean(WEEKLY ? (KEY_FILE || !BUSY_IDS.length) : (KEY_FILE && AVAILABILITY_ID));
 
 function fmt(ms, timeZone, withDate = true) {
   return new Intl.DateTimeFormat('en-GB', {
