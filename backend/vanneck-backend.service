@@ -12,7 +12,9 @@ RestartSec=3
 User=www-data
 NoNewPrivileges=true
 PrivateTmp=true
-# /var/lib/vanneck-backend: booked call times (no personal data)
+# /var/lib/vanneck-backend: bookings (guest name/email for follow-up emails,
+# deleted two days after the call); only readable by www-data
+StateDirectoryMode=0700
 StateDirectory=vanneck-backend
 
 [Install]

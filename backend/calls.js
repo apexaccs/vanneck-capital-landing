@@ -4,12 +4,14 @@
 // Availability = weekly hours from CALLS_HOURS (or, if that is not set, events
 // in a dedicated "call hours" calendar), minus busy time in the host's main
 // calendar(s), minus calls already booked here. Google is only read, never
-// written; booked times are kept locally (times only, no personal data) so
-// the same slot cannot be taken twice before the host adds it to the calendar.
+// written. Bookings are kept locally (time, name, company, email, time zone,
+// meeting link) so the same slot cannot be taken twice and the follow-up
+// emails can be sent (call-bot.js); they are deleted two days after the call.
 
 import { createSign, randomUUID } from 'node:crypto';
 import { readFile, writeFile, rename, mkdir } from 'node:fs/promises';
 import path from 'node:path';
+import { startFollowups } from './call-bot.js';
 
 export const CALL_TYPES = {
   intro: { label: 'Intro call', minutes: 45 },
@@ -196,7 +198,7 @@ export function computeSlots({ windows, busy, booked, minutes, now }) {
   return [...out].sort((a, b) => a - b);
 }
 
-// ---------- local store of booked times (no personal data) ----------
+// ---------- local store of bookings (file mode 600, pruned 2 days after the call) ----------
 async function readStore() {
   try {
     return JSON.parse(await readFile(STORE_FILE, 'utf8'));
@@ -209,7 +211,7 @@ async function readStore() {
 async function writeStore(list) {
   await mkdir(path.dirname(STORE_FILE), { recursive: true });
   const tmp = `${STORE_FILE}.tmp`;
-  await writeFile(tmp, JSON.stringify(list));
+  await writeFile(tmp, JSON.stringify(list), { mode: 0o600 });
   await rename(tmp, STORE_FILE);
 }
 
@@ -220,6 +222,7 @@ function withLock(fn) {
   return run;
 }
 
+const hostTz = () => (cache && cache.timeZone) || HOURS_TZ || 'UTC';
 const configured = () => Boolean(WEEKLY ? (KEY_FILE || !BUSY_IDS.length) : (KEY_FILE && AVAILABILITY_ID));
 
 function fmt(ms, timeZone, withDate = true) {
@@ -244,6 +247,7 @@ function validTimeZone(tz) {
 const gcalStamp = (ms) => new Date(ms).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 
 export function registerCallRoutes(app, { sendTelegram, escapeHtml, isValidEmail, isHttpUrl, bad, clean }) {
+  const followups = startFollowups({ readStore, writeStore, withLock, CALL_TYPES, hostTz, chatId: process.env.TELEGRAM_CHAT_ID });
   app.get('/api/calls/slots', async (req, res) => {
     res.set('Cache-Control', 'no-store');
     const type = CALL_TYPES[req.query.type];
@@ -301,13 +305,16 @@ export function registerCallRoutes(app, { sendTelegram, escapeHtml, isValidEmail
           return res.status(503).json({ ok: false, error: 'calendar_unavailable' });
         }
         const now = Date.now();
-        const store = (await readStore()).filter((b) => b.end > now - 86400e3);
+        // keep finished calls for two days, then drop them with the guest's details
+        const store = (await readStore()).filter((b) => b.end > now - 2 * 86400e3);
         const slots = computeSlots({ windows: data.windows, busy: data.busy, booked: store.map((b) => [b.start, b.end]), minutes: type.minutes, now });
         if (!slots.includes(start)) return res.status(409).json({ ok: false, error: 'slot_taken' });
 
         const end = start + type.minutes * 60e3;
         const id = randomUUID();
-        await writeStore([...store, { id, type: typeKey, start, end, createdAt: now }]);
+        const hostTimeZone = data.timeZone;
+        const booking = { id, type: typeKey, start, end, createdAt: now, name, company, email, tz: guestTz || hostTimeZone, meetLink: '', sent: {} };
+        await writeStore([...store, booking]);
 
         const hostTz = data.timeZone;
         const calUrl = 'https://calendar.google.com/calendar/render?' + new URLSearchParams({
@@ -332,10 +339,11 @@ export function registerCallRoutes(app, { sendTelegram, escapeHtml, isValidEmail
         ].filter(Boolean);
         const text = `${details.join('\n')}\n\n<b>Inquiry:</b>\n${escapeHtml(inquiry)}\n\n<a href="${escapeHtml(calUrl)}">Add to Google Calendar</a>`;
 
-        if (!(await sendTelegram(text))) {
+        if (!(await followups.notifyBooking(text, booking)) && !(await sendTelegram(text))) {
           await writeStore(store);
           return res.status(502).json({ ok: false, error: 'Delivery failed' });
         }
+        followups.kick(); // confirmation email
         res.json({
           ok: true,
           booking: { id, type: typeKey, label: type.label, minutes: type.minutes, start: new Date(start).toISOString(), end: new Date(end).toISOString() },
